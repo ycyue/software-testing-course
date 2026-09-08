@@ -8,8 +8,10 @@
 
 - 课程版本：v1.2
 - 总章节：22 章
-- 当前状态：第 1 章已完成审查、修正和发布
+- 当前状态：第 1～3 章已完成审查、修正并发布
 - 第 1 章最终评分：97/100
+- 第 2 章最终评分：98/100
+- 第 3 章最终评分：99/100
 - 发布分支：main
 
 ## 重要入口
@@ -19,6 +21,10 @@
 - [全局内容质量标准](standards/QUALITY_STANDARD_v1.0.md)
 - [第 1 章：软件测试入门](chapters/01-software-testing-intro.md)
 - [第 1 章质量审查记录](reviews/chapter-01-review.md)
+- [第 2 章：软件研发流程与测试的位置](chapters/02-software-development-process.md)
+- [第 2 章质量审查记录](reviews/chapter-02-review.md)
+- [第 3 章：软件测试分类体系](chapters/03-software-testing-classification.md)
+- [第 3 章质量审查记录](reviews/chapter-03-review.md)
 
 ## 每章制作流程
 
