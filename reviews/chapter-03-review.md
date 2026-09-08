@@ -1,5 +1,7 @@
 # 第 3 章《软件测试分类体系》质量审查记录
 
+> 本记录保留首次发布审查过程。后续严格复审结果以[第 1～3 章联合严格复审记录](chapters-01-03-joint-rereview.md)为准；第 3 章修订后评分仍为 99/100。
+
 ## 审查对象
 
 - 正文：`chapters/03-software-testing-classification.md`
