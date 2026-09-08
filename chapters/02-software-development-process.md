@@ -137,7 +137,7 @@ Scrum 是处理复杂问题的一种轻量框架。根据 2020 Scrum Guide，一
 - Scrum Master：对建立 Scrum 和提升团队有效性负责；
 - Developers：对每个 Sprint 创建可用 Increment 的工作负责。
 
-测试工程师可能是 Developers 中具备测试专长的成员。Scrum 官方定义没有规定必须设置一个独立的“测试阶段”或“测试子团队”。
+Scrum 中的 Developers 是一项责任角色，不等于职位名称“软件开发工程师”，也不只指写业务代码的人。测试工程师、设计师或其他专业人员，只要共同承担创建可用 Increment 的责任，都可能属于 Developers。Scrum 官方定义没有规定必须设置一个独立的“测试阶段”或“测试子团队”。
 
 ### 一个 Sprint 中发生什么？
 
@@ -145,8 +145,9 @@ Scrum 是处理复杂问题的一种轻量框架。根据 2020 Scrum Guide，一
 flowchart TD
     A[Product Backlog] --> B[Sprint Planning]
     B --> C[Sprint Backlog]
-    C --> D[开发、测试与 Daily Scrum]
+    C --> D[围绕 Sprint Goal 开展工作]
     D --> E[符合 DoD 的 Increment]
+    D -.每日检查进展并调整计划.-> D
     E --> F[Sprint Review]
     F --> A
     F --> G[Sprint Retrospective]
@@ -268,7 +269,7 @@ Git 用来记录文件版本。工作区是正在编辑的文件；暂存区用�
 ```bash
 git status
 git diff
-git add chapters/02-sdlc-and-testing.md
+git add chapters/02-software-development-process.md
 git diff --staged
 git commit -m "Add chapter 2 about SDLC and testing"
 ```
@@ -296,6 +297,7 @@ git commit -m "Add chapter 2 about SDLC and testing"
 7. **测试右移等于去生产随便测试。** 生产活动需要授权、隔离、监控和回滚控制。
 8. **测试报告只写“通过”。** 必须交代范围、环境、结果、遗留问题和风险。
 9. **所有项目都使用相同的提测门槛和通过率。** 入口、出口和发布标准必须结合项目风险及组织约定。
+10. **Scrum 中的 Developers 就是程序员。** Developers 是对创建可用 Increment 负责的一组成员，所需技能取决于产品工作。
 
 ---
 
