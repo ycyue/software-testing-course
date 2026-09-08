@@ -8,10 +8,11 @@
 
 - 课程版本：v1.2
 - 总章节：22 章
-- 当前状态：第 1～3 章已完成审查、修正并发布
+- 当前状态：第 1～3 章及第 7 章已完成审查、修正并发布
 - 第 1 章最终评分：97/100
 - 第 2 章最终评分：98/100
 - 第 3 章最终评分：99/100
+- 第 7 章最终评分：99/100
 - 发布分支：main
 
 ## 重要入口
@@ -25,6 +26,8 @@
 - [第 2 章质量审查记录](reviews/chapter-02-review.md)
 - [第 3 章：软件测试分类体系](chapters/03-software-testing-classification.md)
 - [第 3 章质量审查记录](reviews/chapter-03-review.md)
+- [第 7 章：Web 基础](chapters/07-web-basics.md)
+- [第 7 章质量审查记录](reviews/chapter-07-review.md)
 
 ## 每章制作流程
 
