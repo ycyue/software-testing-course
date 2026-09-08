@@ -1,0 +1,16 @@
+{
+  "info": {
+    "name": "MiniShop v1.0 Teaching",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Personal practice. Informal production contract. No secrets in repo."
+  },
+  "item": [
+    {"name": "搜索商品", "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=mouse"}},
+    {"name": "登录-正确", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"phone\":\"{{phone}}\",\"password\":\"{{password}}\"}"}, "url": "{{baseUrl}}/api/login"}},
+    {"name": "改数量-合法", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"}, "url": "{{baseUrl}}/api/cart/items"}},
+    {"name": "改数量-等于库存", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":10}"}, "url": "{{baseUrl}}/api/cart/items"}},
+    {"name": "改数量-超库存", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":11}"}, "url": "{{baseUrl}}/api/cart/items"}},
+    {"name": "创建订单", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"}, "url": "{{baseUrl}}/api/orders"}},
+    {"name": "无凭证创建", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"}, "url": "{{baseUrl}}/api/orders"}}
+  ]
+}

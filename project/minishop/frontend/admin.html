@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MiniShop 后台</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>MiniShop 后台</h1>
+    <p><a href="/">返回前台</a></p>
+  </header>
+  <main>
+    <p id="admin-msg" role="status">请先在前台登录管理员账号 13800138099。</p>
+    <h2>库存</h2>
+    <ul id="stock-list"></ul>
+    <h2>订单 id</h2>
+    <p class="note">v1.0 只列出 id，不展示订单状态名。</p>
+    <ul id="order-list"></ul>
+  </main>
+  <script>
+    const token = sessionStorage.getItem("minishop_token") || "";
+    const headers = token ? { Authorization: "Bearer " + token } : {};
+    async function load() {
+      const msg = document.getElementById("admin-msg");
+      const stockRes = await fetch("/api/admin/products", { headers });
+      if (stockRes.status === 401 || stockRes.status === 403) {
+        msg.textContent = "无权限。请用管理员账号登录。";
+        return;
+      }
+      const stock = await stockRes.json();
+      document.getElementById("stock-list").innerHTML =
+        (stock.items || []).map(it => "<li>" + it.sku + " " + it.name + " stock=" + it.stock + "</li>").join("");
+      const orderRes = await fetch("/api/admin/orders", { headers });
+      const orders = await orderRes.json();
+      document.getElementById("order-list").innerHTML =
+        (orders.items || []).map(it => "<li>" + it.id + "</li>").join("") || "<li>暂无</li>";
+      msg.textContent = "已加载";
+    }
+    load();
+  </script>
+</body>
+</html>

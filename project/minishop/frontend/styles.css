@@ -1,0 +1,7 @@
+body { font-family: sans-serif; margin: 1.5rem auto; max-width: 42rem; line-height: 1.5; }
+.note { color: #444; font-size: 0.9rem; }
+label { display: inline-block; min-width: 4rem; }
+input { margin: 0.2rem 0.4rem 0.2rem 0; }
+button { margin-top: 0.3rem; }
+section { border-top: 1px solid #ddd; padding-top: 0.8rem; }
+#login-msg, #cart-msg, #order-msg, #search-msg, #admin-msg { min-height: 1.2rem; }

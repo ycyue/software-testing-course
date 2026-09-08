@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MiniShop</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>MiniShop</h1>
+    <p class="note">个人软件测试实践项目 v1.0，非正式商用系统。</p>
+  </header>
+  <main>
+    <section id="login-panel">
+      <h2>登录</h2>
+      <form id="login-form">
+        <p>
+          <label for="phone">手机号</label>
+          <input id="phone" name="phone" type="text" autocomplete="username" required>
+        </p>
+        <p>
+          <label for="password">密码</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </p>
+        <button type="submit" id="login-btn">登录</button>
+      </form>
+      <p id="login-msg" role="status"></p>
+    </section>
+
+    <section id="shop-panel" hidden>
+      <p>当前用户：<span id="who"></span> <a href="/admin.html">后台</a></p>
+      <h2>商品</h2>
+      <form id="search-form">
+        <label for="keyword">关键字</label>
+        <input id="keyword" name="keyword" type="search">
+        <button type="submit">搜索</button>
+      </form>
+      <p id="search-msg" role="status"></p>
+      <ul id="product-list"></ul>
+      <h2>购物车</h2>
+      <form id="cart-form">
+        <label for="cart-sku">SKU</label>
+        <input id="cart-sku" name="sku" value="SKU-DEMO-001">
+        <label for="cart-qty">数量</label>
+        <input id="cart-qty" name="qty" type="number" value="1">
+        <button type="submit">更新数量</button>
+      </form>
+      <p id="cart-msg" role="status"></p>
+      <ul id="cart-list"></ul>
+      <h2>下单</h2>
+      <form id="order-form">
+        <label for="order-sku">SKU</label>
+        <input id="order-sku" name="sku" value="SKU-DEMO-001">
+        <label for="order-qty">数量</label>
+        <input id="order-qty" name="qty" type="number" value="1">
+        <button type="submit">创建订单</button>
+      </form>
+      <p id="order-msg" role="status"></p>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
