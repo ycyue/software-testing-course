@@ -135,7 +135,7 @@ pm.environment.set("token", tokenValue);
 const token = pm.environment.get("token");
 ```
 
-范围从宽到窄常见为：global → collection → environment → data → local。同名时**更窄的生效**。`pm.variables.get` 按此解析。测试排障时先看当前选中了哪个 Environment，再看是否被 Collection 变量盖住。
+范围从宽到窄常见为：global → collection → environment → data → local。同名时**更窄的生效**。`pm.variables.get` 按此解析。因此 Environment 覆盖 Collection，Collection **盖不住**已选中的 Environment。测试排障时先看当前选中了哪个 Environment，再看是否还有更窄的 data/local 覆盖它。
 
 官方文档还区分可分享的初始值与本机当前值。Token 属于凭证：不要勾选分享真实 Token，也不要在公开 Collection 注释里粘贴。
 

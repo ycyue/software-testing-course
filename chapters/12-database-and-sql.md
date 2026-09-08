@@ -470,9 +470,9 @@ ROLLBACK;
 | 语句 | 作用 | 测试纪律 |
 | --- | --- | --- |
 | `DROP TABLE …` | 删除表结构 | 初级日常测试不需要；教学库外禁止 |
-| `TRUNCATE TABLE …` | 清空表数据 | 许多引擎上很难像 `DELETE` 一样回滚；未授权禁止 |
+| `TRUNCATE TABLE …` | 清空表数据 | 未授权禁止。本章动手环境是 SQLite，**没有**这条语句，清空用带确认的 `DELETE`。MySQL 上常是 DDL、难以当普通 `DELETE` 回滚；PostgreSQL 可以把 `TRUNCATE` 放进事务并 `ROLLBACK` |
 
-它们不是 `DELETE FROM t WHERE id = 1` 的快捷方式。看到脚本里有 `DROP`/`TRUNCATE`，先停下来问：这是不是测试库、有没有备份、影响哪些人。
+它们不是 `DELETE FROM t WHERE id = 1` 的快捷方式。看到脚本里有 `DROP`/`TRUNCATE`，先停下来问：这是不是测试库、当前引擎支不支持、有没有备份、影响哪些人。
 
 ---
 

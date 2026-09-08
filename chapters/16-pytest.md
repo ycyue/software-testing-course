@@ -302,7 +302,7 @@ def base_url():
 | `package` | 包 | ⭐ 了解 |
 | `session` | 整次 pytest | 登录贵、启动服务 |
 
-token 用默认 `function` 最稳：每个需要它的测试自己登录一次。登录很慢时再改为 `scope="session"`。不要把 token fixture 设成 `autouse=True`，否则“无凭证”用例也会先登录，401 测不准。
+token 用默认 `function` 最稳：每个需要它的测试自己登录一次。登录很慢时再改为 `scope="session"`。不要把 token fixture 设成 `autouse=True`：无凭证用例也会先多打一次登录；若再共用 `requests.Session` 或自动带上 Cookie，401 就会测脏。本章的 token fixture 只 `return` 字符串，不会自动粘到没有声明该参数的请求上，但不要依赖这种巧合。
 
 需要收尾时用 `yield`：`yield` 之前是准备，之后是清理。教学服务没有登出接口，token fixture 直接 `return` 即可。
 
@@ -784,7 +784,7 @@ def test_create_order_unauthorized(base_url):
 
 ### 错误 6：token fixture 设 `autouse=True`
 
-修正：401 用例不要先登录。需要 token 的测试显式写参数。
+修正：401 用例不要先登录。需要 token 的测试显式写参数。autouse 会造成额外登录副作用；若再共享 Session/Cookie，无凭证请求就会测脏。
 
 ### 错误 7：`json=` 和表单 `data=` 混用
 
@@ -896,7 +896,7 @@ D. GET 比 POST 安全，所以登录必须用 GET
 2. `-m` 保证用的是当前解释器（通常是 venv）里的 pytest，避免系统路径上另一个 pytest。
 3. 不会被收集。改为 `test_login.py` 与 `def test_login_ok():`。
 4. 400 会在断言前变成异常，分不清“实现成了 400”还是“实现成了 500”。
-5. `function`。`autouse` 会让无凭证测试先登录，测不到 401。
+5. `function`。`autouse` 会让无凭证测试先多登录一次；若再共用 Session 或 Cookie，就测不到 401。需要 token 的测试显式写参数。
 6. 不会。放在项目或 `tests` 目录的 `conftest.py`。
 7. fixture 准备环境，parametrize 展开数据。六种 Body 用 parametrize。
 8. 两次都成功创建且 `id` 不同（教学服务不幂等）。若正式需求只允许一笔，再按正式文档改期望。

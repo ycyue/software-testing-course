@@ -35,13 +35,13 @@
 
 ```mermaid
 flowchart LR
-    A[测试思维与流程] --> B[需求 用例 Bug]
-    B --> C[Web HTTP DevTools]
-    C --> D[Linux 与 SQL]
-    D --> E[接口 Postman]
-    E --> F[Python pytest]
-    F --> G[MiniShop 项目]
-    G --> H[面试与求职]
+    A[测试思维与分类] --> B[Web 基础]
+    B --> C[需求 用例 Bug]
+    C --> D[Web 功能 HTTP DevTools]
+    D --> E[Linux 与 SQL]
+    E --> F[接口 Postman]
+    F --> G[Python pytest]
+    G --> H[MiniShop 面试]
 ```
 
 建议周期仍与大纲一致：全职约 8～12 周，兼职约 20～28 周。以你真正跑通仓库为准，不以日历自我安慰。
@@ -60,10 +60,10 @@ flowchart LR
 
 Linux（第 11 章）与 SQL（第 12 章）并列，不互相作为硬前置。
 
-**能力链（按正式学习顺序）：**  
-理解软件与测试 → 研发流程与测试生命周期 → 阅读需求并评审 → 拆功能、设计用例 → Web 功能测试 → 提交和验证 Bug → 回归 → HTTP 与认证层次 → DevTools → Linux 日志 → SQL → OpenAPI → Postman → Python 数据处理 → requests + pytest → MiniShop 项目 → 简历与面试。
+**能力链（与正式学习顺序一致）：**  
+理解软件与测试 → 研发流程与测试生命周期 → 测试分类 → Web 基础 → 阅读需求并评审 → 拆功能、设计用例 → 提交和验证 Bug → Web 功能测试 → HTTP 与认证层次 → DevTools → Linux 日志与 SQL（并列，互不为硬前置）→ OpenAPI → Postman → Python 数据处理 → requests + pytest → MiniShop 项目 → 简历与面试。
 
-（大纲「最终能力链」把 HTTP 写在 SQL 之后，那是能力清单的并列写法；学习顺序仍是第 9 章 HTTP → 第 10 章 DevTools。）
+第 17、18 章（分层/性能）属于了解即可，不画进这条主链。学习顺序仍是第 9 章 HTTP → 第 10 章 DevTools。
 
 贯穿项目只有 MiniShop。各章教学服务（例如第 13 章路径）在 v1.0 之前是教学约定；**项目契约以 `project/minishop/docs/PRD.md` 为准。**
 

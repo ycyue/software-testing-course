@@ -10,7 +10,7 @@
 
 ## 最终能力链
 
-理解软件与测试 → 理解研发流程和测试生命周期 → 阅读需求并参与评审 → 拆解功能和设计用例 → 执行 Web 功能测试 → 提交和验证 Bug → 回归测试 → 理解 HTTP 和认证状态 → 使用 DevTools → Linux 日志排障 → SQL 数据验证 → 阅读 OpenAPI → 使用 Postman → Python 数据处理 → requests + pytest 接口自动化 → 完成 MiniShop 测试项目 → 形成简历和面试材料。
+理解软件与测试 → 理解研发流程和测试生命周期 → 测试分类 → Web 基础 → 阅读需求并参与评审 → 拆解功能和设计用例 → 提交和验证 Bug → 执行 Web 功能测试 → 理解 HTTP 和认证状态 → 使用 DevTools → Linux 日志排障与 SQL 数据验证（并列）→ 阅读 OpenAPI → 使用 Postman → Python 数据处理 → requests + pytest 接口自动化 → 完成 MiniShop 测试项目 → 形成简历和面试材料。
 
 ## 22 章范围
 
