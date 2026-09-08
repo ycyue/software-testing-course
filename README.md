@@ -15,6 +15,7 @@
 ## 重要入口
 
 - [课程主控文件](docs/COURSE_CONTROL.md)
+- [v1.2 完整课程大纲](docs/COURSE_OUTLINE_v1.2.md)
 - [全局内容质量标准](standards/QUALITY_STANDARD_v1.0.md)
 - [第 1 章：软件测试入门](chapters/01-software-testing-intro.md)
 - [第 1 章质量审查记录](reviews/chapter-01-review.md)
