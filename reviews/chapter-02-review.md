@@ -1,8 +1,10 @@
 # 第 2 章《软件研发流程与测试的位置》质量审查记录
 
+> 本记录保留首次发布审查过程。后续严格复审结果以[第 1～3 章联合严格复审记录](chapters-01-03-joint-rereview.md)为准；第 2 章修订后评分为 99/100。
+
 ## 审查对象
 
-- 正文：`chapters/02-sdlc-and-testing.md`
+- 正文：`chapters/02-software-development-process.md`
 - 依据：`standards/QUALITY_STANDARD_v1.0.md`
 - 官方基准：ISTQB CTFL v4.0.1、Scrum Guide 2020、Git 官方文档
 - 审查日期：2026-09-08
