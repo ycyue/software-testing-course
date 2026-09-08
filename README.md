@@ -8,12 +8,13 @@
 
 - 课程版本：v1.2
 - 总章节：22 章
-- 当前状态：第 1～4 章及第 7 章已完成审查、修正并发布
+- 当前状态：第 1～5 章及第 7 章已完成审查、修正并发布
 - 第 1 章严格复审评分：98/100
 - 第 2 章严格复审评分：99/100
 - 第 3 章最终评分：99/100
 - 第 7 章最终评分：99/100
 - 第 4 章最终评分：99/100
+- 第 5 章最终评分：99/100
 - 发布分支：main
 
 ## 重要入口
@@ -30,6 +31,8 @@
 - [第 1～3 章联合严格复审记录](reviews/chapters-01-03-joint-rereview.md)
 - [第 4 章：测试需求分析与静态测试](chapters/04-requirements-analysis-and-static-testing.md)
 - [第 4 章质量审查记录](reviews/chapter-04-review.md)
+- [第 5 章：测试用例设计](chapters/05-test-case-design.md)
+- [第 5 章质量审查记录](reviews/chapter-05-review.md)
 - [第 7 章：Web 基础](chapters/07-web-basics.md)
 - [第 7 章质量审查记录](reviews/chapter-07-review.md)
 
