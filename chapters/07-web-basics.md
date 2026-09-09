@@ -1,5 +1,7 @@
 # 第 7 章：Web 基础
 
+> **一句话核心：** 浏览器里的页面只是一条观察通道，不是整个被测系统。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 主案例：MiniShop 个人软件测试实践项目
 
@@ -121,6 +123,8 @@ flowchart TD
 
 统一资源定位符（Uniform Resource Locator，URL）用于标识资源的位置以及访问方式。
 
+![把地址栏拆成 scheme、host、port、path、query、fragment](assets/diagrams/ch07-url.png)
+
 继续拆解示例：
 
 ```text
@@ -185,6 +189,9 @@ IP 地址用于网络通信中的寻址。一个域名可能对应多个 IP；�
 
 ## 7.5 DNS：把名称解析为地址 ⭐⭐⭐
 
+![DNS 是通讯录，不保证店开着](assets/diagrams/ch07-dns.png)
+
+
 DNS 最常见的教学类比是“互联网通讯录”：客户端知道域名，但网络通信还需要可用地址，于是查询 DNS。
 
 这个类比有帮助，但并不完整。DNS 是分布式、分层的命名系统，可以保存多种类型的记录；“域名转 IP”只是初学阶段最需要理解的用途。
@@ -207,6 +214,8 @@ https://shop.example.test
 - “打不开网站”不等于一定是 DNS 问题。
 
 ## 7.6 Client 与 Server ⭐⭐⭐
+
+![浏览器是柜台前的顾客，服务在后厨](assets/diagrams/ch07-client-server.png)
 
 ### 客户端（Client）
 
@@ -240,6 +249,9 @@ sequenceDiagram
 本章只建立角色关系。请求方法、状态码、Header 和 Body 在第 9 章主讲。
 
 ## 7.7 Frontend 与 Backend ⭐⭐⭐
+
+![前端摆盘，后端炒菜](assets/diagrams/ch07-frontend-backend.png)
+
 
 ### 前端（Frontend）
 
@@ -281,6 +293,9 @@ sequenceDiagram
 > 前端价格 Bug。
 
 ## 7.8 HTML、CSS 与 JavaScript ⭐⭐⭐
+
+![HTML 是结构，CSS 是装修，JavaScript 是电路](assets/diagrams/ch07-html-css-js.png)
+
 
 可以用“房屋”帮助初步理解，但不要把类比当成正式定义。
 
@@ -331,7 +346,7 @@ button.addEventListener("click", () => {
 
 > 代码说明：以上代码用于观察三种技术的职责，可独立放入简单 HTML 页面中验证；本章不要求学习者独立编写 JavaScript。
 
-发布前已将三段示例组合为一个最小页面验证：页面能够显示商品卡片；点击按钮后，按钮文字变为“已加入购物车”。验证只证明示例本身可运行，不代表真实 MiniShop 的加购业务已经完成。
+组合页已放入仓库，用浏览器直接打开即可：[`assets/07-html-combo.html`](assets/07-html-combo.html)。另有登录表单练习页 [`assets/07-html-lab.html`](assets/07-html-lab.html)。验证只证明示例本身可运行，不代表真实 MiniShop 的加购业务已经完成。v1.0 真页面截图：[`assets/01-login.png`](assets/01-login.png)。
 
 ## 7.9 浏览器如何呈现页面 ⭐⭐
 
@@ -626,4 +641,6 @@ https://admin.example.test:9443/orders/1001?tab=payment#history
 
 现在你已经知道页面从哪里来、URL 如何组成，以及前端和后端怎样协作。
 
-按课程正式学习顺序，下一章进入第 4 章《测试需求分析与静态测试》。你将开始把“理解页面”转化为真正的测试工作：阅读 PRD、发现歧义和遗漏、拆解功能并提取测试点。
+按课程正式学习顺序，下一章进入第 4 章《测试需求分析与静态测试》（先读 [04A](04a-requirements-static-testing.md)）。你将开始把“理解页面”转化为真正的测试工作：阅读 PRD、发现歧义和遗漏、拆解功能并提取测试点。
+
+学完第 1、2、3、7 章后，做 [阶段测验 1](quizzes/stage-1-foundations.md)。

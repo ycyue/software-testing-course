@@ -1,0 +1,12 @@
+{
+  "lab": "1-1",
+  "ran_at": "2026-09-09T04:22:19Z",
+  "oracle": "R-SEARCH：关键字为空或仅空白时，不应把全量商品当成搜索结果（当前实现不符合，见 BUG-001）。",
+  "observe": {
+    "status": 200,
+    "item_count": 3
+  },
+  "violates_r_search": true,
+  "verdict": "不符合 R-SEARCH：空/空白关键字返回了全量 3 件商品。这就是仓库里的 BUG-001。v1.0 保持开放，不要写成已修复。",
+  "bug": "BUG-001"
+}

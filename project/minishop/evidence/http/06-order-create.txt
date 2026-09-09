@@ -1,0 +1,5 @@
+POST /api/orders
+HTTP 201
+Set-Cookie: absent
+Body:
+{"id": "ord-940fb994cc29"}

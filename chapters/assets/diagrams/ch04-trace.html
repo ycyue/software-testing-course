@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>评审不是写感想，是把一条规则钉到后面能测的点上</title></head>
+<body><div class="page">
+<p class="kicker">第 4 章示意图 · 从规则追到用例</p>
+<h1>评审不是写感想，是把一条规则钉到后面能测的点上</h1>
+<p class="lead">MiniShop v1.0：R-CART-10 → 测试点「qty=10 允许、11 拒绝」→ 用例 TC-CART-002 / 003 → pytest 与截图。</p>
+
+    <div class="row" style="align-items:center">
+      <div class="col card" style="text-align:center"><b>R-CART-10</b><p>等于库存允许</p></div>
+      <div class="vs">→</div>
+      <div class="col card" style="text-align:center"><b>测试点</b><p>qty=10 过<br>qty=11 拒且不落库</p></div>
+      <div class="vs">→</div>
+      <div class="col card" style="text-align:center"><b>用例 / 自动化</b><p>TC-CART-002/003<br>test_cart_qty_cases</p></div>
+      <div class="vs">→</div>
+      <div class="col card" style="text-align:center"><b>证据</b><p>HTTP 400<br>SQL 不是 11</p></div>
+    </div>
+    
+<p class="caption">示意图：覆盖矩阵就是把这条链画成表。验证码/优惠券是教学标签，不要写进 v1.0 用例。</p>
+</div></body></html>

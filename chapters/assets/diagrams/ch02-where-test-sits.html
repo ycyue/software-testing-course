@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <style>
+    .pipe { display:flex; gap:8px; }
+    .stage { flex:1; background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px 8px; text-align:center; min-height:88px; }
+    .test { background: var(--teal-soft); border-color:#5eead4; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 2 章示意图 · 测试在研发里的位置</p>
+  <h1>测试不是等代码全部写完才入场的安检口</h1>
+  <p class="lead">动态测试常常集中在编码之后，但需求和设计这些纸面产品可以更早被评审。左移 = 问题越早越便宜。</p>
+  <div class="pipe">
+    <div class="stage test"><b>需求</b><br>静态测试<br>可读、可评审</div>
+    <div class="stage test"><b>设计</b><br>静态测试<br>可对接口草稿</div>
+    <div class="stage"><b>编码</b><br>开发实现</div>
+    <div class="stage test"><b>动态测试</b><br>运行起来验证</div>
+    <div class="stage"><b>发布</b><br>带着剩余风险</div>
+  </div>
+  <div class="card" style="margin-top:20px;">
+    V 模型不是画一条斜线背名字，而是<strong>左边的工作产品对右边的测试</strong>：系统需求 ↔ 系统测试，系统设计 ↔ 集成测试。测的是那份约定，不是「感觉」。
+  </div>
+  <p class="caption">示意图：测试工程师日常会同时碰到「还不能点」的评审和「已经能点」的执行。敏捷团队把这些活动塞进迭代，问题本身不会消失。</p>
+</div>
+</body>
+</html>

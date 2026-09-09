@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <style>
+    table { width:100%; border-collapse: collapse; font-size:14px; }
+    th { text-align:left; background:#e2e8f0; padding:6px 8px; }
+    td { border-top:1px solid var(--line); padding:6px 8px; font-family:ui-monospace,Menlo,monospace; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 12 章示意图 · 页面上的一行，库里可能是三张表拼出来的</p>
+  <h1>购物车不是「一个格子」，是用户、商品、数量三张表的会合</h1>
+  <p class="lead">页面写「SKU-DEMO-001 qty=1」。要核对真伪，得把用户表和商品表 JOIN 起来。MiniShop 种子数据如下。</p>
+  <div class="row">
+    <div class="col card">
+      <h2>users</h2>
+      <table>
+        <tr><th>id</th><th>phone</th></tr>
+        <tr><td>1</td><td>13800138000</td></tr>
+        <tr><td>2</td><td>13800138001</td></tr>
+      </table>
+    </div>
+    <div class="col card">
+      <h2>products</h2>
+      <table>
+        <tr><th>id</th><th>sku</th><th>stock</th></tr>
+        <tr><td>1</td><td>SKU-DEMO-001</td><td>10</td></tr>
+        <tr><td>2</td><td>SKU-DEMO-002</td><td>5</td></tr>
+      </table>
+    </div>
+    <div class="col card" style="border:2px solid var(--teal);">
+      <h2>cart_items</h2>
+      <table>
+        <tr><th>user_id</th><th>product_id</th><th>qty</th></tr>
+        <tr><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>1</td><td>2</td><td>2</td></tr>
+      </table>
+    </div>
+  </div>
+  <p style="margin-top:16px;">JOIN 之后 Tester A 应看到：鼠标 qty 1 / stock 10，键盘 qty 2 / stock 5。页面显示 11 而这里仍是 1，问题在展示；这里变成 11，才是超卖。</p>
+  <p class="caption">示意图：主键认出一行，外键把行连起来。改数前先 SELECT，只在授权教学库操作。</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "lab": "5-1",
+  "ran_at": "2026-09-09T03:52:30Z",
+  "oracle": "R-CART-10",
+  "qty_10": {
+    "status": 200,
+    "body": {
+      "sku": "SKU-DEMO-001",
+      "qty": 10
+    }
+  },
+  "qty_11": {
+    "status": 400,
+    "body": {
+      "error": "qty exceeds stock"
+    }
+  },
+  "both_sides_required": true,
+  "verdict": "边界成立：等于库存通过，超过库存拒绝。只测 10 或只测 11，都不够说明切点在哪。"
+}

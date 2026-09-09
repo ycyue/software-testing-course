@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>通讯录帮你找到楼号，不保证楼上的店开着</title></head>
+<body><div class="page">
+<p class="kicker">第 7 章示意图 · DNS</p>
+<h1>通讯录帮你找到楼号，不保证楼上的店开着</h1>
+<p class="lead">浏览器先看到域名，真正发包需要地址。解析成功 ≠ MiniShop 健康。</p>
+
+    <div class="row" style="align-items:center">
+      <div class="col card" style="text-align:center"><b>你输入</b><p class="mono">shop.example.test</p></div>
+      <div class="vs">DNS</div>
+      <div class="col card" style="text-align:center"><b>得到地址</b><p class="mono">203.0.113.10</p><p>示例网段，不是公网</p></div>
+      <div class="vs">再</div>
+      <div class="col card" style="text-align:center"><b>敲门</b><p>IP + 端口上的服务<br>这时才谈登录</p></div>
+    </div>
+    
+<p class="caption">示意图：解析失败时改密码没有用。能访问 IP 也不等于用域名一定成功（Host、证书）。第 19 章本机是 127.0.0.1。</p>
+</div></body></html>

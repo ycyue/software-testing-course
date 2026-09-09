@@ -1,5 +1,7 @@
 # 第 18 章：性能测试基础
 
+> **一句话核心：** 性能是另一把判定尺子；功能绿了不等于扛得住。
+
 > 重要级别：⭐⭐ 常用  
 > 主案例：MiniShop 个人软件测试实践项目
 
@@ -11,7 +13,7 @@
 
 本章是基础地图。你要能读懂指标、能区分负载/压力/耐久、能认识 JMeter 的测试计划结构，并守住初级岗位边界。不要对未授权系统加压，不要把教学数字写成 MiniShop 已冻结的 SLA，不要在简历写“精通 JMeter / 已完成 MiniShop 全链路压测”。
 
-JMeter 界面文案会变。本章以 Test Plan、Thread Group、Sampler、Listener 等功能名为准。审查环境未安装 JMeter GUI；组件含义依据 Apache JMeter 用户手册。
+JMeter 界面文案会变。本章以 Test Plan、Thread Group、Sampler、Listener 等功能名为准。审查环境**未安装、未点击 JMeter GUI**；组件含义依据 Apache JMeter 用户手册。仓库提供一份**教学骨架** `project/minishop/jmeter/minishop-get-products.jmx`：1 用户、1 循环、`GET http://127.0.0.1:8765/api/products`。它不是 SLA，也不是已执行的压测报告。
 
 ## 学习目标
 
@@ -107,6 +109,9 @@ print(max(samples_ms))
 
 平均 266 ms，中间那次只要 120 ms，最慢一次 800 ms。用户感到的卡，往往在最慢的那一截。
 
+![五个样本里平均值藏不住 800 ms](assets/diagrams/ch18-p95.png)
+
+
 **百分位**描述“有百分之多少的请求不超过某时间”。P50（中位数）看典型，P95 / P99 看尾部。百分位的具体取法（插值还是最近秩）以项目约定为准；面试先能说明**为什么要看尾部**。
 
 写目标时要带条件，例如：“在授权测试环境、约定的搜索接口、约定并发和数据量下，响应时间 P95 不超过需求给出的阈值。” 没有环境、没有接口、没有负载，数字没有意义。
@@ -128,6 +133,9 @@ print(max(samples_ms))
 ---
 
 ## 18.4 并发 ⭐⭐⭐
+
+![并发人数不等于 TPS](assets/diagrams/ch18-tps-concurrency.png)
+
 
 **并发**描述同一时刻有多少工作在进行。JMeter 的线程数常被用来模拟虚拟用户。
 
@@ -163,6 +171,9 @@ MiniShop 教学提醒：50 个线程全部用同一个 `13800138000` 登录，�
 
 ## 18.6 负载、压力、耐久 ⭐⭐⭐
 
+![负载、压力、耐久问的句子不同](assets/diagrams/ch18-load-stress.png)
+
+
 这三种问的不是同一句话。工具可以相同，模型不同。
 
 | 类型 | 问什么 | 典型做法 |
@@ -180,6 +191,9 @@ MiniShop 教学提醒：50 个线程全部用同一个 `13800138000` 登录，�
 ---
 
 ## 18.7 JMeter 入门 ⭐⭐
+
+![JMeter 最小零件](assets/diagrams/ch18-jmeter-parts.png)
+
 
 **Apache JMeter** 是开源的负载测试工具，常用来发 HTTP 等请求并统计样本。它不是浏览器用户体验工具：默认不渲染页面、不执行页面里的全部 JavaScript。要测真实浏览器路径，应使用其他方案，并仍然遵守授权。
 
@@ -205,7 +219,21 @@ Test Plan
     └── Listener      Aggregate Report / 写 jtl 文件
 ```
 
-上面是**示例结构**，不是一份可提交的正式 JMX，也不代表 MiniShop 已有性能基线。
+上面是**示例结构**。仓库另有一份可打开的教学骨架：
+
+`project/minishop/jmeter/minishop-get-products.jmx`
+
+### 若本机已安装 JMeter：逐步打开（审查未执行 GUI）
+
+1. 确认只对 `127.0.0.1`，教学服务已启动：`python3 run.py serve`。
+2. 打开 JMeter → File → Open → 选择上述 `.jmx`。
+3. 核对该 HTTP Sampler 的 Domain=`127.0.0.1`、Port=`8765`、Path=`/api/products`、Method=`GET`。
+4. Thread Group 保持 **1 线程、1 循环**。这是功能冒烟，不是负载。
+5. 若只想看通不通，可用 GUI 点绿色启动，看 View Results Tree 的状态码。
+6. **不要**把线程改成几十再对公网或本机以外的地址运行。
+7. 真正负载（如果将来有授权环境）用非 GUI：`jmeter -n -t minishop-get-products.jmx -l result.jtl`（参数以当前手册为准）。
+
+本文件**不是**已执行的压测报告，也不代表 MiniShop 已有性能基线。审查未安装 JMeter，未跑上述命令。
 
 两条纪律：
 

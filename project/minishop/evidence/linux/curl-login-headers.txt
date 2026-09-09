@@ -1,0 +1,8 @@
+HTTP/1.0 200 OK
+Server: BaseHTTP/0.6 Python/3.14.3
+Date: Wed, 09 Sep 2026 02:17:18 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 77
+Connection: close
+Set-Cookie: minishop_session=<redacted>; HttpOnly; Path=/
+

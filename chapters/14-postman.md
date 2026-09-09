@@ -1,5 +1,7 @@
 # 第 14 章：Postman
 
+> **一句话核心：** Postman 把接口观察做成可分享、可重复的集合。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 核心章节发布目标：≥95/100  
 > 主案例：MiniShop 个人软件测试实践项目
@@ -61,6 +63,9 @@ flowchart TD
 ---
 
 ## 14.1 Workspace、Collection、Request ⭐⭐⭐
+
+![Workspace、集合、环境各管一层](assets/diagrams/ch14-workspace.png)
+
 
 | 对象 | 作用 | 测试纪律 |
 | --- | --- | --- |
@@ -255,6 +260,35 @@ pm.test("无凭证访问订单应失败", function () {
 失败时：点开失败请求，看实际状态码、Body 和脚本行。不要只截一张“全红”的 Runner 首页。
 
 Runner 只证明**这一组请求在当前环境下的断言**。它不是性能测试（Postman 另有性能运行类型，超出本章），也不是第 18 章的负载模型。
+
+---
+
+## 14.6.1 导入仓库 Collection 的逐步操作 ⭐⭐⭐
+
+![登录写入 token，后续请求再带上](assets/diagrams/ch14-token-relay.png)
+
+
+审查**未点击 Postman GUI**。下列步骤按 Postman 应用常见功能名书写（Workspace、Import、Environments、Collection Runner）。按钮坐标会变，找不到时用应用内搜索这些英文名。
+
+1. 安装 Postman 桌面应用或使用网页版（不要求付费云）。
+2. 打开或新建一个**个人** Workspace，不要把密钥放到公开空间。
+3. **Import** → 选择仓库文件  
+   `project/minishop/postman/MiniShop.postman_collection.json`  
+   再导入  
+   `project/minishop/postman/MiniShop.postman_environment.json`。
+4. 在 Environments 里选中 `MiniShop local`。`baseUrl` 应为 `http://127.0.0.1:8765`。把 `password` 填成当前值 `Test1234`，**不要**勾选成可分享的初始值，也不要提交回 Git。
+5. 另开终端：`cd project/minishop && python3 run.py serve`。
+6. 打开 Collection。顺序建议：注册（若 `newPhone` 已用过会 409，改一个未占用号）→ 搜索 → **登录-正确**（脚本会 `pm.environment.set('token', ...)`）→ 改数量 1 / 10 / 11 → 创建订单 → 无凭证创建。
+7. 点 **Collection Runner**，确认登录在需要认证的请求之前，跑一遍。记录通过/失败数（文字即可）。
+8. 导出前清空环境里的 password 与 token 当前值。
+
+集合里已带 `pm.test` / `pm.expect`。qty=11 断言 400；创建订单断言 201、有 `id`、无 `status`。这是 v1.0 路径 `/api/`，不要和本章后文教学 `/login` 混成同一契约。
+
+本机同等接口证据（curl/pytest，不是 Runner 截图）：
+
+![本机请求记录](assets/08-network-log.png)
+
+![pytest 37 passed / 1 expected failure](assets/09-pytest-report.png)
 
 ---
 
@@ -529,4 +563,4 @@ Postman 界面无法在教材仓库里自动点击。审查做了两件事：
 
 ## 下一章预告
 
-下一章进入第 15 章《Python 测试基础》。你将用变量、列表、字典、函数和 JSON 处理测试数据，为第 16 章的 pytest 做准备。重点不是成为 Python 开发工程师，而是能读懂和改小段测试脚本。
+下一章进入第 15 章（上）《Python 语法与数据》：[15a-python-syntax.md](15a-python-syntax.md)。重点不是成为 Python 开发工程师，而是能读懂和改小段测试脚本。

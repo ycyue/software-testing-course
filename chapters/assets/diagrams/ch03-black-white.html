@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>主要依据什么来设计测试，不是「测的时候蒙上眼睛」</title></head>
+<body><div class="page">
+<p class="kicker">第 3 章示意图 · 黑盒、白盒、灰盒</p>
+<h1>主要依据什么来设计测试，不是「测的时候蒙上眼睛」</h1>
+<p class="lead">黑盒不是什么都不知道：你仍要懂业务和风险，只是不以代码结构当主依据。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">黑盒</span><h2>看规格和可观察输出</h2><p style="font-size:16px;line-height:1.55">输入 11，看是 400 还是页面变成 11。不打开源码设计用例。</p></div><div class="col card"><span class="tag tag-ok">白盒</span><h2>看内部结构</h2><p style="font-size:16px;line-height:1.55">按分支、条件覆盖去写开发侧的单元测试。</p></div><div class="col card"><span class="tag tag-warn">灰盒</span><h2>知道一点内部再测</h2><p style="font-size:16px;line-height:1.55">会点页面，也知道购物车在哪张表，再用 SQL 核对。</p></div></div>
+<p class="caption">示意图：与其争论灰盒边界，不如说清用了哪些内部信息和观察手段。</p>
+</div></body></html>

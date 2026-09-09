@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>第 7 章 HTML 练习页</title>
+  <style>
+    body { font-family: sans-serif; max-width: 36rem; margin: 1.5rem auto; line-height: 1.5; }
+    .note { color: #444; }
+  </style>
+</head>
+<body>
+  <h1>MiniShop 教学登录表单（不连服务器）</h1>
+  <p class="note">第 7 / 8 章练习页。提交不会访问 MiniShop。用来观察 label、required、maxlength 和密码框。</p>
+  <form id="lab-form">
+    <p>
+      <label for="phone">手机号</label>
+      <input id="phone" name="phone" required maxlength="11">
+    </p>
+    <p>
+      <label for="password">密码</label>
+      <input id="password" name="password" type="password" required>
+    </p>
+    <button type="submit">登录</button>
+  </form>
+  <p id="msg" role="status"></p>
+  <script>
+    document.getElementById("lab-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      document.getElementById("msg").textContent = "已触发提交（本页不连接服务器）";
+    });
+  </script>
+</body>
+</html>

@@ -34,6 +34,29 @@ def test_products_list(base_url):
     assert type(items) is list
 
 
+def test_products_catalog_without_keyword(base_url):
+    response = requests.get(f"{base_url}/api/products", timeout=TIMEOUT)
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert [it["sku"] for it in items] == ["SKU-DEMO-001", "SKU-DEMO-002", "SKU-DEMO-003"]
+
+
+def test_home_has_login_and_register_form(base_url):
+    response = requests.get(f"{base_url}/", timeout=TIMEOUT)
+    assert response.status_code == 200
+    html = response.text
+    assert 'id="login-form"' in html
+    assert 'for="password"' in html
+    assert 'type="password"' in html
+    assert 'id="register-form"' in html
+
+
+def test_admin_page_ok(base_url):
+    response = requests.get(f"{base_url}/admin.html", timeout=TIMEOUT)
+    assert response.status_code == 200
+    assert "只列出 id" in response.text
+
+
 @pytest.mark.parametrize(
     "body, status",
     [
@@ -56,6 +79,31 @@ def test_cart_qty_cases(base_url, token_a, body, status):
         timeout=TIMEOUT,
     )
     assert response.status_code == status
+
+
+def test_cart_qty_11_does_not_persist(base_url, token_a):
+    before = requests.get(
+        f"{base_url}/api/cart",
+        headers={"Authorization": f"Bearer {token_a}"},
+        timeout=TIMEOUT,
+    )
+    assert before.status_code == 200
+    before_qty = next(it["qty"] for it in before.json()["items"] if it["sku"] == "SKU-DEMO-001")
+    rejected = requests.post(
+        f"{base_url}/api/cart/items",
+        json={"sku": "SKU-DEMO-001", "qty": 11},
+        headers={"Authorization": f"Bearer {token_a}"},
+        timeout=TIMEOUT,
+    )
+    assert rejected.status_code == 400
+    after = requests.get(
+        f"{base_url}/api/cart",
+        headers={"Authorization": f"Bearer {token_a}"},
+        timeout=TIMEOUT,
+    )
+    after_qty = next(it["qty"] for it in after.json()["items"] if it["sku"] == "SKU-DEMO-001")
+    assert after_qty == before_qty
+    assert after_qty != 11
 
 
 def test_cart_unauthorized(base_url):

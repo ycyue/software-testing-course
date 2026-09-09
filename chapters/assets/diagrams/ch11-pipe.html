@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>左边工厂的出口，接右边工厂的入口</title></head>
+<body><div class="page">
+<p class="kicker">第 11 章示意图 · 管道</p>
+<h1>左边工厂的出口，接右边工厂的入口</h1>
+<p class="lead">测试排障时最常见：先取出日志，再过滤，再看末尾几行。</p>
+
+    <div class="row" style="align-items:center">
+      <div class="col card" style="text-align:center"><b>tail -n 200 app.log</b><p>只要最近 200 行</p></div>
+      <div class="vs">|</div>
+      <div class="col card" style="text-align:center"><b>grep "qty=11"</b><p>只留超库存</p></div>
+      <div class="vs">|</div>
+      <div class="col card" style="text-align:center"><b>屏幕 / 文件</b><p>给人看或重定向保存</p></div>
+    </div>
+    
+<p class="caption">示意图：命令会进 history。curl 复现登录时不要把密码和 Cookie 留在可分享记录里。</p>
+</div></body></html>

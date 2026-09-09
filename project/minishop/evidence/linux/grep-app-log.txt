@@ -1,0 +1,7 @@
+2026-09-08 23:43:54,649 INFO  login ok user=13800138000
+2026-09-08 23:43:54,681 INFO  inventory reject sku=SKU-DEMO-001 stock=10 qty=11
+2026-09-09 10:17:07,641 INFO  login ok user=13800138000
+2026-09-09 10:17:07,643 INFO  inventory reject sku=SKU-DEMO-001 stock=10 qty=11
+2026-09-09 10:17:15,892 INFO  login ok user=13800138000
+2026-09-09 10:17:16,559 INFO  inventory reject sku=SKU-DEMO-001 stock=10 qty=11
+2026-09-09 10:17:17,643 INFO  login ok user=13800138099

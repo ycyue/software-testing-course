@@ -1,5 +1,7 @@
 # 第 19 章：MiniShop 完整测试项目
 
+> **一句话核心：** 把观察、判定、证据收成一套能指给人看的项目。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 核心章节发布目标：≥95/100  
 > 主案例：MiniShop 个人软件测试实践项目
@@ -39,7 +41,7 @@
 
 1. PRD 写了什么、故意没写什么；
 2. 怎么启动；
-3. pytest 22 passed、1 xfailed 是什么意思；
+3. pytest 37 passed、1 xfailed 是什么意思；
 4. BUG-001 为什么还开着；
 5. 为什么简历里不能写订单状态和公司名称。
 
@@ -59,6 +61,9 @@ flowchart TD
 
 ## 19.1 项目声明与目录 ⭐⭐⭐
 
+![完整项目是可运行系统加契约加证据](assets/diagrams/ch19-workbench.png)
+
+
 根目录：`project/minishop/`。
 
 | 路径 | 作用 |
@@ -73,12 +78,22 @@ flowchart TD
 | `logs/` | 应用日志 |
 | `bugs/` | 缺陷 |
 | `README.md` | 启动说明 |
+| `requirements.txt` / `run.py` | 依赖与一键运行 |
+| `evidence/` | 本机 HTTP、SQL、日志、截图 |
 
-启动：
+一键运行：
 
 ```bash
 cd project/minishop
-python3 server.py
+python3 run.py setup      # .venv + requirements.txt（pytest、requests）
+python3 run.py serve      # 等价于 python3 server.py
+```
+
+另开终端：
+
+```bash
+python3 run.py test       # pytest
+python3 run.py evidence   # 同时采集 HTTP/SQL/日志/截图
 ```
 
 审查输出：
@@ -94,6 +109,9 @@ MINISHOP_BASE_URL=http://127.0.0.1:8765
 ## 19.2 PRD v1.0：本章基线 ⭐⭐⭐
 
 完整文本：`docs/PRD.md`。测试必须跟这份走，而不是跟第 13 章教学服务的“只让 qty=1 成功”。
+
+![v1.0 库存尺子：10 允许，11 拒绝](assets/diagrams/ch19-qty-rule.png)
+
 
 已确认（摘要）：
 
@@ -123,9 +141,10 @@ MINISHOP_BASE_URL=http://127.0.0.1:8765
 
 - 计划：`docs/test-plan.md`（范围、策略、入口/出口、风险）
 - 测试点：`docs/test-points.md`
-- 用例摘要：`docs/test-cases.md`
+- 用例：`docs/test-cases.md`（含注册 P0 与步骤）
+- 覆盖矩阵：`docs/prd-coverage-matrix.md`
 
-出口标准包括：P0 无未关闭缺陷；自动化 22 passed + 1 xfailed；不编造订单状态。
+出口标准包括：P0 无未关闭缺陷；自动化与 `evidence/pytest-output.txt` 一致（审查为 37 passed + 1 xfailed）；覆盖矩阵已填；不编造订单状态。
 
 P0/P1/P2/P3 仍是课程约定。缺陷的严重程度不要和用例优先级混用（第 6 章）。
 
@@ -138,7 +157,21 @@ P0/P1/P2/P3 仍是课程约定。缺陷的严重程度不要和用例优先级�
 - `GET /` → 200，页面含登录表单、`label`、`type="password"`、提交按钮；
 - `GET /admin.html` → 200。
 
-手工冒烟（你需要自己点）：正确密码进入商品区；错误密码见“登录失败”；管理员 13800138099 登录后打开后台看库存。不要对未授权公网做同样操作。
+本机页面截图（Playwright + Chrome，2026-09-09）：
+
+![登录与注册](assets/01-login.png)
+
+![登录失败](assets/02-login-fail.png)
+
+![商品区](assets/03-shop.png)
+
+![空搜索 BUG-001](assets/04-search-empty-bug001.png)
+
+![qty=11 被拒绝](assets/05-cart-qty-11.png)
+
+![管理员后台只列出订单 id](assets/07-admin.png)
+
+手工冒烟仍建议你自己点一遍。不要对未授权公网做同样操作。
 
 后台 v1.0 只读库存和订单 **id**，列表里不会出现状态名。普通用户调 `/api/admin/products` 为 403。
 
@@ -178,7 +211,7 @@ SQL：`docs/sql-check.md`。种子库 JOIN 审查结果：
 - `qty=11` → 400 `qty exceeds stock`；
 - 空白 `keyword` → 200 且三件商品都在（BUG-001 证据）。
 
-Postman 集合：`postman/MiniShop.postman_collection.json`（Collection v2.1，7 个请求，含 qty=1 / qty=10 / qty=11）。环境文件里 **password 与 token 初始值为空**，只在本机当前值填写。审查未点击 Postman GUI。
+Postman 集合：`postman/MiniShop.postman_collection.json`（Collection v2.1，9 个请求，含注册、qty=1 / qty=10 / qty=11，并带 `pm.test`）。环境文件里 **password 与 token 初始值为空**，只在本机当前值填写。审查未点击 Postman GUI。导入步骤见第 14 章 14.6.1。
 
 创建订单只断言 `id`，集合注释写明非正式生产契约。
 
@@ -194,8 +227,12 @@ python3 -m pytest -q
 审查（pytest 9.1.1 / requests 2.34.2）：
 
 ```text
-22 passed, 1 xfailed
+37 passed, 1 xfailed
 ```
+
+HTML 报告：
+
+![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
 
 xfail：`test_empty_keyword_should_not_return_all`，原因 BUG-001，`strict=True`（若有人“修了却不改用例”，会变成失败，避免静默丢失）。
 
@@ -226,6 +263,8 @@ pytest 绿不等于页面按钮可用，也不等于性能达标。
 不可以写：公司名称、已测通全部订单状态、生产压测、把教学密码当客户数据。
 
 ---
+
+起步实操全部指向本项目。本章收口：[实操 19-1](../../practice/19-project-pack/README.md)（`python3 practice/run.py 19-1`）。清单见 [practice/README.md](../../practice/README.md)。
 
 ## MiniShop 工作实战：完整项目包 ⭐⭐⭐
 
@@ -280,7 +319,7 @@ exercises/chapter-19-minishop-run.md
 
 修正：v1.0 没有这些字段。
 
-### 错误 4：把 22 passed 说成没有缺陷
+### 错误 4：把 37 passed 说成没有缺陷
 
 修正：还有 xfail/BUG-001。通过 ≠ 无缺陷。
 
@@ -354,7 +393,7 @@ v1.0 中 `qty=10` 与第 16 章教学服务可能不一致。测试应以哪份�
 
 ### 练习 3
 
-pytest 显示 22 passed, 1 xfailed。能否对面试官说“没有缺陷”？
+pytest 显示 37 passed, 1 xfailed。能否对面试官说“没有缺陷”？
 
 ### 练习 4
 
@@ -419,7 +458,7 @@ D. 本项目订单成功响应含 id、不含 status
 ### 进入下一章的自测门槛
 
 1. 练习 1～10 至少完成 9 题，且第 2、3、9、10 题能用自己的话回答；
-2. 本机启动成功，pytest 为 22 passed / 1 xfailed（或记录你改动后的真实数字）；
+2. 本机启动成功，pytest 为 37 passed / 1 xfailed（或记录你改动后的真实数字）；
 3. 能当面指着 `bugs/BUG-001.md` 讲步骤；
 4. 完成执行记录。
 
@@ -431,13 +470,13 @@ D. 本项目订单成功响应含 id、不含 status
 2. PRD v1.0 是本章基线，教学服务不再冒充契约；
 3. 范围裁剪（无状态机、无支付）必须反映到用例和简历；
 4. 功能、接口、SQL、日志要能对上同一条库存规则；
-5. pytest 22 passed 仍带着 BUG-001；
+5. pytest 37 passed 仍带着 BUG-001；
 6. 开放缺陷要保留证据，不要改口说已修；
 7. 个人项目可以展示能力，不可以冒充企业经历。
 
 ## 本章可运行性说明
 
-审查在 Python 3.14.3 启动 `project/minishop/server.py`：`GET /` 与 `/admin.html` 为 200；登录 200 且 `Set-Cookie`；`qty=11` 为 400；空白搜索返回三件商品。种子库 JOIN 得到 Tester A 的两行购物车。pytest：22 passed，1 xfailed。OpenAPI 3.0.3 与 Postman Collection v2.1 JSON 可解析。未点击 Postman GUI，未做浏览器逐项点击以外的无头 UI 套件，未加压。
+审查在 Python 3.14.3 执行 `python3 run.py evidence`：`GET /` 含登录与注册表单；`/admin.html` 为 200；登录 200 且 `Set-Cookie HttpOnly`；注册合法 201、占用 409；`qty=11` 为 400 且不落库；空白搜索返回三件商品。种子库 JOIN 见 `evidence/sql/seed-join.txt`。pytest：37 passed，1 xfailed。页面截图与 HTTP 摘录在 `evidence/`。OpenAPI 3.0.3 与 Postman Collection v2.1 JSON 可解析。未点击 Postman GUI，未加压。Playwright 仅用于取证截图，不是课程 UI 自动化套件。
 
 教学密码仅用于本机。日志样本不含完整 token。
 
@@ -451,3 +490,5 @@ D. 本项目订单成功响应含 id、不含 status
 ## 下一章预告
 
 下一章进入第 20 章《软件测试面试》。回答仍按“结论 → 原理 → 场景 → 示例 → 边界”。项目深挖时，用本章仓库里的 PRD、pytest 和 BUG-001 当证据，而不是临场编造。
+
+先做 [阶段测验 6](quizzes/stage-6-project.md)。

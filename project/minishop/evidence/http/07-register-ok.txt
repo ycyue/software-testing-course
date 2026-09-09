@@ -1,0 +1,5 @@
+POST /api/register
+HTTP 201
+Set-Cookie: absent
+Body:
+{"result": "ok", "phone": "13900001111"}

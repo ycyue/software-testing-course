@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <style>
+    .layer { padding: 18px 20px; margin: 0; border: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 8 章示意图 · 登录态不是三选一</p>
+  <h1>Cookie、Session、Token 是不同层的零件，常常一起用</h1>
+  <p class="lead">把它们当成三种「登录产品」去背，面试会直接说错。下面这叠蛋糕才接近真实系统。</p>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="layer" style="background:#fef3c7;">
+      <b>你怎么认出「这是我」</b>　Token / Session ID　——凭证或会话标识，可能是一串随机值，也可能是 JWT 这类自包含令牌
+    </div>
+    <div class="layer" style="background:#dbeafe;">
+      <b>服务器是否记住这次登录</b>　Session　——服务端会话状态。没有这一层时，服务器可能只验证 Token
+    </div>
+    <div class="layer" style="background:#ccfbf1;">
+      <b>浏览器如何保存并自动带上</b>　Cookie　——一种存储和发送机制。Session ID 或 Token 都可以放进 Cookie
+    </div>
+    <div class="layer" style="background:#f1f5f9;">
+      <b>请求里怎么出示</b>　例如 <span class="mono">Authorization: Bearer …</span> 或自动带上 Cookie。Bearer 只是出示方式，不是 Token 的别名
+    </div>
+  </div>
+  <p style="margin-top:16px;">MiniShop v1.0：登录 JSON 里给 <span class="mono">token</span>，同时 <span class="mono">Set-Cookie HttpOnly</span>。后续 API 以 Bearer 为准。HttpOnly 挡住的是脚本读取，不是请求携带。</p>
+  <p class="caption">示意图：一层是「是什么」，一层是「存在哪」，一层是「怎么带出门」。不要说「我们只用 Cookie，所以没有 Token」。</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>五个样本：100、110、120、200、800。平均 266，中间 120，最慢 800</title></head>
+<body><div class="page">
+<p class="kicker">第 18 章示意图 · 平均值会藏住那一次 800 ms</p>
+<h1>五个样本：100、110、120、200、800。平均 266，中间 120，最慢 800</h1>
+<p class="lead">用户感到的卡，往往在最慢那一截。P95 / P99 看尾部。没有环境、接口、负载，数字没有意义。</p>
+
+    <div class="row" style="align-items:flex-end;height:220px;padding:0 12px">
+      <div style="flex:1;background:#99f6e4;height:28%;text-align:center">100</div>
+      <div style="flex:1;background:#5eead4;height:31%;text-align:center">110</div>
+      <div style="flex:1;background:#2dd4bf;height:34%;text-align:center">120</div>
+      <div style="flex:1;background:#0f766e;height:50%;color:#fff;text-align:center">200</div>
+      <div style="flex:1;background:#b91c1c;height:100%;color:#fff;text-align:center">800</div>
+    </div>
+    <p style="margin-top:12px">平均 266 ms 看起来还行，已经有人等到 800 ms。pytest 全绿回答不了晚高峰。</p>
+    
+<p class="caption">示意图：并发人数 ≠ TPS。50 线程共用一个教学账号，测的是单用户冲突，不是系统容量。</p>
+</div></body></html>

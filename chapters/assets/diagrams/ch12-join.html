@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>三张表的碎片，拼回页面上那一行字</title></head>
+<body><div class="page">
+<p class="kicker">第 12 章示意图 · JOIN</p>
+<h1>三张表的碎片，拼回页面上那一行字</h1>
+<p class="lead">页面写「SKU-DEMO-001 qty=1」。核对时把用户、商品、购物车接起来。</p>
+
+    <div class="row">
+      <div class="col card"><b>users</b><p>1 = 13800138000</p></div>
+      <div class="col card"><b>cart_items</b><p>user_id=1, product_id=1, qty=1</p></div>
+      <div class="col card"><b>products</b><p>1 = SKU-DEMO-001 stock=10</p></div>
+    </div>
+    <div class="card" style="margin-top:14px;background:#ccfbf1">拼完：13800138000 · SKU-DEMO-001 · qty 1 · stock 10</div>
+    
+<p class="caption">示意图：只看购物车表看不到手机号和库存。JOIN 不是「把两个页面连起来测」。</p>
+</div></body></html>

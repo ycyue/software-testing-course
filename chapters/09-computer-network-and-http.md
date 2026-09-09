@@ -1,5 +1,9 @@
 # 第 9 章：计算机网络与 HTTP
 
+> **一句话核心：** HTTP 把一次观察拆成方法、路径、头、体；GET/POST 不按「安不安全」划分。
+
+> **阅读提示：** IP、TCP、TLS 第一次读只需建立地图。真正要动手的是登录请求的四格。配套实操：[实操 9-1](../practice/09-http-observe/README.md)（`python3 practice/run.py 9-1`）。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 主案例：MiniShop 个人软件测试实践项目
 
@@ -100,6 +104,8 @@ IP 地址用于在网络中定位主机（更准确说是网络接口）。浏�
 
 端口把同一台主机上的不同服务区分开。可以把它理解成“这栋楼的门牌号”：IP 是楼，端口是门。
 
+![IP 是楼，端口是门；MiniShop 教学服务开在 8765](assets/diagrams/ch09-ip-port.png)
+
 | scheme | 常见默认端口 | 本章教学环境 |
 | --- | --- | --- |
 | `http` | 80 | 若 URL 省略端口，客户端通常用 80 |
@@ -133,6 +139,8 @@ HTTP/3 使用 QUIC（在 UDP 上）。本章不要求配置 HTTP/3。你只需�
 
 TCP 在发送 HTTP 数据前，通常先完成三次握手，双方确认可以通信：
 
+![三次握手是敲门进屋，不是登录三步](assets/diagrams/ch09-tcp-knock.png)
+
 ```mermaid
 sequenceDiagram
     participant C as 客户端
@@ -157,6 +165,8 @@ sequenceDiagram
 ## 9.5 HTTP 是什么 ⭐⭐⭐
 
 超文本传输协议（HTTP）是 Web 使用的应用层协议。客户端发出请求，服务器返回响应。RFC 9110 定义了 HTTP 的语义：方法、状态码、头字段和相关概念。
+
+![登录请求和 401 响应像来回的两封信](assets/diagrams/ch09-http-letter.png)
 
 一次交换的最小模型：
 
@@ -199,6 +209,8 @@ Host: shop.example.test
 ## 9.6 HTTPS 与 TLS ⭐⭐⭐
 
 HTTPS 是“在 TLS 之上的 HTTP”。浏览器先与服务器完成 TLS，再发送 HTTP。TLS 的目标包括：
+
+![加密靠 TLS 这把锁，不靠把 GET 改成 POST](assets/diagrams/ch09-https-wrap.png)
 
 - 加密：传输内容不易被旁路窃听；
 - 完整性：数据在路上被篡改应能被发现；
@@ -301,6 +313,8 @@ PATCH（RFC 5789）用于部分更新，**不是** RFC 9110 方法表中的成�
 
 > GET 用于获取当前表示，是安全且幂等的。POST 用于根据请求内容处理数据，既不是安全方法，规范也不保证幂等。二者的差别是语义，不是“谁加密、谁能传更长”。
 
+![GET 像看货架，POST 像交表格；加密看 TLS](assets/diagrams/ch09-get-post.png)
+
 ### 不要使用的绝对化规则
 
 | 错误说法 | 问题 |
@@ -349,6 +363,9 @@ GET 商品搜索把 `keyword=mouse` 放在 query 是常见且合理的：它可�
 ---
 
 ## 9.10 状态码 ⭐⭐⭐
+
+![状态码是回信上的邮戳](assets/diagrams/ch09-status.png)
+
 
 状态码是三位数字，表示**这一次 HTTP 交换**的协议级分类，不等于业务一定成功或失败。
 
@@ -523,6 +540,8 @@ Authorization: Bearer <redacted>
 用 curl 复现时，不要在共享终端历史中写入真实密码。第 10 章可以用 DevTools 的 Copy as cURL，复制后必须先脱敏。第 11 章再系统练习 curl。
 
 ---
+
+配套可运行实操：[实操 9-1 登录四格](../practice/09-http-observe/README.md)（`python3 practice/run.py 9-1`）。
 
 ## MiniShop 工作实战：HTTP 观察记录
 

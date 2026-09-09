@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 4 章示意图 · 可测试的需求</p>
+  <h1>「购物车数量可以修改」还不能测</h1>
+  <p class="lead">左边像一团雾：谁改、改成多少、失败怎么办都没写。右边才是测试能对答案的规则。</p>
+  <div class="row">
+    <div class="col card" style="background:#fff7ed;">
+      <h2>还不能写成用例</h2>
+      <p style="font-size:26px;line-height:1.4;color:#9a3412;margin:40px 8px;">购物车数量可以修改。</p>
+      <p>测的人只能猜：能不能改成 0？能不能改成 11？失败后页面和库谁说了算？</p>
+    </div>
+    <div class="vs">→</div>
+    <div class="col card" style="background:var(--green-soft);">
+      <h2>可以观察、可以判对错</h2>
+      <ol class="steps" style="font-size:16px;">
+        <li>已登录用户改<strong>自己的</strong>购物车</li>
+        <li>数量必须是正整数</li>
+        <li>不得超过该 SKU <strong>当前</strong>可售库存</li>
+        <li>等于库存允许（10 件时 qty=10 过、11 拒绝）</li>
+        <li>失败时保持原值并给出原因</li>
+      </ol>
+    </div>
+  </div>
+  <p class="caption">示意图：可测试 = 能准备数据、能执行、能看到对或错。雾一样的句子要先问清楚，再写用例。</p>
+</div>
+</body>
+</html>

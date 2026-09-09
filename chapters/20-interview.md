@@ -1,5 +1,7 @@
 # 第 20 章：软件测试面试
 
+> **一句话核心：** 面试是在讲你做过的观察、判定和证据，不是背名词。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 主案例：MiniShop 个人软件测试实践项目
 
@@ -23,7 +25,7 @@
 - 在约一分钟内做自我介绍，并在约两分钟内介绍 MiniShop；
 - 回答测试理论、需求分析、用例与方法、缺陷的常见追问；
 - 回答 Web、HTTP、接口、SQL、Linux、Python、pytest 的常见追问；
-- 在项目深挖时引用 PRD、qty=10/11、BUG-001、22 passed / 1 xfailed；
+- 在项目深挖时引用 PRD、qty=10/11、BUG-001、37 passed / 1 xfailed；
 - 处理行为面试（争议、漏测、不会的题），不夸大、不攻击同事；
 - 识别一套“听起来很满、其实会翻车”的答法。
 
@@ -44,7 +46,7 @@
 1. 结论：这是个人实践项目 MiniShop v1.0；
 2. 原理：用来把需求、用例、接口和缺陷收成可展示证据；
 3. 场景：购物车数量与库存；
-4. 示例：qty=11 返回 400，pytest 22 passed、1 xfailed（空搜索 BUG-001）；
+4. 示例：qty=11 返回 400，pytest 37 passed、1 xfailed（空搜索 BUG-001）；
 5. 边界：无支付、无订单状态字段，不是公司系统。
 
 ```mermaid
@@ -59,6 +61,9 @@ flowchart TD
 ---
 
 ## 20.1 为什么必须用这五段 ⭐⭐⭐
+
+![面试五段：结论、原理、场景、示例、边界](assets/diagrams/ch20-five-beats.png)
+
 
 生活类比：问“火怎么灭”，先说“先撤离再报火警”，不要先背燃烧条件。
 
@@ -127,7 +132,7 @@ flowchart TD
 
 结论：先说原则的名字和你的理解，不要默写七条。常用：测试显示缺陷存在、穷尽测试不可能、测试尽早介入。  
 原理：ISTQB 等材料里的原则是经验规律。  
-场景：MiniShop pytest 为 22 passed、1 xfailed，xfail 对应仍开放的 BUG-001。  
+场景：MiniShop pytest 为 37 passed、1 xfailed，xfail 对应仍开放的 BUG-001。  
 示例：“没有发现 Bug 就说明没 Bug”是错的。  
 边界：原则不是拒绝测某模块的借口。
 
@@ -186,7 +191,7 @@ flowchart TD
 结论：不是。测试提供信息；通过的用例也是信息。  
 原理：测试只能证明缺陷存在，不能证明缺陷不存在。  
 场景：P0 全绿但空搜索仍不符合 PRD。  
-示例：MiniShop 自动化 22 passed、1 xfailed（BUG-001）。  
+示例：MiniShop 自动化 37 passed、1 xfailed（BUG-001）。  
 边界：没有发现 Bug ≠ 系统没有 Bug，也不等于产品对用户有价值。
 
 ---
@@ -272,7 +277,7 @@ Cookie、Session、Token：
 结论：用测试函数和 assert 做可重复检查；fixture 准备 token，parametrize 展开输入。  
 原理：收集 `test_`；断言失败会改写左右值。  
 场景：MiniShop `tests/`。  
-示例：22 passed，1 xfailed 跟踪 BUG-001。  
+示例：37 passed，1 xfailed 跟踪 BUG-001。  
 边界：autouse token 会毁掉 401 用例；pytest 绿不是性能结论。
 
 ---
@@ -286,7 +291,7 @@ Cookie、Session、Token：
 | 测了哪些接口？ | `/api/login`、products、cart、orders、admin | OpenAPI、pytest |
 | 库存规则？ | 正整数且 ≤ 当前库存，等于允许 | PRD R-CART-10 |
 | 有什么 Bug？ | 空搜索返回全量 | BUG-001 |
-| 自动化多少条？ | 以你最近一次 pytest 为准 | 审查为 22 passed / 1 xfailed |
+| 自动化多少条？ | 以你最近一次 pytest 为准 | 审查为 37 passed / 1 xfailed |
 | 订单状态？ | v1.0 不定义，响应无 status | PRD 非范围 |
 | 你做过性能吗？ | 只学了指标和纪律，项目未加压 | 第 18 章、测试报告 |
 | 你写过后端吗？ | 仓库有教学实现，我的交付是测试材料 | 不要冒充开发岗 |
@@ -391,7 +396,7 @@ exercises/chapter-20-interview-script.md
 
 修正：这些是本课程质量标准禁止的绝对化说法。
 
-### 错误 5：把 pytest 22 passed 说成没有缺陷
+### 错误 5：把 pytest 37 passed 说成没有缺陷
 
 修正：还有 BUG-001。
 
@@ -461,7 +466,7 @@ P0 在课程里指什么？入职后为什么不能直接沿用？
 
 ### 练习 7
 
-pytest 22 passed、1 xfailed 在面试里应怎么解释？
+pytest 37 passed、1 xfailed 在面试里应怎么解释？
 
 ### 练习 8
 
@@ -528,7 +533,7 @@ D. 没发现 Bug 说明质量已经过关
 
 ## 本章可运行性说明
 
-本章以口述结构为主，无新的 Python/SQL 脚本。项目数字引用第 19 章已验证结果：pytest 22 passed / 1 xfailed，BUG-001，种子 JOIN 两行，订单无 status。未模拟真实面试官。请用你本机最近一次 pytest 输出替换口述中的条数。
+本章以口述结构为主，无新的 Python/SQL 脚本。项目数字引用第 19 章已验证结果：pytest 37 passed / 1 xfailed，BUG-001，种子 JOIN 两行，订单无 status。未模拟真实面试官。请用你本机最近一次 pytest 输出替换口述中的条数。
 
 ## 参考资料
 

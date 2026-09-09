@@ -1,0 +1,5 @@
+phone	sku	qty	stock
+13800138000	SKU-DEMO-001	10	10
+13800138000	SKU-DEMO-002	2	5
+
+SKU-DEMO-001 qty after qty=11 reject: 10 (must not be 11)

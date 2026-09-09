@@ -42,7 +42,8 @@
 | `qty=11` | 400 |
 | 空白 keyword | 200 且三件商品（BUG-001） |
 | 种子 JOIN | 鼠标 1/10、键盘 2/5 |
-| pytest | 22 passed, 1 xfailed |
+| pytest（初审） | 22 passed, 1 xfailed |
+| pytest（v1.2.1） | 37 passed, 1 xfailed |
 | OpenAPI / Collection | JSON 可解析，openapi=3.0.3，schema v2.1 |
 
 未点击 Postman GUI，未做 Playwright 套件，未加压。
@@ -137,3 +138,13 @@
 - 最终评分：**99/100**；
 - 发布结论：**可以正式发布**；
 - 下一章：第 20 章《软件测试面试》。
+
+## v1.2.1 复评（2026-09-09）
+
+此前大面积 99 分偏高，不能反映真实缺口。本轮按仓库现状重评。
+
+- 当前评分：**96/100**
+- 主要扣分：证据齐全；仍无 Postman GUI、无性能结论
+- 明细见 [v1.2.1-rescore.md](v1.2.1-rescore.md)
+
+历史初审/复审分数保留上文，作为过程记录，不再当作当前成绩。

@@ -1,5 +1,7 @@
 # 第 10 章：Chrome DevTools
 
+> **一句话核心：** DevTools 把浏览器里已经发生的观察打开给你看。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 主案例：MiniShop 个人软件测试实践项目
 
@@ -73,6 +75,9 @@ flowchart TD
 打开后，工具可能停靠在底部、右侧或独立窗口。对测试来说，Network 需要足够宽度才能看清方法、状态码和耗时。
 
 本章主用三个面板：
+
+![Elements、Console、Network 三个抽屉](assets/diagrams/ch10-three-panels.png)
+
 
 | 面板 | 回答的问题 | 不回答的问题 |
 | --- | --- | --- |
@@ -231,6 +236,9 @@ Network 是本章的核心。正确顺序：
 
 ## 10.9 Preserve log ⭐⭐⭐
 
+![Preserve log 和 Disable cache 不是同一个开关](assets/diagrams/ch10-two-switches.png)
+
+
 默认情况下，导航或刷新会清空 Network 列表。登录成功后常发生跳转，**登录那条 POST 会消失**。
 
 勾选 **Preserve log** 后，跳转前后的请求留在同一列表里。你才能看到：
@@ -315,6 +323,9 @@ Network 面板提供限速（throttling），用预设近似慢网，例如 3G�
 
 ## 10.13 Timing 与 TTFB ⭐⭐⭐
 
+![慢要拆成 TTFB 和下载两段](assets/diagrams/ch10-ttfb.png)
+
+
 打开请求的 **Timing**（时序）视图。Chrome 文档把 **Waiting (TTFB)** 解释为：浏览器在等待响应的**第一个字节**，其中包含一次往返延迟，以及服务器准备响应的时间。
 
 简化阅读：
@@ -371,6 +382,40 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 8. 关掉限速再测一次，说明慢是“仅限速下出现”还是“正常网络也出现”。
 
 不要把限速下的绝对毫秒写成 MiniShop 的正式性能指标。第 3 章和第 18 章要求阈值来自需求。本章产出的是**定位证据**：慢的是哪条请求、慢在等待还是下载。
+
+---
+
+## MiniShop 逐步操作（本机已跑通）⭐⭐⭐
+
+审查环境无显示器，**未能截取 Chrome DevTools 面板本身**。下面步骤用本机 Chrome 对 v1.0 真页面执行；仓库保存的是同一轮的页面截图和请求记录。你必须在自己的 Chrome 里打开 DevTools 完成门槛。
+
+1. 终端执行 `cd project/minishop && python3 run.py serve`，浏览器打开打印出的 `MINISHOP_BASE_URL`。
+2. 用 `Cmd+Option+I`（macOS）打开 DevTools，切到 **Network**，勾选 **Preserve log** 和 **Disable cache**，清空列表。
+3. 首页应看到登录和注册表单：
+
+![MiniShop 登录与注册页](assets/01-login.png)
+
+4. 输入 `13800138000` 和错误密码，点「登录」。Network 里应出现 `POST /api/login`，状态码 **401**。页面：
+
+![错误密码登录失败](assets/02-login-fail.png)
+
+5. 改成密码 `Test1234` 再提交。同一请求应变为 **200**，响应 JSON 有 `token`（不要把值贴进缺陷），响应头有 `Set-Cookie` 且含 `HttpOnly`。页面进入商品区：
+
+![登录成功后的商品与购物车](assets/03-shop.png)
+
+6. 搜索框输入三个空格并搜索。Network 过滤 `products`。按 R-SEARCH 不应全量；本机实现仍返回三件，记 BUG-001：
+
+![空白搜索仍返回三件商品](assets/04-search-empty-bug001.png)
+
+7. 购物车数量改为 11 并提交。`POST /api/cart/items` 应为 **400**，页面提示 `qty exceeds stock`，列表里该 SKU 不得变成 11：
+
+![超库存被拒绝](assets/05-cart-qty-11.png)
+
+8. Copy as cURL 后删除 Cookie、token、密码。对照本机抓包整理表（**不是** DevTools 皮肤）：
+
+![本机请求记录表](assets/08-network-log.png)
+
+原始报文：`project/minishop/evidence/http/`。
 
 ---
 
@@ -622,7 +667,7 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 
 ## 本章可运行性说明
 
-本章操作依赖本机 Google Chrome 与授权测试站点，无法在教材仓库里自动点击 DevTools。功能名称依据 Chrome for Developers《Network features reference》（Preserve log、Disable cache、Copy as cURL、Waiting (TTFB)）于 2026-09-08 核验。
+本章操作依赖本机 Google Chrome。审查用 Playwright + 本机 Chrome 截取了 MiniShop **页面**（登录失败、商品区、空搜索、qty=11），并用真实响应整理了请求表；**未截取 DevTools 面板 UI**。功能名称依据 Chrome for Developers《Network features reference》（Preserve log、Disable cache、Copy as cURL、Waiting (TTFB)）于 2026-09-08 核验。
 
 界面文案、预设名称和子标签（Payload / Request 等）可能随 Chrome 版本变化。以功能名为准，必要时用 Command Menu 搜索。
 
@@ -642,3 +687,5 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 ## 下一章预告
 
 下一章进入第 11 章《Linux》。你将在终端里用 `pwd`、`ls`、`grep`、`tail`、管道和 `curl` 查看日志、确认进程与磁盘，并把 DevTools 里复制的请求放到服务器侧交叉验证。Copy as cURL 的脱敏习惯在那里会继续使用。
+
+学完第 8～10 章后，做 [阶段测验 3](quizzes/stage-3-web.md)。

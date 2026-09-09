@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 9 章示意图 · TCP 三次握手</p>
+  <h1>先敲门被允许进屋，再递登录表格</h1>
+  <p class="lead">三次握手属于 TCP 连接，不是 HTTP 的三步，更不是「输入账号、点登录、看结果」。</p>
+  <div class="row">
+    <div class="col card" style="text-align:center;">
+      <div style="font-size:42px;font-weight:800;color:var(--teal);">1</div>
+      <h2>SYN</h2>
+      <p>客户端：我可以和这扇门说话吗？</p>
+    </div>
+    <div class="col card" style="text-align:center;">
+      <div style="font-size:42px;font-weight:800;color:var(--teal);">2</div>
+      <h2>SYN-ACK</h2>
+      <p>服务器：可以，我也准备好了。</p>
+    </div>
+    <div class="col card" style="text-align:center;">
+      <div style="font-size:42px;font-weight:800;color:var(--teal);">3</div>
+      <h2>ACK</h2>
+      <p>客户端：那我们开始传数据。</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px;background:var(--amber-soft);">
+    握手成功 ≠ 登录成功。它只说明这一对 IP:端口之间的管道通了。若是 HTTPS，管道通了之后还要先做 TLS，证书问题常卡在这里，HTTP 的 401 还没机会出现。
+  </div>
+  <p class="caption">示意图：连不上时先看门牌（IP/端口/服务是否启动），不要先怀疑密码。</p>
+</div>
+</body>
+</html>

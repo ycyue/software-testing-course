@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 9 章示意图 · HTTPS 不是 POST 的别名</p>
+  <h1>加密靠的是信封外的锁，不是信纸上写 GET 还是 POST</h1>
+  <p class="lead">HTTP 是信的内容格式。TLS 是把整封信（方法、头、正文）锁进防拆信封。把 GET 改成 POST，不会自动上锁。</p>
+  <div class="row">
+    <div class="col card" style="background:#fee2e2;">
+      <h2>http://　没有 TLS</h2>
+      <p>路上的观察者可以看见路径、query、Body、Cookie。</p>
+      <p class="mono">POST /api/login<br>{"phone":"13800138000", ...}</p>
+      <p>方法叫 POST，照样是明文。</p>
+    </div>
+    <div class="col card" style="background:#dcfce7;">
+      <h2>https://　HTTP + TLS</h2>
+      <p>先握手、验证书，再传 HTTP。整次交换被保护。</p>
+      <p class="mono">外层：TLS 加密隧道<br>内层：仍然是那封 POST</p>
+      <p>GET 被包进 HTTPS 里，同样是加密传输。</p>
+    </div>
+  </div>
+  <p class="caption">示意图：RFC 9110 的 safe 指「语义上像只读取」，不是「机密」。MiniShop v1.0 教学环境是本机 HTTP，不要写成已上线 HTTPS。</p>
+</div>
+</body>
+</html>

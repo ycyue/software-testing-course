@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>库存为 0 是合法生意，不是「没有数量」</title></head>
+<body><div class="page">
+<p class="kicker">第 15 章示意图 · if qty 会把 0 吃掉</p>
+<h1>库存为 0 是合法生意，不是「没有数量」</h1>
+<p class="lead">条件里这些都会被当成假：None、False、0、""、[]、{}。测库存不要写 if qty。</p>
+<div class="row"><div class="col card"><span class="tag tag-bad">错误</span><h2>if qty:</h2><p style="font-size:16px;line-height:1.55">qty=0 走进假分支，被当成没数量。</p></div><div class="col card"><span class="tag tag-info">字段在不在</span><h2>"qty" in item</h2><p style="font-size:16px;line-height:1.55">区分缺字段和值为 None。</p></div><div class="col card"><span class="tag tag-ok">是不是 0</span><h2>qty == 0</h2><p style="font-size:16px;line-height:1.55">先确认类型再比较。不要用 is 比较整数。</p></div></div>
+<p class="caption">示意图：True == 1 在 Python 里成立。检查 JSON 整数用 type(value) is int，以免布尔冒充数量。</p>
+</div></body></html>

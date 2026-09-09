@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>测的对象越来越大，问的问题也在变</title></head>
+<body><div class="page">
+<p class="kicker">第 3 章示意图 · 测试级别</p>
+<h1>测的对象越来越大，问的问题也在变</h1>
+<p class="lead">级别描述被测范围，不规定「单元只能开发做、验收只能客户做」。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">单元 / 组件</span><h2>一颗螺丝</h2><p style="font-size:16px;line-height:1.55">qty_allowed(11,10) 为假。常由开发用代码测。</p></div><div class="col card"><span class="tag tag-ok">集成</span><h2>零件能不能对上</h2><p style="font-size:16px;line-height:1.55">改数量接口写完后，库里的 qty 是否一致。</p></div><div class="col card"><span class="tag tag-warn">系统</span><h2>整台机器</h2><p style="font-size:16px;line-height:1.55">注册→登录→改购物车→下单这条完整路径。</p></div><div class="col card"><span class="tag tag-bad">验收</span><h2>业务接不接受</h2><p style="font-size:16px;line-height:1.55">产品负责人按已确认规则看 qty=10 过、11 拒。</p></div></div>
+<p class="caption">示意图：v1.0 没有支付，系统测试不要擅自加上支付步骤。</p>
+</div></body></html>

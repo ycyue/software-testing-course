@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>没认出你，和认出你但不许进，是两道门</title></head>
+<body><div class="page">
+<p class="kicker">第 13 章示意图 · 401 和 403</p>
+<h1>没认出你，和认出你但不许进，是两道门</h1>
+<p class="lead">不要都写成「失败」。MiniShop：无凭证下单 401；普通用户打 /api/admin/products 403。</p>
+<div class="row"><div class="col card"><span class="tag tag-warn">401 Unauthorized</span><h2>认证没过</h2><p style="font-size:16px;line-height:1.55">没带 token，或密码错误。先证明你是谁。</p></div><div class="col card"><span class="tag tag-bad">403 Forbidden</span><h2>认证过了，授权没过</h2><p style="font-size:16px;line-height:1.55">Tester A 的 token 去读管理员接口，或 B 读 A 的订单。</p></div></div>
+<p class="caption">示意图：越权用例还要断言 Body 里没有他人的订单 id。只使用教学账号。</p>
+</div></body></html>

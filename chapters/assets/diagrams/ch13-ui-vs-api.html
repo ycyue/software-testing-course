@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 13 章示意图 · 接口测试和页面测试</p>
+  <h1>同一家店，你可以进店点单，也可以直接向后厨下单</h1>
+  <p class="lead">UI 测试走店门：按钮、跳转、文案都看得到。接口测试走后厨窗口：方法、状态码、JSON 字段。两边都会漏东西，所以不能互相取消。</p>
+  <div class="row">
+    <div class="col card">
+      <span class="tag tag-info">UI / Web 功能测试</span>
+      <h2>店门</h2>
+      <p>看见登录按钮、label、错误文案「登录失败」、搜索「共 3 件」。</p>
+      <p>擅长：用户能不能完成操作、页面有没有挡住。</p>
+      <p>不擅长：把 20 种 qty 非法值点一遍还保持稳定。</p>
+    </div>
+    <div class="col card">
+      <span class="tag tag-ok">接口测试</span>
+      <h2>后厨窗口</h2>
+      <p>直接 <span class="mono">POST /api/cart/items {"qty":11}</span>，看 400 和库里有没有写成 11。</p>
+      <p>擅长：规则、权限、四态输入、可重复。</p>
+      <p>不擅长：按钮被 CSS 挡住、文案写错、跳转丢了。</p>
+    </div>
+  </div>
+  <p class="caption">示意图：pytest 全绿仍可能首页点不开。页面绿了仍可能接口把库存写成 11。</p>
+</div>
+</body>
+</html>

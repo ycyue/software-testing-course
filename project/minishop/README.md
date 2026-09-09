@@ -2,16 +2,28 @@
 
 个人软件测试实践项目，**不是**企业工作系统，不得写入简历为公司项目。
 
-本目录提供可在本机运行的前端、后端、SQLite、OpenAPI、Postman 集合、pytest、缺陷、日志和测试文档。对应课程第 19 章。
+本目录提供可在本机运行的前端、后端、SQLite、OpenAPI、Postman 集合、pytest、缺陷、日志、截图和测试文档。对应课程第 19 章。
 
-## 运行
+## 一键运行
+
+需要本机 `python3`（审查环境 3.14.3；3.12+ 即可）。
 
 ```bash
 cd project/minishop
-python3 server.py
+python3 run.py setup      # 创建 .venv 并安装 requirements.txt
+python3 run.py serve      # 启动 http://127.0.0.1:8765
 ```
 
-终端会打印 `MINISHOP_BASE_URL=http://127.0.0.1:8765`。浏览器打开该地址。
+另开一个终端：
+
+```bash
+python3 run.py test       # pytest
+python3 run.py evidence   # pytest + curl/SQL/日志/截图（截图需要本机 Chrome）
+```
+
+Windows 可用 `run.bat`。macOS / Linux 可用 `./run.sh`。
+
+`server.py` 只使用标准库，不装依赖也能 `python3 server.py`。pytest 需要 `requirements.txt` 里的 `pytest` 与 `requests`。
 
 默认 `MINISHOP_RESET=1`：每次启动重建教学库。
 
@@ -25,21 +37,20 @@ python3 server.py
 
 ## 自动化
 
-需要已安装 pytest 与 requests 的虚拟环境：
-
 ```bash
-python3 -m pytest -q
+python3 run.py test
 ```
 
-审查记录：22 passed，1 xfailed（BUG-001）。
+本机 2026-09-09：`37 passed, 1 xfailed`（BUG-001）。原始输出：`evidence/pytest-output.txt`。
 
 ## v1.0 明确不做
 
 支付、物流、优惠券、订单状态机、HTTPS 终止、生产部署。订单接口只返回 `id`，响应中**没有** `status` 字段。
 
-## 文档
+## 文档与证据
 
 - `docs/PRD.md`：已基线需求
-- `docs/openapi.json`：接口契约
+- `docs/prd-coverage-matrix.md`：规则 → 用例 → 证据
 - `docs/test-plan.md` / `docs/test-cases.md` / `docs/test-report.md`
+- `evidence/`：本机执行产物（HTTP、SQL、日志、截图）
 - `bugs/BUG-001.md`：空搜索仍返回全量商品

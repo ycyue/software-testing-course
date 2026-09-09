@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>格子里没有值，和格子里放了「空」是两件事</title></head>
+<body><div class="page">
+<p class="kicker">第 12 章示意图 · NULL 不是空字符串</p>
+<h1>格子里没有值，和格子里放了「空」是两件事</h1>
+<p class="lead">JSON 的 null 进 Python 是 None，进 SQL 常是 NULL。"" 是长度为 0 的字符串。测试要分开。</p>
+<div class="row"><div class="col card"><span class="tag tag-warn">NULL / None</span><h2>没有值</h2><p style="font-size:16px;line-height:1.55">字段存在但值为空，或 SQL 里未填。比较时要用 IS NULL，不是 = ''。</p></div><div class="col card"><span class="tag tag-info">空字符串 ""</span><h2>有值，值是空</h2><p style="font-size:16px;line-height:1.55">键在，内容长度为 0。对手机号通常应判非法。</p></div><div class="col card"><span class="tag tag-bad">缺字段</span><h2>键根本不在</h2><p style="font-size:16px;line-height:1.55">JSON 里没有 qty。get("qty") 也会得到 None，但原因不同。</p></div></div>
+<p class="caption">示意图：第 13 章四态（缺 / null / 空串 / 错误类型）和这里是同一套纪律。</p>
+</div></body></html>

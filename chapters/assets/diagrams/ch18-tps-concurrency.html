@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>多少人在场，和每秒办完几笔，是两笔账</title></head>
+<body><div class="page">
+<p class="kicker">第 18 章示意图 · 并发人数不是 TPS</p>
+<h1>多少人在场，和每秒办完几笔，是两笔账</h1>
+<p class="lead">50 人各自想 2 秒，TPS 可能很低。5 人死循环狂点，TPS 也可能不低。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">并发</span><h2>同一时刻有多少工作在场</h2><p style="font-size:16px;line-height:1.55">JMeter 线程常用来模拟虚拟用户。要写爬坡和思考时间。</p></div><div class="col card"><span class="tag tag-ok">TPS / 吞吐</span><h2>单位时间完成多少</h2><p style="font-size:16px;line-height:1.55">50 秒成功 1000 次 → 20 次/秒。应统计成功吞吐和错误率。</p></div></div>
+<p class="caption">示意图：50 线程共用 13800138000，测的是单账号冲突，不是容量。QPS 多用于读接口，口径要写清。</p>
+</div></body></html>

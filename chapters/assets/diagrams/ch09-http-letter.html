@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <title>HTTP 请求像一封信</title>
+  <style>
+    .letter { min-height: 420px; }
+    .stamp { float:right; width:90px; height:70px; border:2px dashed var(--teal); color:var(--teal); text-align:center; padding-top:12px; font-weight:800; }
+    .addr { font-size:18px; margin: 12px 0 18px; }
+    .headers { background:#f1f5f9; border-radius:8px; padding:10px 12px; font-family:ui-monospace,Menlo,monospace; font-size:14px; }
+    .body { margin-top:14px; border:1px solid var(--line); border-radius:8px; padding:12px; font-family:ui-monospace,Menlo,monospace; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 9 章示意图 · HTTP 报文</p>
+  <h1>一次登录 = 你寄出一封信，服务器盖章寄回来</h1>
+  <p class="lead">方法、路径、头字段、正文是请求这封信上的格子；状态码是回信信封上的邮戳。200 只说明「信送到了并按协议回了」，不等于业务一定成功。</p>
+  <div class="row">
+    <div class="col card letter">
+      <div class="stamp">POST</div>
+      <p style="color:var(--muted);margin:0;">请求这封信</p>
+      <div class="addr">寄到：<span class="mono">/api/login</span></div>
+      <div class="headers">
+        Host: 127.0.0.1:8765<br>
+        Content-Type: application/json
+      </div>
+      <p style="margin:12px 0 6px;color:var(--muted);">信纸（Body）</p>
+      <div class="body">{ "phone": "13800138000", "password": "&lt;redacted&gt;" }</div>
+    </div>
+    <div class="vs">⇄</div>
+    <div class="col card letter">
+      <div class="stamp" style="border-color:var(--red);color:var(--red);">401</div>
+      <p style="color:var(--muted);margin:0;">响应这封回信</p>
+      <div class="addr">结果：未通过认证</div>
+      <div class="headers">
+        Content-Type: application/json<br>
+        Set-Cookie: （失败时通常没有登录 Cookie）
+      </div>
+      <p style="margin:12px 0 6px;color:var(--muted);">信纸（Body）</p>
+      <div class="body">{ "result": "fail" }</div>
+      <p style="margin-top:14px;">页面上的「登录失败」往往只是把这封回信翻译成了人话。</p>
+    </div>
+  </div>
+  <p class="caption">示意图：先看方法、路径、状态码，再看 Body。不要用「GET 不安全、POST 安全」来读这两封信——加密看的是 HTTPS/TLS，不是方法名字。</p>
+</div>
+</body>
+</html>

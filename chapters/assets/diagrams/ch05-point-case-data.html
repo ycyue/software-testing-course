@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <title>测试点、用例、数据</title>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 5 章示意图 · 三个容易混的词</p>
+  <h1>从“要检查这件事”到“拿这个值走一遍”</h1>
+  <p class="lead">同一条 MiniShop 注册规则，会落成测试点、测试用例和测试数据三层。名字可以合并，但这三件事不能糊成一句。</p>
+  <div class="row">
+    <div class="col card">
+      <span class="tag tag-info">测试点</span>
+      <h2>检查哪个角度</h2>
+      <p style="font-size:18px;line-height:1.5;">手机号少于 11 位时，系统应拒绝注册。</p>
+      <p class="caption" style="margin:0;">还没有具体号码，也没有逐步点击。</p>
+    </div>
+    <div class="col card" style="border:2px solid var(--teal);">
+      <span class="tag tag-ok">测试用例</span>
+      <h2>怎样执行和判断</h2>
+      <p style="font-size:18px;line-height:1.5;">打开注册页，输入短号和合法密码，提交后应看到格式错误，且库中无该用户。</p>
+      <p class="caption" style="margin:0;">有步骤、有预期，别人能照做。</p>
+    </div>
+    <div class="col card">
+      <span class="tag tag-warn">测试数据</span>
+      <h2>这一次用的值</h2>
+      <p style="font-size:28px;font-family:ui-monospace,Menlo,monospace;margin:18px 0;">1380013800</p>
+      <p class="caption" style="margin:0;">10 位数字。换一个 9 位数字，往往仍覆盖同一个测试点。</p>
+    </div>
+  </div>
+  <p class="caption">示意图：测试点回答“查什么”，用例回答“怎么查、怎样算过”，数据回答“这一次填什么”。</p>
+</div>
+</body>
+</html>

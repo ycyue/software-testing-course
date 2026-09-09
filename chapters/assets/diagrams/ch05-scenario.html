@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>先走完用户要办的事，再补失败和绕路</title></head>
+<body><div class="page">
+<p class="kicker">第 5 章示意图 · 场景法</p>
+<h1>先走完用户要办的事，再补失败和绕路</h1>
+<p class="lead">基本流程保成功；备选仍能办成；异常是失败、中断、超时。边界值不会自动被场景法覆盖。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">基本</span><h2>最常见的成功路</h2><p style="font-size:16px;line-height:1.55">登录 → 选 SKU → 数量 1 → 创建订单 → 得到 id，无 status</p></div><div class="col card"><span class="tag tag-info">备选</span><h2>换一条仍能办成</h2><p style="font-size:16px;line-height:1.55">先改数量再下单；管理员走后台看库存</p></div><div class="col card"><span class="tag tag-bad">异常</span><h2>办不成时系统怎样</h2><p style="font-size:16px;line-height:1.55">qty=11、未登录、重复提交得到两个 id（v1.0 不幂等）</p></div></div>
+<p class="caption">示意图：支付/优惠券可用来练场景法，但不是 MiniShop v1.0 路径。</p>
+</div></body></html>

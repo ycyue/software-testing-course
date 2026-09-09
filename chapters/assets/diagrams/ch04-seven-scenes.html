@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>一个购物车，至少要打开七个抽屉</title></head>
+<body><div class="page">
+<p class="kicker">第 4 章示意图 · 七类场景</p>
+<h1>一个购物车，至少要打开七个抽屉</h1>
+<p class="lead">只写「改数量成功」会漏掉人、数据、权限和失败之后。</p>
+
+    <div class="row" style="flex-wrap:wrap">
+      <div class="card" style="flex:1 1 28%"><b>功能 / 正常</b><p>登录用户把数量改成 1</p></div>
+      <div class="card" style="flex:1 1 28%"><b>异常</b><p>改成 11、超时、重复提交</p></div>
+      <div class="card" style="flex:1 1 28%"><b>边界</b><p>1、库存值、库存+1</p></div>
+      <div class="card" style="flex:1 1 28%"><b>用户</b><p>新用户、管理员、过期登录</p></div>
+      <div class="card" style="flex:1 1 28%"><b>数据</b><p>库存刚好 0、SKU 不存在</p></div>
+      <div class="card" style="flex:1 1 28%"><b>权限</b><p>改别人的车、未登录改</p></div>
+      <div class="card" style="flex:1 1 28%"><b>状态 / 依赖</b><p>v1.0 无订单状态机；依赖登录与库存服务</p></div>
+    </div>
+    
+<p class="caption">示意图：七类是思考抽屉，不是必须写七份独立文档。优惠券/支付若出现，是教学扩展，不是 v1.0。</p>
+</div></body></html>

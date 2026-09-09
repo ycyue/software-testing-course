@@ -13,4 +13,6 @@ WHERE u.phone = '13800138000';
 
 预期两行：鼠标 qty 1 stock 10；键盘 qty 2 stock 5。
 
-超库存请求被拒绝后，不应出现 `qty=11` 的购物车行。修改数据仅限本机教学库。
+本机 2026-09-09 输出见 `evidence/sql/seed-join.txt`。
+
+超库存请求被拒绝后，不应出现 `qty=11` 的购物车行。`test_cart_qty_11_does_not_persist` 用接口再读购物车交叉验证。修改数据仅限本机教学库。

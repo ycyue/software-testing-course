@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <title>IP 是楼，端口是门</title>
+  <style>
+    .laptop { width: 280px; background:#1e293b; color:#e2e8f0; border-radius:12px; padding:16px; }
+    .screen { background:#0f172a; border-radius:8px; padding:12px; font-family:ui-monospace,Menlo,monospace; font-size:14px; }
+    .building { background:#e2e8f0; min-height: 360px; padding: 16px; position:relative; }
+    .roof { background:var(--navy); color:#fff; text-align:center; padding:10px; border-radius:10px 10px 0 0; font-weight:700; }
+    .doors { display:flex; gap:10px; padding: 16px 8px; }
+    .door { flex:1; background:#fff; border:2px solid #94a3b8; min-height:140px; text-align:center; padding-top:16px; }
+    .door.on { border-color: var(--teal); background: var(--teal-soft); }
+    .road { flex:0 0 180px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--muted); }
+    .pkt { background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 12px; margin:8px 0; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 9 章示意图 · 网络里的地址</p>
+  <h1>电脑要找的不是“网站”两个字，是某栋楼的某一扇门</h1>
+  <p class="lead">IP 告诉你去哪一台主机；端口告诉你敲哪一扇门。同一栋楼可以同时开 Web、数据库、教学 MiniShop。</p>
+  <div class="row">
+    <div class="laptop">
+      <div class="screen">
+        浏览器地址栏<br><br>
+        http://<b style="color:#5eead4;">127.0.0.1</b><span style="color:#fbbf24;">:8765</span>/
+      </div>
+      <p style="font-size:13px;margin:12px 0 0;">你看见的是网址。<br>真正投递时要落到 IP 和端口。</p>
+    </div>
+    <div class="road">
+      <div class="pkt">数据包</div>
+      <div>沿着网络走 →</div>
+      <div class="pkt">还没谈登录成败</div>
+    </div>
+    <div class="col">
+      <div class="roof">主机 127.0.0.1　（这栋楼）</div>
+      <div class="building">
+        <div class="doors">
+          <div class="door"><div style="font-size:28px;font-weight:700;">80</div>常给 HTTP<br>这扇门可能没开</div>
+          <div class="door"><div style="font-size:28px;font-weight:700;">443</div>常给 HTTPS<br>本机教学默认不用</div>
+          <div class="door on"><div style="font-size:28px;font-weight:700;">8765</div>MiniShop v1.0<br>教学服务在这里</div>
+        </div>
+        <p style="margin:8px 12px 0;color:#334155;">敲错门：连接被拒绝，这时还没有 HTTP 状态码，更谈不上密码错误。</p>
+      </div>
+    </div>
+  </div>
+  <p class="caption">示意图：能 ping 通这栋楼，不代表 8765 这扇门开着，也不代表登录业务是对的。</p>
+</div>
+</body>
+</html>

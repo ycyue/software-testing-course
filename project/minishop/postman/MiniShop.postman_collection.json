@@ -2,15 +2,147 @@
   "info": {
     "name": "MiniShop v1.0 Teaching",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Personal practice. Informal production contract. No secrets in repo."
+    "description": "Personal practice. Informal production contract. No secrets in repo. Import with MiniShop.postman_environment.json. Fill password only as a current value on your machine."
   },
   "item": [
-    {"name": "搜索商品", "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=mouse"}},
-    {"name": "登录-正确", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"phone\":\"{{phone}}\",\"password\":\"{{password}}\"}"}, "url": "{{baseUrl}}/api/login"}},
-    {"name": "改数量-合法", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"}, "url": "{{baseUrl}}/api/cart/items"}},
-    {"name": "改数量-等于库存", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":10}"}, "url": "{{baseUrl}}/api/cart/items"}},
-    {"name": "改数量-超库存", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":11}"}, "url": "{{baseUrl}}/api/cart/items"}},
-    {"name": "创建订单", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"}, "url": "{{baseUrl}}/api/orders"}},
-    {"name": "无凭证创建", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"}, "url": "{{baseUrl}}/api/orders"}}
+    {
+      "name": "注册-合法",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('201 created', function () { pm.response.to.have.status(201); });",
+        "const json = pm.response.json();",
+        "pm.test('has phone, no token', function () {",
+        "  pm.expect(json.phone).to.eql(pm.environment.get('newPhone'));",
+        "  pm.expect(json).to.not.have.property('token');",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"phone\":\"{{newPhone}}\",\"password\":\"{{password}}\",\"display_name\":\"Postman User\"}"},
+        "url": "{{baseUrl}}/api/register"
+      }
+    },
+    {
+      "name": "注册-手机号占用",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('409 taken', function () { pm.response.to.have.status(409); });"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"phone\":\"{{phone}}\",\"password\":\"{{password}}\"}"},
+        "url": "{{baseUrl}}/api/register"
+      }
+    },
+    {
+      "name": "搜索商品",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('200 array', function () {",
+        "  pm.response.to.have.status(200);",
+        "  pm.expect(pm.response.json().items).to.be.an('array');",
+        "});"
+      ]}}],
+      "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=mouse"}
+    },
+    {
+      "name": "登录-正确",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('200 ok token', function () {",
+        "  pm.response.to.have.status(200);",
+        "  const json = pm.response.json();",
+        "  pm.expect(json.result).to.eql('ok');",
+        "  pm.expect(json.token).to.be.a('string').and.not.empty;",
+        "  pm.expect(json).to.not.have.property('status');",
+        "  pm.environment.set('token', json.token);",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"phone\":\"{{phone}}\",\"password\":\"{{password}}\"}"},
+        "url": "{{baseUrl}}/api/login"
+      }
+    },
+    {
+      "name": "改数量-合法",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('200 qty 1', function () { pm.response.to.have.status(200); });"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"},
+        "url": "{{baseUrl}}/api/cart/items"
+      }
+    },
+    {
+      "name": "改数量-等于库存",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('200 qty 10', function () { pm.response.to.have.status(200); });"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":10}"},
+        "url": "{{baseUrl}}/api/cart/items"
+      }
+    },
+    {
+      "name": "改数量-超库存",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('400 over stock', function () {",
+        "  pm.response.to.have.status(400);",
+        "  pm.expect(pm.response.json().error).to.eql('qty exceeds stock');",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":11}"},
+        "url": "{{baseUrl}}/api/cart/items"
+      }
+    },
+    {
+      "name": "创建订单",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('201 id no status', function () {",
+        "  pm.response.to.have.status(201);",
+        "  const json = pm.response.json();",
+        "  pm.expect(json.id).to.be.a('string');",
+        "  pm.expect(json).to.not.have.property('status');",
+        "  pm.environment.set('lastOrderId', json.id);",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"},
+        "url": "{{baseUrl}}/api/orders"
+      }
+    },
+    {
+      "name": "无凭证创建",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('401 unauthorized', function () { pm.response.to.have.status(401); });"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"},
+        "url": "{{baseUrl}}/api/orders"
+      }
+    }
   ]
 }

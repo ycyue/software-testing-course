@@ -1,0 +1,5 @@
+POST /api/login
+HTTP 200
+Set-Cookie: present HttpOnly
+Body:
+{"result": "ok", "token": "<redacted>", "role": "user"}

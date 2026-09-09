@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>文件名和函数名不像约定，它会当没看见</title></head>
+<body><div class="page">
+<p class="kicker">第 16 章示意图 · pytest 收哪些函数</p>
+<h1>文件名和函数名不像约定，它会当没看见</h1>
+<p class="lead">python3 -m pytest 用的是当前解释器里的 pytest，避免系统路径上另一个。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">会收集</span><h2>test_login.py</h2><p style="font-size:16px;line-height:1.55">def test_login_ok():  文件 test_* 或 *_test.py，函数 test_*</p></div><div class="col card"><span class="tag tag-bad">不会收集</span><h2>login.py / login_ok</h2><p style="font-size:16px;line-height:1.55">函数叫 login_ok、文件叫 login.py，跑起来像「没写测试」。</p></div></div>
+<p class="caption">示意图：conftest.py 放公共 fixture，自己不会当测试收集。401 用例不要 autouse 已登录 token。</p>
+</div></body></html>

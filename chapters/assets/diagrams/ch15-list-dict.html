@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>购物车是一排格子，每一格是一份字段</title></head>
+<body><div class="page">
+<p class="kicker">第 15 章示意图 · 列表和字典</p>
+<h1>购物车是一排格子，每一格是一份字段</h1>
+<p class="lead">多行用 list。一行里的 sku、qty、stock 用 dict。外层再用 dict 包 items，和常见 JSON 一致。</p>
+
+    <div class="card" style="font-family:ui-monospace,Menlo,monospace;font-size:15px">
+    { "items": [<br>
+    &nbsp;&nbsp;{ "sku": "SKU-DEMO-001", "qty": 1, "stock": 10 },<br>
+    &nbsp;&nbsp;{ "sku": "SKU-DEMO-002", "qty": 2, "stock": 5 }<br>
+    ] }
+    </div>
+    <p style="margin-top:12px">遍历用 <span class="mono">for item in items</span>。取字段用 <span class="mono">item["qty"]</span>。集合能去重，但不能直接变成标准 JSON 对象。</p>
+    
+<p class="caption">示意图：缺键不要用 get 当成和 null 同一条用例。函数默认参数不要用 []。</p>
+</div></body></html>

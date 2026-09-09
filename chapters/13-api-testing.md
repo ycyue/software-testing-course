@@ -1,5 +1,7 @@
 # 第 13 章：接口测试
 
+> **一句话核心：** 接口测试绕过 UI，直接对契约做观察和判定。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 核心章节发布目标：≥95/100  
 > 主案例：MiniShop 个人软件测试实践项目
@@ -146,6 +148,8 @@ JSON 是一种文本数据格式，常见于 HTTP Body。RFC 8259 规定了对�
 
 不要把接口测试说成更高级所以可以取消手工功能测试。初级岗位两者都要会。
 
+![页面走店门，接口走后厨窗口](assets/diagrams/ch13-ui-vs-api.png)
+
 ---
 
 ## 13.5 接口文档要读什么 ⭐⭐⭐
@@ -217,6 +221,9 @@ Swagger UI 上的 “Try it out” 适合探索，正式记录仍要保存请求
 
 ## 13.7 Path、Query、Header、Body ⭐⭐⭐
 
+![四个放数据的格子](assets/diagrams/ch13-four-slots.png)
+
+
 四个位置放不同种类的信息。测错位置等于没测到。
 
 | 位置 | 是什么 | 教学例子 | 测试关注 |
@@ -260,6 +267,9 @@ Path 参数通常标识**哪一个**资源。把 `ord-demo-01` 改成另一个�
 ---
 
 ## 13.9 权限 ⭐⭐⭐
+
+![401 没认出你，403 认出你但不许](assets/diagrams/ch13-401-403.png)
+
 
 接口比页面更容易暴露越权：只要改 Path 里的 id 或换 Token。
 
@@ -389,6 +399,8 @@ curl -sS -D - \
 正式 MiniShop 订单字段、支付和状态以后续 OpenAPI 为准。现在不要在简历里写“已测通 MiniShop 全部订单状态”。
 
 ---
+
+配套可运行实操：[实操 13-1 四种 Body 形状](../practice/13-api-shapes/README.md)（`python3 practice/run.py 13-1`）。工作实战再补文档对照、越权和重复下单。
 
 ## MiniShop 工作实战：接口检查包
 
@@ -639,4 +651,4 @@ D. GET 登录比 POST 更安全，因为没有 Body
 
 ## 下一章预告
 
-下一章进入第 14 章《Postman》。你将用 Collection、Environment 和变量管理本章这些请求，把 Token 从登录响应传到后续接口，并用 `pm.test` 写可重复的断言，而不是每次手改 curl。
+下一章进入第 14 章《Postman》。导入仓库集合的逐步操作见该章 14.6.1。你将用 Collection、Environment 和变量管理本章这些请求，把 Token 从登录响应传到后续接口，并用 `pm.test` 写可重复的断言，而不是每次手改 curl。

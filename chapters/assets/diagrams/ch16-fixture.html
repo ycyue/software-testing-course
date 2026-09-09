@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>一个给环境，一个把同一条测试展开成多份数据</title></head>
+<body><div class="page">
+<p class="kicker">第 16 章示意图 · fixture 和 parametrize</p>
+<h1>一个给环境，一个把同一条测试展开成多份数据</h1>
+<p class="lead">购物车六种 Body 用 parametrize。base_url 和 token 用 fixture。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">fixture</span><h2>准备好再测</h2><p style="font-size:16px;line-height:1.55">先启动 MiniShop、登录拿到 token，再交给测试函数。默认 scope 是每个测试一次。</p></div><div class="col card"><span class="tag tag-ok">parametrize</span><h2>一张表变成多条</h2><p style="font-size:16px;line-height:1.55">qty=1 / 10 / 11 / 缺 / null / "" 各跑一遍，失败时 id 能看出是哪一行。</p></div></div>
+<p class="caption">示意图：不要对预期 400 的请求先 raise_for_status。绿不等于页面按钮可用，也不等于没缺陷。</p>
+</div></body></html>

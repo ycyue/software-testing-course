@@ -4,4 +4,6 @@ label { display: inline-block; min-width: 4rem; }
 input { margin: 0.2rem 0.4rem 0.2rem 0; }
 button { margin-top: 0.3rem; }
 section { border-top: 1px solid #ddd; padding-top: 0.8rem; }
-#login-msg, #cart-msg, #order-msg, #search-msg, #admin-msg { min-height: 1.2rem; }
+#login-msg, #cart-msg, #order-msg, #search-msg, #admin-msg, #register-msg { min-height: 1.2rem; }
+button { padding: 0.25rem 0.7rem; }
+#shop-panel ul { padding-left: 1.2rem; }

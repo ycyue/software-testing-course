@@ -1,0 +1,308 @@
+# 第 16 章（上）：pytest 基础
+
+> **一句话核心：** pytest 把已经明确的判定交给脚本重复执行。
+
+> 重要级别：⭐⭐⭐ 必须掌握  
+> 核心章节发布目标：≥95/100  
+> 下一节：[16B fixture 与 MiniShop 自动化](16b-pytest-fixtures.md)
+
+## 这一章解决什么问题
+
+Postman Runner 适合试报文。要进 Git、重复跑登录和库存规则，用 pytest。上半章：ROI、安装、测试函数、requests、登录 API。
+
+## 学习目标
+
+- 说明自动化适用条件和 ROI 边界；
+- 在 venv 安装并运行 pytest；
+- 写 `test_` 函数和有意义的 `assert`；
+- 用 requests 发 JSON 并设置 timeout；
+- 不对失败用例先 `raise_for_status`。
+
+## 前置知识
+
+已完成第 15 章。
+
+## 场景导入
+
+Runner 全绿，改一条库存却要手点。把稳定规则写成 pytest。
+
+## 16.1 什么该自动化，ROI 不是口号 ⭐⭐⭐
+
+![什么该先自动化](assets/diagrams/ch16-roi.png)
+
+
+生活类比：每天都要核对的进货单，值得做成表格公式；只出现一次的异常客诉，更适合当面问清楚。
+
+**自动化**把已经明确的检查交给脚本重复执行。pytest 是执行器，不是测试策略本身。
+
+适合先自动化的（接口场景）：
+
+- 稳定、有契约的登录、加购、下单；
+- 同一接口很多输入组合（缺字段、`null`、边界）；
+- 每次构建都要跑的回归；
+- 手工容易漏的权限和重复提交。
+
+不适合当作第一步的：
+
+- 需求每周大改、页面结构不稳的 UI 细节（第 17 章再谈）；
+- 还没有说清预期的探索性测试；
+- 一次性的线上核对。
+
+ROI 要问三件事：写脚本的成本、以后跑一次节省的时间、漏测的损失。接口往往比 UI 便宜，但**不是永远比手工或 UI 自动化更划算**。没有契约、环境天天挂、数据无法准备时，脚本会变成新的维护负担。
+
+pytest 绿了，只证明你写过的断言成立。库存有没有真改，仍按第 12、13 章在授权库 `SELECT`。
+
+Postman 和 pytest 互补：前者适合快速试报文和分享集合；后者适合进 Git、进 CI、和 Python 数据处理放在一起。不要说其中一种淘汰另一种。
+
+---
+
+## 16.2 安装 pytest 与 requests ⭐⭐⭐
+
+在**自己的练习目录**建虚拟环境，不要拿课程仓库当安装实验场。
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install pytest requests
+python3 -m pytest --version
+```
+
+Windows 激活方式见第 15 章。应能看到 pytest 版本号。审查机器为：
+
+```text
+pytest 9.1.1
+```
+
+`python3 -m pytest` 比直接打 `pytest` 更不容易跑到系统里另一个解释器。
+
+第三方库：
+
+| 库 | 作用 |
+| --- | --- |
+| pytest | 收集测试、运行 `assert`、报告失败 |
+| requests | 发 HTTP，读取响应 |
+
+不要 `sudo pip`，不要把真实密码写进即将提交的文件。`.venv` 不要进 Git。
+
+---
+
+## 16.3 测试函数与 assert ⭐⭐⭐
+
+![pytest 按文件名和函数名收集测试](assets/diagrams/ch16-collect.png)
+
+
+pytest 默认收集：
+
+- 文件名 `test_*.py` 或 `*_test.py`；
+- 函数名 `test_*`。
+
+最简单（不发 HTTP，可先跑通）：
+
+```python
+def qty_allowed(qty, stock):
+    if type(qty) is not int or type(stock) is not int:
+        return False
+    if qty < 1:
+        return False
+    return qty <= stock
+
+
+def test_qty_one_allowed():
+    assert qty_allowed(1, 10) is True
+```
+
+保存为 `tests/test_qty_allowed.py` 后：
+
+```bash
+python3 -m pytest tests/test_qty_allowed.py -q
+```
+
+通过时大致看到 `.` 和 `passed`。
+
+正常例子：同一文件里再写超库存（须与上面的 `qty_allowed` 放在同一文件）。
+
+```python
+def qty_allowed(qty, stock):
+    if type(qty) is not int or type(stock) is not int:
+        return False
+    if qty < 1:
+        return False
+    return qty <= stock
+
+
+def test_qty_over_stock():
+    assert qty_allowed(11, 10) is False
+```
+
+失败时，pytest 会改写 `assert`，把两边的值印出来。例如：
+
+```python
+def test_fail_demo():
+    qty = 11
+    stock = 10
+    assert qty <= stock
+```
+
+审查中失败信息包含：
+
+```text
+assert 11 <= 10
+```
+
+这就是 pytest 相对“自己 print 再肉眼看”的价值。不要写 `assert True`，也不要用 `print` 代替断言。
+
+`@` 是装饰器：写在函数上一行，把函数交给别人处理。本章只要求会用 pytest 提供的两个：`@pytest.fixture` 和 `@pytest.mark.parametrize`。不要自己实现装饰器，也不要展开 class 测试。
+
+---
+
+## 16.4 requests 发 HTTP ⭐⭐⭐
+
+requests 把第 9、13 章的 HTTP 变成函数调用。下面是**片段**：把 `PORT` 换成教学服务端口后再运行。
+
+```python
+import requests
+
+response = requests.get(
+    "http://127.0.0.1:PORT/products",
+    params={"keyword": "mouse"},
+    timeout=5,
+)
+print(response.status_code)
+```
+
+常用属性：
+
+| 写法 | 含义 |
+| --- | --- |
+| `response.status_code` | 状态码 |
+| `response.json()` | 解析 JSON，失败会异常 |
+| `response.headers` | 响应头 |
+| `requests.post(..., json={...})` | JSON Body，并带 `Content-Type: application/json` |
+| `timeout=5` | 超时秒数；不写可能一直挂起 |
+
+纪律：
+
+- **每次请求都写 `timeout`。**
+- 期望 400/401 时，不要先 `raise_for_status()`：它会把 4xx/5xx 直接变成异常，断言还没执行。
+- `json=` 发 JSON；`data=` 配字典则是表单。测 JSON 接口用 `json=`。
+- 不要在断言失败信息里打印完整 token 或密码。
+
+教学服务行为与第 13、14 章一致，但是**教学约定**：
+
+| 请求 | 教学结果 |
+| --- | --- |
+| `POST /login` 正确 | `200`，`result=ok`，`token`，以及 `Set-Cookie` |
+| `POST /login` 错误密码 | `401` |
+| `GET /products` | `200`，`items` 为数组 |
+| `POST /cart/items` `qty=1` | `200` |
+| `POST /cart/items` `qty=11` | `400` |
+| `POST /orders` 无 Bearer | `401` |
+| `POST /orders` 带 `teach-token` | `201`，有 `id`，无 `status` 字段 |
+| 连续两次成功下单 | 两个不同 `id` |
+
+教学购物车和教学下单**都只把 `qty=1` 当成功**。业务规则里 `qty=10`（等于库存）应允许，但教学服务未实现该分支。自动化必须按**当前被测系统**写期望，不要拿未实现的规则硬编成 200。第 19 章 MiniShop v1.0 才按 PRD 让 `qty=10` 通过。
+
+登录密码：教学服务把占位符 `<redacted>` 当作密码，以便和已发布的 curl 一致。正式环境用环境变量 `TEACH_PASSWORD`，不要把真实密码提交进仓库。
+
+---
+
+## 16.5 登录 API 测试 ⭐⭐⭐
+
+下面函数依赖 16.6 的 fixture，完整可运行文件见本章实战。
+
+```python
+import requests
+
+TIMEOUT = 5
+
+
+def test_login_ok(base_url, phone, password):
+    response = requests.post(
+        f"{base_url}/login",
+        json={"phone": phone, "password": password},
+        timeout=TIMEOUT,
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["result"] == "ok"
+    assert type(body["token"]) is str and body["token"] != ""
+    assert "Set-Cookie" in response.headers
+
+
+def test_login_wrong_password(base_url, phone):
+    response = requests.post(
+        f"{base_url}/login",
+        json={"phone": phone, "password": "wrong-password"},
+        timeout=TIMEOUT,
+    )
+    assert response.status_code == 401
+```
+
+`base_url` / `phone` / `password` 来自下一节的 fixture。成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续订单教学接口以 `Authorization: Bearer` 为准。
+
+不要在 query 里传密码。不要把这次拿到的 token 粘到别的测试文件里当常量——下一节用 fixture。
+
+---
+
+
+安装请优先使用仓库依赖（第 19 章项目）：
+
+```bash
+cd project/minishop
+python3 run.py setup
+python3 run.py test
+```
+
+自己练习目录仍可 `pip install pytest requests`。审查本机：pytest 9.1.1，`37 passed, 1 xfailed`。HTML 报告截图：
+
+![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
+
+## 小练习
+
+### 练习 1
+
+举一个 MiniShop 场景适合 pytest 自动化，再举一个更适合先手工。说明 ROI 判断依据。
+
+### 练习 2
+
+为什么 `python3 -m pytest` 往往比直接输入 `pytest` 更稳？
+
+### 练习 3
+
+函数名叫 `login_ok`、文件名叫 `login.py`，运行 pytest 会怎样？应改成什么？
+
+### 练习 4
+
+对预期状态码 400 的请求，第一句写成 `response.raise_for_status()` 有什么问题？
+
+
+## 练习答案
+
+1. 适合：超库存与缺字段每次回归都跑。不适合先自动：全新结算页还在改文案。依据是重复次数、稳定性和漏测损失。
+
+2. `-m` 保证用的是当前解释器（通常是 venv）里的 pytest，避免系统路径上另一个 pytest。
+
+3. 不会被收集。改为 `test_login.py` 与 `def test_login_ok():`。
+
+4. 400 会在断言前变成异常，分不清“实现成了 400”还是“实现成了 500”。
+
+
+## 本章检查清单
+
+- [ ] 我能说明 ROI 边界
+- [ ] 我会运行 pytest
+- [ ] 我会用 requests 发 JSON
+- [ ] 我不会对预期 400 先 `raise_for_status`
+
+## 本章可运行性说明
+
+仓库套件：pytest 9.1.1，`37 passed, 1 xfailed`。教学 `/login` 服务不是 v1.0 契约。
+
+## 参考资料
+
+- [16B](16b-pytest-fixtures.md)
+- [pytest 文档](https://docs.pytest.org/)
+
+## 下一章预告
+
+[第 16 章（下）](16b-pytest-fixtures.md)

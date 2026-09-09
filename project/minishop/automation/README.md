@@ -2,5 +2,7 @@
 
 ```bash
 cd project/minishop
-python3 -m pytest -q
+python3 run.py test
 ```
+
+依赖见上级 `requirements.txt`。

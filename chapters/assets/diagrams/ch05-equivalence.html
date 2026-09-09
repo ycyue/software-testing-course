@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <title>等价类像分拣箱</title>
+  <style>
+    .bin { min-height: 280px; text-align: center; padding: 16px 12px; }
+    .phone { font-family: ui-monospace, Menlo, monospace; font-size: 18px; margin: 18px 0 8px; }
+    .pick { font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 5 章示意图 · 等价类</p>
+  <h1>别测遍所有字符串：把号码丢进会「同样处理」的箱子</h1>
+  <p class="lead">教学规则：注册手机号必须是 11 位数字。同一箱子里挑 1 个代表值即可；不要把 10 位和 12 位塞进同一条失败用例。</p>
+  <div class="row">
+    <div class="col bin card" style="background:var(--red-soft);border-color:#fecaca;">
+      <span class="tag tag-bad">无效类</span>
+      <h2>太短</h2>
+      <p>系统按「长度不够」处理</p>
+      <div class="phone">1380013800</div>
+      <div class="pick">代表值：10 位<br>不必再测 9 位、8 位各写一条才叫等价类</div>
+    </div>
+    <div class="col bin card" style="background:var(--green-soft);border-color:#bbf7d0;">
+      <span class="tag tag-ok">有效类</span>
+      <h2>恰好 11 位数字</h2>
+      <p>系统按「格式合法」处理</p>
+      <div class="phone">13800138000</div>
+      <div class="pick">代表值：一个未占用的合法号<br>13800138001 通常还在同一类</div>
+    </div>
+    <div class="col bin card" style="background:var(--red-soft);border-color:#fecaca;">
+      <span class="tag tag-bad">无效类</span>
+      <h2>太长</h2>
+      <p>系统按「超长」处理</p>
+      <div class="phone">138001380000</div>
+      <div class="pick">代表值：12 位<br>与「含字母」不是同一个箱子</div>
+    </div>
+    <div class="col bin card" style="background:var(--amber-soft);border-color:#fde68a;">
+      <span class="tag tag-warn">另一类无效</span>
+      <h2>含非数字</h2>
+      <p>处理规则可能不同</p>
+      <div class="phone">13800ab0000</div>
+      <div class="pick">不要和「太短」写在同一用例<br>否则失败时分不清是哪条规则</div>
+    </div>
+  </div>
+  <p class="caption">示意图：等价类假设「同一箱子里的值会被同样处理」。覆盖的是已识别的箱子，不是宇宙里所有字符串。</p>
+</div>
+</body>
+</html>

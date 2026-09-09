@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>测试 = 观察 + 判定 + 证据</title></head>
+<body><div class="page">
+<p class="kicker">第 1 章示意图 · 核心公式</p>
+<h1>测试 = 观察 + 判定 + 证据</h1>
+<p class="lead">三块缺一不可。缺判定，你只是在看；缺观察，你只是在读需求；缺证据，你无法让别人复核。</p>
+<div class="row">
+  <div class="col card">
+    <span class="tag tag-info">观察 · 眼睛</span>
+    <h2>系统实际表现成什么样</h2>
+    <p style="font-size:16px;line-height:1.55">页面、HTTP、日志、SQL、接口 JSON。空白关键字搜索返回了 3 件商品——这只是看见了。</p>
+  </div>
+  <div class="col card">
+    <span class="tag tag-warn">判定 · 尺子</span>
+    <h2>凭什么说对或不对</h2>
+    <p style="font-size:16px;line-height:1.55">PRD、OpenAPI、不变式、上一版本。R-SEARCH 写明空关键字不应当全量结果。</p>
+  </div>
+  <div class="col card">
+    <span class="tag tag-ok">证据 · 底稿</span>
+    <h2>别人明天还能复核</h2>
+    <p style="font-size:16px;line-height:1.55">步骤、报文、截图、pytest、缺陷单。BUG-001 能指到文件，才叫测过。</p>
+  </div>
+</div>
+<p class="caption">示意图：可靠测试还要补上范围和风险说明。找 Bug 只是「观察不符合判定」的一种结果。实操 1-1 会把三块拆开给你看。</p>
+</div></body></html>

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>同一张正确密码，门开着和门锁着，结果不一样</title></head>
+<body><div class="page">
+<p class="kicker">第 5 章示意图 · 状态迁移（教学账户）</p>
+<h1>同一张正确密码，门开着和门锁着，结果不一样</h1>
+<p class="lead">状态迁移测的是「现在处于什么状态」会改变同一事件的结果。v1.0 不定义订单状态机，不要把待支付写进项目用例。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">正常</span><h2>正确密码 → 登录成功</h2><p style="font-size:16px;line-height:1.55">失败次数未达阈值</p></div><div class="col card"><span class="tag tag-warn">锁定</span><h2>正确密码仍拒绝</h2><p style="font-size:16px;line-height:1.55">达到失败阈值之后；解锁条件满足才回去</p></div><div class="col card"><span class="tag tag-bad">禁用</span><h2>任何密码都拒绝</h2><p style="font-size:16px;line-height:1.55">管理员禁用；与锁定不是同一把锁</p></div></div>
+<p class="caption">示意图：还要测禁止迁移（锁定时不应直接变成已登录）。阈值未确认前只是教学模型。</p>
+</div></body></html>

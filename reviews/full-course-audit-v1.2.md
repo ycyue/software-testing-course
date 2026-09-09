@@ -3,7 +3,7 @@
 - 日期：2026-09-09
 - 范围：`chapters/01`～`22`、`project/minishop/`、主控与质量标准
 - 依据：Quality Standard v1.0、COURSE_OUTLINE v1.2、MiniShop PRD v1.0
-- MiniShop 自动化复核：`22 passed, 1 xfailed`（pytest 9.1.1，本机 2026-09-09）
+- MiniShop 自动化复核：2026-09-09 上午为 `22 passed, 1 xfailed`；同日 v1.2.1 补注册与页面断言后为 **`37 passed, 1 xfailed`**（pytest 9.1.1）。证据见 `project/minishop/evidence/`。
 
 ## 结论先行
 
@@ -92,4 +92,4 @@ v1.2 正文结构完整，学习顺序衔接正确，质量标准中的禁止绝
 
 ## 发布判断
 
-全文审计与概念复核后，高优先级一致性问题和已识别的概念偏差已回写。MiniShop v1.0 自动化仍为 **22 passed, 1 xfailed**。v1.2 正文维持收束，无第 23 章。
+全文审计与概念复核后，高优先级一致性问题和已识别的概念偏差已回写。v1.2.1 另补依赖、注册覆盖、真实证据、拆章与阶段测验，并取消大面积 99 分，见 `reviews/v1.2.1-rescore.md`。MiniShop 自动化现为 **37 passed, 1 xfailed**。无第 23 章。

@@ -1,0 +1,5 @@
+POST /api/cart/items
+HTTP 400
+Set-Cookie: absent
+Body:
+{"error": "qty exceeds stock"}

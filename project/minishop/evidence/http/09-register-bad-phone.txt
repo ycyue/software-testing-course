@@ -1,0 +1,5 @@
+POST /api/register
+HTTP 400
+Set-Cookie: absent
+Body:
+{"error": "invalid phone"}

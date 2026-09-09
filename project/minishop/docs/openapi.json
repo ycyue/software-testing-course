@@ -32,9 +32,25 @@
     },
     "/api/register": {
       "post": {
-        "summary": "Register",
+        "summary": "Register; does not issue token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["phone", "password"],
+                "properties": {
+                  "phone": {"type": "string"},
+                  "password": {"type": "string"},
+                  "display_name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
         "responses": {
-          "201": {"description": "Created"},
+          "201": {"description": "Created; body has result and phone, no token"},
           "400": {"description": "Invalid phone or password"},
           "409": {"description": "Phone taken"}
         }

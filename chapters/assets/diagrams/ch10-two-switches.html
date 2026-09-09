@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>Preserve log 保住跳转前的请求；Disable cache 减少缓存演戏</title></head>
+<body><div class="page">
+<p class="kicker">第 10 章示意图 · 两个容易混的开关</p>
+<h1>Preserve log 保住跳转前的请求；Disable cache 减少缓存演戏</h1>
+<p class="lead">关掉 DevTools 后，Disable cache 通常不再生效。不要以为勾过一次就永远模拟首次访问。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">Preserve log</span><h2>列表别被跳转清空</h2><p style="font-size:16px;line-height:1.55">登录后若整页跳转，先勾它再点提交，才能看到那条 POST。</p></div><div class="col card"><span class="tag tag-warn">Disable cache</span><h2>少用旧文件演戏</h2><p style="font-size:16px;line-height:1.55">只在开发者工具打开时更接近首次访问。测缓存本身时不要一直开着。</p></div></div>
+<p class="caption">示意图：Copy as cURL 会带上 Cookie 和密码，保存前必须脱敏。</p>
+</div></body></html>

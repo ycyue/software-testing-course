@@ -8,6 +8,28 @@ function authHeaders() {
   return token ? { Authorization: "Bearer " + token, "Content-Type": "application/json" } : { "Content-Type": "application/json" };
 }
 
+const registerForm = document.getElementById("register-form");
+const registerMsg = document.getElementById("register-msg");
+if (registerForm) {
+  registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const phone = document.getElementById("reg-phone").value;
+    const password = document.getElementById("reg-password").value;
+    const display_name = document.getElementById("reg-name").value;
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone, password, display_name }),
+    });
+    const body = await res.json();
+    if (res.status === 201) {
+      registerMsg.textContent = "注册成功，请使用该手机号登录。未自动登录。";
+    } else {
+      registerMsg.textContent = "注册失败：" + (body.error || res.status);
+    }
+  });
+}
+
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const phone = document.getElementById("phone").value;
@@ -26,6 +48,8 @@ loginForm.addEventListener("submit", async (event) => {
   sessionStorage.setItem("minishop_role", body.role);
   loginMsg.textContent = "登录成功";
   loginPanel.hidden = true;
+  const registerPanel = document.getElementById("register-panel");
+  if (registerPanel) registerPanel.hidden = true;
   shopPanel.hidden = false;
   document.getElementById("who").textContent = phone + " (" + body.role + ")";
   await refreshProducts("");

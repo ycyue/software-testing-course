@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 9 章示意图 · GET 和 POST</p>
+  <h1>差别是「打算干什么」，不是谁更加密</h1>
+  <p class="lead">safe 的意思是语义上像只读取，不该靠它改库存。幂等是做多次和做一次效果相当。机密性去看 HTTPS，不看方法名。</p>
+  <div class="row">
+    <div class="col card" style="background:#ecfeff;">
+      <span class="tag tag-info">GET · 看货架</span>
+      <h2>获取当前表示</h2>
+      <p style="font-size:18px;">「货架上现在有哪些鼠标？」多看几次，货不该因为你看了就少一件。</p>
+      <p><b>规范里：</b>安全（safe）且幂等。</p>
+      <p class="mono">GET /api/products?keyword=mouse</p>
+    </div>
+    <div class="col card" style="background:#fff7ed;">
+      <span class="tag tag-warn">POST · 交表格</span>
+      <h2>请服务器处理这份数据</h2>
+      <p style="font-size:18px;">「请按这张表登录 / 下单。」交两次，可能得到两个订单 id——v1.0 默认不幂等。</p>
+      <p><b>规范里：</b>不是安全方法，也不保证幂等。</p>
+      <p class="mono">POST /api/login<br>POST /api/orders</p>
+    </div>
+  </div>
+  <p class="caption">示意图：把 GET 改成 POST 不会自动加密；把 POST 改成 GET 也不能拿来传密码。MiniShop 登录用 POST 是语义，不是「更安全」。</p>
+</div>
+</body>
+</html>

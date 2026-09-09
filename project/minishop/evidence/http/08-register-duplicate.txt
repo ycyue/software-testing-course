@@ -1,0 +1,5 @@
+POST /api/register
+HTTP 409
+Set-Cookie: absent
+Body:
+{"error": "phone taken"}

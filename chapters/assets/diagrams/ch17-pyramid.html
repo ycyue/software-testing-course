@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>下面多、跑得快；上面少、专门看用户关键路径</title></head>
+<body><div class="page">
+<p class="kicker">第 17 章示意图 · 测试金字塔</p>
+<h1>下面多、跑得快；上面少、专门看用户关键路径</h1>
+<p class="lead">这是实践中的策略模型，不是 ISTQB 规定的 70/20/10。倒置成甜筒：几乎全是 UI，会又慢又脆。</p>
+
+    <div style="max-width:520px;margin:0 auto;text-align:center">
+      <div style="margin:0 auto;width:32%;background:#fee2e2;padding:12px;border-radius:8px">UI 少量<br>登录按钮冒烟</div>
+      <div style="margin:8px auto 0;width:58%;background:#fef3c7;padding:14px;border-radius:8px">接口 居中<br>登录、qty 规则、401/403</div>
+      <div style="margin:8px auto 0;width:86%;background:#dcfce7;padding:16px;border-radius:8px">单元 最多<br>qty_allowed(11,10) 为假</div>
+    </div>
+    
+<p class="caption">示意图：规则优先放接口。不要用 UI 脚本穷举缺字段和 null。ROI 必须带场景，不能说接口永远最高。</p>
+</div></body></html>

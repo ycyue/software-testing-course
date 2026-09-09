@@ -1,5 +1,7 @@
 # 第 11 章：Linux
 
+> **一句话核心：** 日志、进程和磁盘是页面上看不到的观察通道。
+
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 主案例：MiniShop 个人软件测试实践项目
 
@@ -115,6 +117,9 @@ Linux 目录是一棵树，根是 `/`。没有 Windows 那种 `C:` 盘符。常�
 
 ## 11.3 `pwd`、`ls`、`cd` ⭐⭐⭐
 
+![终端里的当前目录就是你的位置](assets/diagrams/ch11-path.png)
+
+
 ```bash
 pwd
 ls
@@ -213,6 +218,9 @@ less app.log
 
 ## 11.6 `grep` 与 `find` ⭐⭐⭐
 
+![grep 找字，find 找文件名](assets/diagrams/ch11-grep-find.png)
+
+
 `grep` 在**文件内容**里找文本。`find` 在**目录树**里找文件。
 
 ```bash
@@ -244,6 +252,9 @@ grep ERROR app.log | tail -n 20
 ---
 
 ## 11.7 管道与重定向 ⭐⭐⭐
+
+![管道把左边的出口接到右边的入口](assets/diagrams/ch11-pipe.png)
+
 
 管道 `|` 把左边的输出变成右边的输入。
 
@@ -444,6 +455,8 @@ curl -sS -D - \
 
 ---
 
+配套可运行实操：[实操 11-1 日志 grep](../practice/11-log-grep/README.md)（`python3 practice/run.py 11-1`）。工作实战再补上 `pwd`/`ls`/`df` 和脱敏 curl。
+
 ## MiniShop 工作实战：Linux 排障包
 
 在本机练习目录或授权测试机完成。不要对真实生产执行 `rm`、`kill`、`chmod 777` 或未脱敏 curl。
@@ -462,16 +475,26 @@ curl -sS -D - \
 exercises/chapter-11-minishop-linux.md
 ```
 
-本机可先创建练习场（请在自己的家目录执行）：
+仓库已有本机真实输出（2026-09-09，`python3 run.py evidence`），优先对照，不要用手写假日志冒充：
 
 ```bash
-mkdir -p ~/minishop-linux-lab/logs
-cat > ~/minishop-linux-lab/logs/app.log << 'EOF'
-2026-09-08 13:01:02 INFO  login ok user=13800138000
-2026-09-08 13:01:05 ERROR inventory reject sku=SKU-DEMO-001 stock=10 qty=11
-2026-09-08 13:01:09 INFO  request id=req-demo-01 path=/cart
-EOF
+cd project/minishop
+pwd
+ls
+grep -E "login ok|inventory reject" evidence/logs/app-sample.log
+df -h .
 ```
+
+审查摘录：
+
+```text
+login ok user=13800138000
+inventory reject sku=SKU-DEMO-001 stock=10 qty=11
+```
+
+完整文件：`evidence/linux/pwd-ls.txt`、`evidence/linux/grep-app-log.txt`、`evidence/linux/df.txt`、`evidence/linux/curl-login-headers.txt`（Set-Cookie 已打码）。
+
+若要在家目录另建练习场，可以用上面同一格式自己造一份**练习用**日志，但课程证据以 `evidence/` 为准。
 
 ```markdown
 # MiniShop Linux 排障记录
@@ -707,4 +730,4 @@ macOS 上输入 `free -h` 失败。这能说明 MiniShop 内存泄漏吗？
 
 ## 下一章预告
 
-下一章进入第 12 章《数据库与 SQL》。你将用 `SELECT` 验证 MiniShop 数据是否真的按规则写入，并在授权测试库里安全地理解 `UPDATE`/`DELETE`：先 SELECT 范围，再改数据。Linux 负责机器和日志，SQL 负责库里的行，两者一起才能把“页面显示 11”核对成库存字段。
+下一章进入第 12 章（上）《数据库与查询》：[12a-sql-query.md](12a-sql-query.md)。先学会 SELECT 再改数。

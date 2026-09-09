@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>第 7 章 HTML/CSS/JS 组合页</title>
+  <style>
+    body { font-family: sans-serif; max-width: 36rem; margin: 1.5rem auto; }
+    .product-card { border: 1px solid #d0d7de; padding: 16px; }
+    .note { color: #444; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <p class="note">第 7 章组合示例。不连接 MiniShop 服务器。点击只改按钮文字。</p>
+  <div class="product-card">
+    <h2>无线鼠标</h2>
+    <p>SKU-DEMO-001</p>
+    <button type="button">加入购物车</button>
+  </div>
+  <script>
+    const button = document.querySelector(".product-card button");
+    button.addEventListener("click", () => {
+      button.textContent = "已加入购物车";
+    });
+  </script>
+</body>
+</html>

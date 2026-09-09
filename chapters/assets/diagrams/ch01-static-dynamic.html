@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <title>静态测试和动态测试</title>
+  <style>
+    .desk { min-height: 340px; }
+    .paper { background:#fff; border:1px solid var(--line); padding:12px; margin:10px 0; border-radius:8px; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 1 章示意图 · 测试不只是点页面</p>
+  <h1>软件还没跑起来，测试也可以开始</h1>
+  <p class="lead">左边在读需求、找矛盾，这是静态测试；右边打开登录页去点，这是动态测试。两种都是测试，不是只有右边才算。</p>
+  <div class="row">
+    <div class="col card desk">
+      <span class="tag tag-info">静态测试</span>
+      <h2>不运行程序，审工作产品</h2>
+      <div class="paper">
+        <b>PRD 片段</b>
+        <p>「密码连续输错怎么办？」——空白</p>
+        <p>「冻结账号何时恢复？」——空白</p>
+      </div>
+      <p>你用红笔标出遗漏。此时 MiniShop 甚至还没有可点击的页面。</p>
+    </div>
+    <div class="col card desk">
+      <span class="tag tag-ok">动态测试</span>
+      <h2>运行起来，看实际行为</h2>
+      <div class="paper">
+        <b>登录页</b>
+        <p>手机号 13800138000</p>
+        <p>密码填对，点登录 → 页面写「登录失败」</p>
+      </div>
+      <p>你观察到了失效。这当然也是测试，但不是测试的全部。</p>
+    </div>
+  </div>
+  <p class="caption">示意图：测试 = 获取质量信息。找 Bug 是其中一种结果，不是定义本身。</p>
+</div>
+</body>
+</html>

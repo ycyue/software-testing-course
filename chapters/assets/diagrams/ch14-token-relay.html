@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>登录这封信拆开，把 token 夹到后面几封信的信封上</title></head>
+<body><div class="page">
+<p class="kicker">第 14 章示意图 · Token 怎么传下去</p>
+<h1>登录这封信拆开，把 token 夹到后面几封信的信封上</h1>
+<p class="lead">不要手抄。用脚本 set，后续请求写 Bearer {{token}}。无凭证那一条故意不要带。</p>
+
+    <div class="row" style="align-items:center">
+      <div class="col card"><b>1 登录</b><p>POST /api/login<br>脚本：pm.environment.set('token', json.token)</p></div>
+      <div class="vs">→</div>
+      <div class="col card"><b>2 改数量</b><p>Authorization: Bearer {{token}}<br>qty=1 / 10 / 11</p></div>
+      <div class="vs">→</div>
+      <div class="col card"><b>3 无凭证</b><p>不要带 Authorization<br>预期 401</p></div>
+    </div>
+    
+<p class="caption">示意图：Environment 覆盖 Collection。仓库里 password 与 token 初始值为空。审查未点 GUI。</p>
+</div></body></html>

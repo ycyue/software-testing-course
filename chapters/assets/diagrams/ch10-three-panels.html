@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>同一句「登录失败」，三个抽屉给出三种证据</title></head>
+<body><div class="page">
+<p class="kicker">第 10 章示意图 · 三个面板</p>
+<h1>同一句「登录失败」，三个抽屉给出三种证据</h1>
+<p class="lead">先打开 DevTools 再操作。界面按钮会变，要完成的事相对稳定。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">Elements</span><h2>页面上现在是什么</h2><p style="font-size:16px;line-height:1.55">按钮是不是真 button？提示文案在不在 DOM？hidden 了吗？</p></div><div class="col card"><span class="tag tag-warn">Console</span><h2>脚本报了什么错</h2><p style="font-size:16px;line-height:1.55">有 TypeError 吗？CORS 是浏览器拦住了响应，不等于「没有接口」。</p></div><div class="col card"><span class="tag tag-ok">Network</span><h2>发出了哪些请求</h2><p style="font-size:16px;line-height:1.55">POST /api/login 是 401 还是根本没发出？有没有 Set-Cookie？</p></div></div>
+<p class="caption">示意图：Elements 里改通了只是本页临时 DOM。Network 200 仍要打开 Response。</p>
+</div></body></html>

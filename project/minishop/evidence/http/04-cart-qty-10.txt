@@ -1,0 +1,5 @@
+POST /api/cart/items
+HTTP 200
+Set-Cookie: absent
+Body:
+{"sku": "SKU-DEMO-001", "qty": 10}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <title>测试用例是一张可执行的任务卡</title>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 5 章示意图 · 测试用例</p>
+  <h1>测试用例不是一句话，是一张别人能照着做的任务卡</h1>
+  <p class="lead">左边是聊天里的“测一下注册”，右边才是用例：依据、数据、步骤、预期都写在同一张卡上。</p>
+  <div class="row">
+    <div class="col card" style="background:#fff7ed;border-color:#fdba74;max-width:340px;">
+      <h2>这不是用例</h2>
+      <div style="background:#fff;border:1px dashed #fb923c;border-radius:10px;padding:16px;min-height:220px;">
+        <p style="color:#9a3412;font-size:13px;margin:0 0 8px;">微信 / 口头交代</p>
+        <p style="font-size:22px;margin:40px 12px;line-height:1.4;">「注册有问题，你测一下。」</p>
+        <p style="color:#c2410c;">缺了：测哪一种号码、怎么操作、怎样算失败、测完数据怎么办。</p>
+      </div>
+    </div>
+    <div class="vs">→</div>
+    <div class="col card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2 style="margin:0;">这才是一条用例</h2>
+        <span class="tag tag-info">TC-REG-PHONE-02</span>
+      </div>
+      <div class="field"><b>标题</b><span>输入 10 位数字手机号时，注册应被拒绝</span></div>
+      <div class="field"><b>依据</b><span>教学规则：手机号为 11 位数字 · 测试点 TP-REG-短号</span></div>
+      <div class="field"><b>优先级</b><span>P0（课程约定，不是全球缺陷等级）</span></div>
+      <div class="field"><b>前置</b><span>注册页可打开；该号码尚未占用</span></div>
+      <div class="field"><b>数据</b><span><span class="mono">1380013800</span>　10 位，故意少一位</span></div>
+      <div class="field"><b>步骤</b><span>1. 打开注册页　2. 填入该手机号和合法密码　3. 提交</span></div>
+      <div class="field"><b>预期</b><span>提示手机号不合法；<strong>不</strong>创建用户；不能直接登录成功</span></div>
+    </div>
+  </div>
+  <p class="caption">示意图：用例把「测什么、用什么数据、怎么做、怎样算过」钉在一张卡上。预期不能只写“正常”。</p>
+</div>
+</body>
+</html>

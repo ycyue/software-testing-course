@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>先读邮戳，再拆信纸；200 也可能写着业务失败</title></head>
+<body><div class="page">
+<p class="kicker">第 9 章示意图 · 状态码是回信上的邮戳</p>
+<h1>先读邮戳，再拆信纸；200 也可能写着业务失败</h1>
+<p class="lead">状态码帮你决定下一步查哪一层，不是考试填空。</p>
+
+    <div class="row" style="flex-wrap:wrap">
+      <div class="card" style="flex:1 1 30%"><b>2xx</b><p>协议上成功。仍要看 Body：登录 200 才有 token。</p></div>
+      <div class="card" style="flex:1 1 30%"><b>301 / 302 / 303 / 307</b><p>换地方了。方法会不会变成 GET，要看是哪一种重定向。</p></div>
+      <div class="card" style="flex:1 1 30%"><b>400</b><p>请求本身不像约定。MiniShop qty=11 是 400。</p></div>
+      <div class="card" style="flex:1 1 30%"><b>401</b><p>还没证明你是谁。无 token 下单。</p></div>
+      <div class="card" style="flex:1 1 30%"><b>403</b><p>知道你是谁，但不许。普通用户打管理员接口。</p></div>
+      <div class="card" style="flex:1 1 30%"><b>404 / 409 / 5xx</b><p>找不到、冲突、服务器出错。5xx 先别当业务规则失败。</p></div>
+    </div>
+    
+<p class="caption">示意图：401 和 403 不要都写成「失败」。页面文案可能把它们说成同一句「登录失败」。</p>
+</div></body></html>

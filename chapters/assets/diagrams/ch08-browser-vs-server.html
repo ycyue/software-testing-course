@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>浏览器拦住你，不等于后厨也拦了</title></head>
+<body><div class="page">
+<p class="kicker">第 8 章示意图 · 前端校验和服务器规则</p>
+<h1>浏览器拦住你，不等于后厨也拦了</h1>
+<p class="lead">required、maxlength 只约束「用这个页面、用这个浏览器、老老实实点提交」的人。接口和改过的请求可以绕过。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">浏览器</span><h2>方便用户，可被绕过</h2><p style="font-size:16px;line-height:1.55">空手机号点提交，浏览器不让发。这不是服务端证据。</p></div><div class="col card"><span class="tag tag-ok">服务器</span><h2>真正的业务规则</h2><p style="font-size:16px;line-height:1.55">绕过页面直接 POST 空手机号，应 400。库里不得出现该用户。</p></div></div>
+<p class="caption">示意图：Web 功能测试既要点页面，也要想到「不用这个表单时系统还守不守规矩」。</p>
+</div></body></html>

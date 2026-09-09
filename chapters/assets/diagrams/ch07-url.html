@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+  <style>
+    .url { display:flex; flex-wrap:wrap; gap:6px; font-family:ui-monospace,Menlo,monospace; font-size:20px; margin: 12px 0 28px; }
+    .bit { padding: 10px 12px; border-radius: 8px; color:#0f172a; }
+    .legend { display:grid; grid-template-columns: 160px 1fr; gap:10px 16px; font-size:16px; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 7 章示意图 · URL 不是「网址」两个字</p>
+  <h1>把地址栏拆开，缺陷才能写到具体格子上</h1>
+  <p class="lead">教学示例（非正式 MiniShop 冻结地址）：</p>
+  <div class="url">
+    <span class="bit" style="background:#99f6e4;">https</span>
+    <span>://</span>
+    <span class="bit" style="background:#bfdbfe;">shop.example.test</span>
+    <span>:</span>
+    <span class="bit" style="background:#fde68a;">8443</span>
+    <span class="bit" style="background:#ddd6fe;">/products</span>
+    <span>?</span>
+    <span class="bit" style="background:#fecaca;">keyword=mouse&amp;page=2</span>
+    <span class="bit" style="background:#e2e8f0;">#reviews</span>
+  </div>
+  <div class="card">
+    <div class="legend">
+      <b style="background:#99f6e4;padding:4px 8px;border-radius:6px;">scheme</b><span>怎么访问：http 或 https。https 还要过 TLS。</span>
+      <b style="background:#bfdbfe;padding:4px 8px;border-radius:6px;">host</b><span>去哪台主机的名字。还要经 DNS 变成 IP。</span>
+      <b style="background:#fde68a;padding:4px 8px;border-radius:6px;">port</b><span>敲哪扇门。省略时 http 常当 80，https 常当 443。</span>
+      <b style="background:#ddd6fe;padding:4px 8px;border-radius:6px;">path</b><span>主机上的哪份资源或哪条路由。</span>
+      <b style="background:#fecaca;padding:4px 8px;border-radius:6px;">query</b><span>附加参数。搜索词、页码常在这里。</span>
+      <b style="background:#e2e8f0;padding:4px 8px;border-radius:6px;">fragment</b><span>页面内锚点，通常不发给服务器。</span>
+    </div>
+  </div>
+  <p class="caption">示意图：白屏、404、连不上，可能坏在不同格子。第 19 章本机默认是 http://127.0.0.1:8765/ 。</p>
+</div>
+</body>
+</html>

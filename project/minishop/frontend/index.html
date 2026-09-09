@@ -28,6 +28,27 @@
       <p id="login-msg" role="status"></p>
     </section>
 
+    <section id="register-panel">
+      <h2>注册</h2>
+      <p class="note">手机号 11 位数字且以 1 开头；密码 8～16 位，须同时包含字母和数字。注册成功后需再登录，不会自动签发 token。</p>
+      <form id="register-form">
+        <p>
+          <label for="reg-phone">手机号</label>
+          <input id="reg-phone" name="phone" type="text" autocomplete="username">
+        </p>
+        <p>
+          <label for="reg-password">密码</label>
+          <input id="reg-password" name="password" type="password" autocomplete="new-password">
+        </p>
+        <p>
+          <label for="reg-name">显示名</label>
+          <input id="reg-name" name="display_name" type="text" value="New User">
+        </p>
+        <button type="submit" id="register-btn">注册</button>
+      </form>
+      <p id="register-msg" role="status"></p>
+    </section>
+
     <section id="shop-panel" hidden>
       <p>当前用户：<span id="who"></span> <a href="/admin.html">后台</a></p>
       <h2>商品</h2>

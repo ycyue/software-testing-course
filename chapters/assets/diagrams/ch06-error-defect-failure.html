@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>人写错 → 产品里留下瑕疵 → 运行时才被你看见</title></head>
+<body><div class="page">
+<p class="kicker">第 6 章示意图 · 错误、缺陷、失效</p>
+<h1>人写错 → 产品里留下瑕疵 → 运行时才被你看见</h1>
+<p class="lead">测试人员直接看到的常常是失效。报告的目的是帮团队处理缺陷。根因不一定是代码。</p>
+<div class="row"><div class="col card"><span class="tag tag-warn">错误 Error</span><h2>人的失误</h2><p style="font-size:16px;line-height:1.55">把拒绝条件写成 quantity < stock，或需求把上限写错。</p></div><div class="col card"><span class="tag tag-bad">缺陷 Defect</span><h2>工作产品里的瑕疵</h2><p style="font-size:16px;line-height:1.55">代码或文档允许数量超过可售库存。</p></div><div class="col card"><span class="tag tag-info">失效 Failure</span><h2>当时表现不对</h2><p style="font-size:16px;line-height:1.55">库存 10，页面却把数量改成了 11。</p></div></div>
+<p class="caption">示意图：不是每次异常都是产品缺陷。也可能是环境、数据、用法或「设计如此」。</p>
+</div></body></html>

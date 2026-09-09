@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>范围内没包含超库存，100% 只说明你测过的那些都绿了</title></head>
+<body><div class="page">
+<p class="kicker">第 6 章示意图 · 通过率不是出口</p>
+<h1>范围内没包含超库存，100% 只说明你测过的那些都绿了</h1>
+<p class="lead">还要看未测项、未关闭缺陷、环境和剩余风险。测试不能证明没有缺陷。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">看起来很绿</span><h2>已执行用例 20/20 通过</h2><p style="font-size:16px;line-height:1.55">都是登录成功和 qty=1</p></div><div class="col card"><span class="tag tag-bad">实际没覆盖</span><h2>已确认规则：不得超过库存</h2><p style="font-size:16px;line-height:1.55">qty=11 根本不在范围里 → 不能建议上线</p></div></div>
+<p class="caption">示意图：范围外的高风险项必须出现在风险栏。MiniShop 计划把 qty=11 放在 P0。</p>
+</div></body></html>

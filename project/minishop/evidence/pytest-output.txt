@@ -1,0 +1,4 @@
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33mx[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                   [100%][0m
+[36m[1m=========================== short test summary info ============================[0m
+[33mXFAIL[0m tests/test_api.py::[1mtest_empty_keyword_should_not_return_all[0m - BUG-001 empty keyword returns full catalog
+[32m[32m[1m37 passed[0m, [33m1 xfailed[0m[32m in 0.61s[0m[0m

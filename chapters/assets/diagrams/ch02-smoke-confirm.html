@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>三种「再测一遍」，问的不是同一件事</title></head>
+<body><div class="page">
+<p class="kicker">第 2 章示意图 · 冒烟、确认、回归</p>
+<h1>三种「再测一遍」，问的不是同一件事</h1>
+<p class="lead">都可能点登录，但目的不同。不要把回归说成确认，也不要把冒烟说成测完了。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">冒烟</span><h2>这份构建能不能开始测</h2><p style="font-size:16px;line-height:1.55">登录页能开、接口能通。失败则深度测试先别铺开。</p></div><div class="col card"><span class="tag tag-ok">确认</span><h2>这个缺陷修没修好</h2><p style="font-size:16px;line-height:1.55">按原步骤重放 qty=11。只回答这一条。</p></div><div class="col card"><span class="tag tag-warn">回归</span><h2>这次修改有没有弄坏别人</h2><p style="font-size:16px;line-height:1.55">登录、下单、权限还在不在。范围按改动风险定。</p></div></div>
+<p class="caption">示意图：确认通过 ≠ 可以关闭前的全部风险。回归范围不是永远全量。</p>
+</div></body></html>

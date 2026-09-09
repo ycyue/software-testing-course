@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>计划、虚拟用户、真正发出的请求、看结果的人</title></head>
+<body><div class="page">
+<p class="kicker">第 18 章示意图 · JMeter 最小零件</p>
+<h1>计划、虚拟用户、真正发出的请求、看结果的人</h1>
+<p class="lead">GUI 用来调试。真正加压用非 GUI。审查未安装 JMeter。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">Test Plan</span><h2>这一份计划</h2><p style="font-size:16px;line-height:1.55">教学骨架：1 用户 1 循环 GET /api/products</p></div><div class="col card"><span class="tag tag-ok">Thread Group</span><h2>多少人、怎么爬坡</h2><p style="font-size:16px;line-height:1.55">不要一上来 200 线程还开着 Results Tree</p></div><div class="col card"><span class="tag tag-warn">HTTP Sampler</span><h2>发出哪条请求</h2><p style="font-size:16px;line-height:1.55">Domain 127.0.0.1 Port 8765，只打授权环境</p></div><div class="col card"><span class="tag tag-bad">Listener</span><h2>收集样本</h2><p style="font-size:16px;line-height:1.55">真正负载以落盘 jtl 为主，不是盯着彩色界面</p></div></div>
+<p class="caption">示意图：文件在 project/minishop/jmeter/。不是 SLA，不要对公网加压。</p>
+</div></body></html>

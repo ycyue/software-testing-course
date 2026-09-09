@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>测「没带通行证」时，夹具若自动登录，你永远测不到 401</title></head>
+<body><div class="page">
+<p class="kicker">第 16 章示意图 · 401 不要先帮它登录</p>
+<h1>测「没带通行证」时，夹具若自动登录，你永远测不到 401</h1>
+<p class="lead">token fixture 默认每个测试要才给。不要 autouse 到无凭证用例上，也不要共用已登录 Session。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">需要 token 的测试</span><h2>显式写参数</h2><p style="font-size:16px;line-height:1.55">def test_cart(base_url, token_a):  才会登录</p></div><div class="col card"><span class="tag tag-bad">401 用例</span><h2>不要 autouse</h2><p style="font-size:16px;line-height:1.55">不写 token 参数，请求头不加 Authorization，断言 401</p></div></div>
+<p class="caption">示意图：共享 Session 或 Cookie 也会把登录态漏到 401 测试里。第 16 章强调过这件事。</p>
+</div></body></html>

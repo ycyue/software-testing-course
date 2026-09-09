@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>get("qty") 得到 None 时，你还不知道发生了哪一种</title></head>
+<body><div class="page">
+<p class="kicker">第 15 章示意图 · 四种「空」</p>
+<h1>get("qty") 得到 None 时，你还不知道发生了哪一种</h1>
+<p class="lead">缺键、null、空字符串、错误类型，服务端常常走不同分支。测试脚本要分开标。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">{}</span><h2>缺字段</h2><p style="font-size:16px;line-height:1.55">键不在，get 为 None</p></div><div class="col card"><span class="tag tag-warn">{"qty": null}</span><h2>JSON null</h2><p style="font-size:16px;line-height:1.55">键在，值为 None</p></div><div class="col card"><span class="tag tag-bad">{"qty": ""}</span><h2>空字符串</h2><p style="font-size:16px;line-height:1.55">键在，值为 ""</p></div><div class="col card"><span class="tag tag-ok">{"qty": "1"}</span><h2>错误类型</h2><p style="font-size:16px;line-height:1.55">键在，值是字符串不是 int</p></div></div>
+<p class="caption">示意图：用 json.loads，不要 eval。手机号、SKU、token 都是字符串。</p>
+</div></body></html>

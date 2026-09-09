@@ -1,0 +1,39 @@
+{
+  "lab": "13-1",
+  "ran_at": "2026-09-09T04:44:52Z",
+  "rows": [
+    {
+      "name": "missing",
+      "status": 400,
+      "error": "missing qty",
+      "expect_status": 400,
+      "expect_error": "missing qty",
+      "ok": true
+    },
+    {
+      "name": "null",
+      "status": 400,
+      "error": "null qty",
+      "expect_status": 400,
+      "expect_error": "null qty",
+      "ok": true
+    },
+    {
+      "name": "empty_str",
+      "status": 400,
+      "error": "wrong type qty",
+      "expect_status": 400,
+      "expect_error": "wrong type qty",
+      "ok": true
+    },
+    {
+      "name": "wrong_type",
+      "status": 400,
+      "error": "wrong type qty",
+      "expect_status": 400,
+      "expect_error": "wrong type qty",
+      "ok": true
+    }
+  ],
+  "verdict": "四种形状都是 400，但 missing 和 null 的错误信息不同；空字符串和 \"1\" 在本实现里都走 wrong type。不要把它们写成「都是异常输入，测一条就行」。"
+}

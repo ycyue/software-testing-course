@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>工具可以相同，问的句子不同</title></head>
+<body><div class="page">
+<p class="kicker">第 18 章示意图 · 负载、压力、耐久</p>
+<h1>工具可以相同，问的句子不同</h1>
+<p class="lead">开了 200 线程如果仍低于预期高峰，那只是一次偏小的负载，不自动叫压力测试。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">负载 Load</span><h2>预期高峰达标吗</h2><p style="font-size:16px;line-height:1.55">爬坡到约定并发，稳住一段时间，看 P95 和错误率。</p></div><div class="col card"><span class="tag tag-bad">压力 Stress</span><h2>再加会在哪坏</h2><p style="font-size:16px;line-height:1.55">超过预期，找拐点、恢复方式。</p></div><div class="col card"><span class="tag tag-warn">耐久 Soak</span><h2>时间长了会漏吗</h2><p style="font-size:16px;line-height:1.55">中等负载跑数小时，看内存和是否越来越慢。</p></div></div>
+<p class="caption">示意图：只允许在授权环境加压。教学 .jmx 是 1 用户 1 循环的骨架，不是 SLA。</p>
+</div></body></html>

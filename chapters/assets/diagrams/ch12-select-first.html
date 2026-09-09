@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>UPDATE / DELETE 是动刀，先数清楚会切到几行</title></head>
+<body><div class="page">
+<p class="kicker">第 12 章示意图 · 先 SELECT 再改</p>
+<h1>UPDATE / DELETE 是动刀，先数清楚会切到几行</h1>
+<p class="lead">只在授权教学库操作。WHERE 写错，可能改掉整张表。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">1. SELECT</span><h2>看范围</h2><p style="font-size:16px;line-height:1.55">先查出 phone=13800138000 的购物车行，确认是你以为的那两行。</p></div><div class="col card"><span class="tag tag-warn">2. 改数</span><h2>带 WHERE</h2><p style="font-size:16px;line-height:1.55">只更新这一行 qty。能开事务就开，便于 ROLLBACK。</p></div><div class="col card"><span class="tag tag-ok">3. 再 SELECT</span><h2>核对</h2><p style="font-size:16px;line-height:1.55">超库存被接口拒绝后，这里不得出现 11。</p></div></div>
+<p class="caption">示意图：SQLite 没有 TRUNCATE。回滚语义因引擎而异，不要抄成通则。</p>
+</div></body></html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 7 章示意图 · 客户端和服务器</p>
+  <h1>浏览器是柜台前的顾客，MiniShop 服务在后厨</h1>
+  <p class="lead">你看见的页面在顾客这一侧拼出来；库存数字住在后厨的数据库里。两边都可能出错，所以不能只凭「页面红了」判死刑。</p>
+  <div class="row">
+    <div class="col card" style="background:#eff6ff;">
+      <h2>客户端 · 浏览器</h2>
+      <p>发请求、收 HTML/CSS/JS、画页面、记住你点过的按钮。</p>
+      <p><span class="tag tag-info">前端</span> 更常指跑在浏览器里的结构、样式和脚本。</p>
+      <div class="card" style="margin-top:16px;">登录框、商品列表、「共 3 件」这行字</div>
+    </div>
+    <div class="vs">请求<br>响应</div>
+    <div class="col card" style="background:#f0fdf4;">
+      <h2>服务器 · MiniShop</h2>
+      <p>听端口、执行规则、读写 SQLite、返回 JSON 或页面文件。</p>
+      <p><span class="tag tag-ok">后端</span> 更常指服务器上的业务和数据。</p>
+      <div class="card" style="margin-top:16px;">/api/login、库存 10、拒绝 qty=11</div>
+    </div>
+  </div>
+  <p class="caption">示意图：HTML/CSS/JS 是把后厨端出来的菜摆盘。盘摆错了是前端；菜本身咸了是后端；路上下单走丢了是网络。</p>
+</div>
+</body>
+</html>

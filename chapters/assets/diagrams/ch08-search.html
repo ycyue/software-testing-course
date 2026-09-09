@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>空格提交后列出三件商品，这是缺陷，不是「搜索还能用」</title></head>
+<body><div class="page">
+<p class="kicker">第 8 章示意图 · 搜索不只看「有结果」</p>
+<h1>空格提交后列出三件商品，这是缺陷，不是「搜索还能用」</h1>
+<p class="lead">至少观察：发没发请求、结果是全量还是空、有没有提示、URL 里是什么 keyword。</p>
+<div class="row"><div class="col card"><span class="tag tag-warn">输入三个空格</span><h2>看起来像没输入</h2><p style="font-size:16px;line-height:1.55">前端可能照样带 keyword=   去请求</p></div><div class="col card"><span class="tag tag-ok">R-SEARCH 预期</span><h2>不应把全量当搜索结果</h2><p style="font-size:16px;line-height:1.55">400 或空列表并提示输入关键字</p></div><div class="col card"><span class="tag tag-bad">MiniShop 实际</span><h2>BUG-001</h2><p style="font-size:16px;line-height:1.55">200，三件商品都在。证据见截图 04-search-empty-bug001.png</p></div></div>
+<p class="caption">示意图：搜索测试还要看命中、无命中、特殊字符。不要只写「不能搜」。</p>
+</div></body></html>

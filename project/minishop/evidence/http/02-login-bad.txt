@@ -1,0 +1,5 @@
+POST /api/login
+HTTP 401
+Set-Cookie: absent
+Body:
+{"result": "fail"}

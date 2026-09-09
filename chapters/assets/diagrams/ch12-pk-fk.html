@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>主键认出「哪一行」，外键说「它属于谁」</title></head>
+<body><div class="page">
+<p class="kicker">第 12 章示意图 · 主键和外键</p>
+<h1>主键认出「哪一行」，外键说「它属于谁」</h1>
+<p class="lead">购物车行自己有 id，同时又必须指向一个真实用户和一个真实商品。</p>
+<div class="row"><div class="col card"><span class="tag tag-ok">主键</span><h2>这一行的身份证</h2><p style="font-size:16px;line-height:1.55">users.id、products.sku（唯一）。没有它，两行鼠标会分不清。</p></div><div class="col card"><span class="tag tag-info">外键</span><h2>指向别人的身份证</h2><p style="font-size:16px;line-height:1.55">cart_items.user_id → users.id。用户不存在就不能挂一条车。</p></div></div>
+<p class="caption">示意图：教学库打开 PRAGMA foreign_keys = ON。删用户前要知道购物车行还指不指着他。</p>
+</div></body></html>

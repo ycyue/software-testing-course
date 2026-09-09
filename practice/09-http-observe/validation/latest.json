@@ -1,0 +1,24 @@
+{
+  "lab": "9-1",
+  "ran_at": "2026-09-09T03:51:54Z",
+  "request": {
+    "method": "POST",
+    "path": "/api/login",
+    "header": "Content-Type",
+    "body_keys": [
+      "phone",
+      "password"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "has_set_cookie": true,
+    "has_token": true,
+    "body_keys": [
+      "result",
+      "token",
+      "role"
+    ]
+  },
+  "verdict": "登录成功同时给了 JSON token 和 Set-Cookie。按 R-AUTH，后续接口以 Authorization: Bearer 为准；Cookie 与 Token 不是两种互相替代的登录产品。"
+}

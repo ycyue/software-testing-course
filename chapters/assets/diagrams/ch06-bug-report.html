@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+<div class="page">
+  <p class="kicker">第 6 章示意图 · 缺陷报告</p>
+  <h1>「购物车有问题」开发工程师无法复现</h1>
+  <p class="lead">缺陷报告的核心不是语气重，而是让另一个人在同一版本上走同一条路，看到同一结果。</p>
+  <div class="row">
+    <div class="col card" style="background:#fff7ed;">
+      <h2>聊天记录</h2>
+      <div style="background:#fff;border-radius:12px;padding:14px;margin-top:12px;">
+        <p style="margin:0 0 8px;color:#9a3412;">今天 14:02</p>
+        <p style="font-size:20px;">购物车有问题，很严重，感觉是前端。</p>
+      </div>
+      <p>缺版本、缺库存数字、缺步骤、缺预期、缺实际、缺截图。</p>
+    </div>
+    <div class="vs">→</div>
+    <div class="col card">
+      <h2>可复现的报告</h2>
+      <div class="field"><b>标题</b><span>库存为 10 时可将购物车数量改为 11 且无失败提示</span></div>
+      <div class="field"><b>环境</b><span>本机 MiniShop v1.0 · Chrome · http://127.0.0.1:8765</span></div>
+      <div class="field"><b>前置</b><span>13800138000 已登录；SKU-DEMO-001 库存 10，当前 qty=1</span></div>
+      <div class="field"><b>步骤</b><span>把数量改为 11，点「更新数量」</span></div>
+      <div class="field"><b>预期</b><span>400 / 提示超库存；列表仍为合法数量</span></div>
+      <div class="field"><b>实际</b><span>（若实现错误）页面变成 11 且无提示</span></div>
+      <p style="color:var(--muted);font-size:13px;">v1.0 当前实现会拒绝 11。这张卡示范的是写法，不是假装 MiniShop 现在超卖。</p>
+    </div>
+  </div>
+  <p class="caption">示意图：标题要写出对象、条件和实际结果。不要贴密码。</p>
+</div>
+</body>
+</html>
