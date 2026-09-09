@@ -81,7 +81,7 @@ Collection 不是测试报告，也不是 OpenAPI 本身。它可以对照文档
 
 ## 14.2 发出 GET 与 POST ⭐⭐⭐
 
-新建 Request，选择方法，URL 使用变量：
+新建 Request，选择方法，URL 使用变量。下面是**第 13～16 章教学服务**的路径，不是 MiniShop v1.0。正式集合在 `project/minishop/postman/`，用 `/api/products`、`/api/login`。
 
 ```text
 {{baseUrl}}/products?keyword=mouse
@@ -116,7 +116,7 @@ Postman 也能存 Cookie。教学登录若同时返回 `Set-Cookie` 与 JSON `to
 
 | 变量 | 建议范围 | 例子 |
 | --- | --- | --- |
-| `baseUrl` | Environment | `http://127.0.0.1:8080` |
+| `baseUrl` | Environment | 教学服务常用 `http://127.0.0.1:8080`；v1.0 环境文件是 `http://127.0.0.1:8765` |
 | `phone` | Environment 或 Collection | 教学号 `13800138000` |
 | `token` | Environment 的**当前值** | 登录脚本写入，不要填进可分享的初始值 |
 | `orderId` | 运行中由脚本写入 | 创建订单后保存 |

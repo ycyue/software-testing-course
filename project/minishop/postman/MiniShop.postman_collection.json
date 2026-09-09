@@ -37,12 +37,14 @@
     {
       "name": "搜索商品",
       "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
-        "pm.test('200 array', function () {",
+        "pm.test('200 array hit', function () {",
         "  pm.response.to.have.status(200);",
-        "  pm.expect(pm.response.json().items).to.be.an('array');",
+        "  const items = pm.response.json().items;",
+        "  pm.expect(items).to.be.an('array');",
+        "  pm.expect(items[0].sku).to.eql('SKU-DEMO-001');",
         "});"
       ]}}],
-      "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=mouse"}
+      "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=鼠标"}
     },
     {
       "name": "登录-正确",

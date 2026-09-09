@@ -481,7 +481,7 @@ class MiniShopHandler(BaseHTTPRequestHandler):
             conn.close()
             self._json(404, {"error": "not found"})
             return
-        if row["user_id"] != user["id"] and user["role"] != "admin":
+        if row["user_id"] != user["id"]:
             conn.close()
             self._json(403, {"error": "forbidden"})
             return

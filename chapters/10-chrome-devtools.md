@@ -45,7 +45,7 @@ MiniShop 测试环境登录后，页面只显示“登录失败”。
 
 有 Network 记录时，可以写成：
 
-> 在 Chrome 当前稳定版中提交登录后，`POST /login` 返回 `401`，响应 JSON 含失败信息；页面提示与报文一致。未发现 `Set-Cookie`。构建 `minishop-test-20260908-01`（教学示例号）。
+> 在 Chrome 当前稳定版中提交登录后，`POST /api/login` 返回 `401`，响应 JSON 含失败信息；页面提示与报文一致。未发现 `Set-Cookie`。构建 `minishop-test-20260908-01`（教学示例号）。v1.0 登录路径是 `/api/login`，不是 `/login`。
 
 后者才能让开发工程师在同一版本上复现。本章训练的就是这种取证。
 
@@ -226,7 +226,7 @@ Network 是本章的核心。正确顺序：
 
 专业表达继续用：
 
-> 页面显示登录失败；`POST /login` 返回 401，无 `Set-Cookie`。待开发核对认证逻辑。尚未证明是前端文案写错。
+> 页面显示登录失败；`POST /api/login` 返回 401，无 `Set-Cookie`。待开发核对认证逻辑。尚未证明是前端文案写错。
 
 而不是：
 
@@ -539,7 +539,7 @@ exercises/chapter-10-minishop-devtools.md
 ### 测试为什么要用 DevTools？
 
 结论：把页面现象变成可分享的请求和错误证据。  
-示例：登录失败时给出 `POST /login`、状态码和是否 `Set-Cookie`。  
+示例：登录失败时给出 `POST /api/login`、状态码和是否 `Set-Cookie`。  
 边界：它不能代替服务端日志，也不能证明没有缺陷。
 
 ### Preserve log 和 Disable cache 有什么区别？
@@ -593,7 +593,7 @@ D. 关掉 DevTools 后继续对整台电脑生效
 
 ### 练习 5
 
-`POST /login` 返回 200，Body 为 `{"success":false}`。只看 Status 列的绿色 200，会犯什么错？
+教学报文 `POST /login` 返回 200，Body 为 `{"success":false}`（v1.0 登录路径是 `/api/login`）。只看 Status 列的绿色 200，会犯什么错？
 
 ### 练习 6
 

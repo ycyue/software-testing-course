@@ -15,7 +15,14 @@ def test_login_ok(base_url):
     assert body["result"] == "ok"
     assert type(body["token"]) is str and body["token"] != ""
     assert "Set-Cookie" in response.headers
+    assert "HttpOnly" in response.headers["Set-Cookie"]
     assert "status" not in body
+    cookie_cart = requests.get(
+        f"{base_url}/api/cart",
+        headers={"Cookie": f"minishop_session={body['token']}"},
+        timeout=TIMEOUT,
+    )
+    assert cookie_cart.status_code == 200
 
 
 def test_login_wrong_password(base_url):
@@ -28,10 +35,11 @@ def test_login_wrong_password(base_url):
 
 
 def test_products_list(base_url):
-    response = requests.get(f"{base_url}/api/products", params={"keyword": "mouse"}, timeout=TIMEOUT)
+    response = requests.get(f"{base_url}/api/products", params={"keyword": "鼠标"}, timeout=TIMEOUT)
     assert response.status_code == 200
     items = response.json()["items"]
     assert type(items) is list
+    assert [it["sku"] for it in items] == ["SKU-DEMO-001"]
 
 
 def test_products_catalog_without_keyword(base_url):
@@ -49,6 +57,9 @@ def test_home_has_login_and_register_form(base_url):
     assert 'for="password"' in html
     assert 'type="password"' in html
     assert 'id="register-form"' in html
+    js = requests.get(f"{base_url}/app.js", timeout=TIMEOUT).text
+    assert "await refreshProducts();" in js
+    assert "await refreshProducts(\"\");" not in js
 
 
 def test_admin_page_ok(base_url):
@@ -118,7 +129,7 @@ def test_cart_unauthorized(base_url):
 def test_create_order_returns_id(base_url, token_a):
     response = requests.post(
         f"{base_url}/api/orders",
-        json={"sku": "SKU-DEMO-001", "qty": 1},
+        json={"sku": "SKU-DEMO-003", "qty": 1},
         headers={"Authorization": f"Bearer {token_a}"},
         timeout=TIMEOUT,
     )
@@ -150,7 +161,7 @@ def test_create_order_unauthorized(base_url):
     assert response.status_code == 401
 
 
-def test_order_forbidden_other_user(base_url, token_a, token_b):
+def test_order_forbidden_other_user(base_url, token_a, token_b, token_admin):
     created = requests.post(
         f"{base_url}/api/orders",
         json={"sku": "SKU-DEMO-003", "qty": 1},
@@ -166,25 +177,46 @@ def test_order_forbidden_other_user(base_url, token_a, token_b):
     )
     assert other.status_code == 403
     assert "id" not in other.json() or other.json().get("id") != order_id
+    admin = requests.get(
+        f"{base_url}/api/orders/{order_id}",
+        headers={"Authorization": f"Bearer {token_admin}"},
+        timeout=TIMEOUT,
+    )
+    assert admin.status_code == 403
 
 
 def test_admin_products_forbidden_to_user(base_url, token_a):
-    response = requests.get(
+    products = requests.get(
         f"{base_url}/api/admin/products",
         headers={"Authorization": f"Bearer {token_a}"},
         timeout=TIMEOUT,
     )
-    assert response.status_code == 403
+    orders = requests.get(
+        f"{base_url}/api/admin/orders",
+        headers={"Authorization": f"Bearer {token_a}"},
+        timeout=TIMEOUT,
+    )
+    assert products.status_code == 403
+    assert orders.status_code == 403
 
 
 def test_admin_products_ok(base_url, token_admin):
-    response = requests.get(
+    products = requests.get(
         f"{base_url}/api/admin/products",
         headers={"Authorization": f"Bearer {token_admin}"},
         timeout=TIMEOUT,
     )
-    assert response.status_code == 200
-    assert type(response.json()["items"]) is list
+    assert products.status_code == 200
+    assert type(products.json()["items"]) is list
+    orders = requests.get(
+        f"{base_url}/api/admin/orders",
+        headers={"Authorization": f"Bearer {token_admin}"},
+        timeout=TIMEOUT,
+    )
+    assert orders.status_code == 200
+    items = orders.json()["items"]
+    assert type(items) is list
+    assert all(set(it.keys()) == {"id"} for it in items)
 
 
 @pytest.mark.xfail(reason="BUG-001 empty keyword returns full catalog", strict=True)

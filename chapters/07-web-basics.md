@@ -416,7 +416,7 @@ fragment：
 
 ### 实操作业交付模板
 
-将观察结果保存为 `chapter-07-web-observation.md`，至少包含：
+将观察结果保存为 `exercises/chapter-07-web-observation.md`，至少包含：
 
 ```markdown
 # MiniShop Web 页面观察报告

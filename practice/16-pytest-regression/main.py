@@ -37,29 +37,34 @@ def main() -> int:
     text = (proc.stdout or "") + (proc.stderr or "")
     print(text, end="" if text.endswith("\n") else "\n")
 
-    if "No module named pytest" in text or proc.returncode == 2 and "pytest" in text.lower():
+    pytest_missing = "No module named pytest" in text
+    if pytest_missing:
         print("还没有 pytest。先执行：")
         print("  cd project/minishop && python3 run.py setup")
-        return 2
-
-    passed = "37 passed" in text
-    xfailed = "1 xfailed" in text or "1 xfail" in text
-    if passed and xfailed:
-        verdict = (
-            "37 passed, 1 xfailed。"
-            "xfail 对应 BUG-001：空搜索仍返回全量，PRD 要求不应如此。"
-            "不要把 xfail 说成「测试挂了」，也不要说成「已经修了」。"
-        )
-        code = 0
-    else:
-        verdict = "输出与基线 37 passed / 1 xfailed 不一致。对照 evidence/pytest-output.txt。"
+        verdict = "还没有 pytest。先执行：cd project/minishop && python3 run.py setup"
+        passed = False
+        xfailed = False
         code = 2
+    else:
+        passed = "37 passed" in text
+        xfailed = "1 xfailed" in text or "1 xfail" in text
+        if passed and xfailed:
+            verdict = (
+                "37 passed, 1 xfailed。"
+                "xfail 对应 BUG-001：空搜索仍返回全量，PRD 要求不应如此。"
+                "不要把 xfail 说成「测试挂了」，也不要说成「已经修了」。"
+            )
+            code = 0
+        else:
+            verdict = "输出与基线 37 passed / 1 xfailed 不一致。对照 evidence/pytest-output.txt。"
+            code = 2
 
     print(f"结论：{verdict}")
     payload = {
         "lab": "16-1",
         "ran_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "returncode": proc.returncode,
+        "pytest_missing": pytest_missing,
         "passed_37": passed,
         "xfailed_1": xfailed,
         "verdict": verdict,

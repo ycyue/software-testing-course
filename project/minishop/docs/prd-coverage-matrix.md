@@ -16,7 +16,7 @@
 | R-ORDER | 两次 POST 两个 id | TP-ORDER-2 | TC-ORDER-002 | 接口 | P1 | 通过 | pytest |
 | R-PERM | 无凭证 401 | TP-AUTH-401 | TC-AUTH-001 | 接口 | P0 | 通过 | pytest |
 | R-PERM | B 读 A 订单 403 | TP-PERM-403 | TC-PERM-001 | 接口 | P1 | 通过 | pytest |
-| R-PERM | 普通用户 `/api/admin/*` 403；管理员 200 | TP-ADMIN | TC-ADMIN-001 / TC-ADMIN-002 | 接口/Web | P1 | 通过 | `07-admin.png` |
+| R-PERM | 普通用户 `/api/admin/*` 403；管理员 200；管理员 `GET /api/orders/{他人}` 亦 403 | TP-ADMIN | TC-ADMIN-001 / TC-ADMIN-002 | 接口/Web | P1 | 通过 | pytest、`07-admin.png` |
 | R-SEARCH | 空/空白关键字不应全量 | TP-SEARCH-EMPTY | TC-SEARCH-001 | 接口/Web | P1 | **失败** BUG-001 | `03-products-empty-keyword.txt`、`04-search-empty-bug001.png` |
 | （页面） | 首页含登录/注册表单 | TP-WEB-HOME | TC-WEB-001 | Web | P2 | 通过 | `01-login.png`、`06-register.png` |
 

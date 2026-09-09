@@ -4,7 +4,7 @@
 
 ← [实操目录](../README.md) · 📖 [读 04B](../../chapters/04b-minishop-requirement-review.md)
 
-这是**书面实操**，没有 `python3 practice/run.py 4-1`。把产出存到：
+这是**书面实操**。`python3 practice/run.py 4-1` 只会指出这份说明，不能代替你写评审。把产出存到：
 
 ```text
 exercises/chapter-04-minishop-requirement-review.md

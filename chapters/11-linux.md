@@ -412,10 +412,10 @@ scp tester@192.0.2.10:/var/log/minishop/app.log ./
 
 `curl` 在终端发 HTTP 请求。它复现的是接口，不是浏览器渲染。第 10 章 Copy as cURL 的结果，脱敏后可以在这里跑。
 
-最小读取：
+最小读取。下面 `PORT` 和 `/products` 是**教学占位**，不要对着正在跑的 MiniShop 原样粘贴。v1.0 是 `http://127.0.0.1:8765/api/products`。
 
 ```bash
-curl -sS -D - -o /tmp/minishop-curl-body.txt "http://127.0.0.1:8080/products?keyword=mouse"
+curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:PORT/products?keyword=mouse"
 ```
 
 | 选项 | 作用 |
@@ -432,13 +432,13 @@ curl -sS -D - -o /tmp/minishop-curl-body.txt "http://127.0.0.1:8080/products?key
 | `-w '%{http_code}'` | 额外打印状态码，便于脚本化记录 |
 | `-k` | 忽略 TLS 证书错误；**仅**在已知原因的测试环境使用 |
 
-教学 POST（密码占位，勿写入真实密码）：
+教学 POST（密码占位，勿写入真实密码）。路径 `/login` 与端口 `8080` 仍是教学占位；MiniShop v1.0 为 `POST http://127.0.0.1:8765/api/login`。
 
 ```bash
 curl -sS -D - \
   -H "Content-Type: application/json" \
   -d '{"phone":"13800138000","password":"<redacted>"}' \
-  "http://127.0.0.1:8080/login"
+  "http://127.0.0.1:PORT/login"
 ```
 
 对照第 9 章阅读状态行、`Content-Type`、`Set-Cookie` 和 Body。`200` 仍要看 Body 是否业务失败。若头和 Body 混在一起不便复制，可用 `-D` 把头打到终端、`-o` 把 Body 写入文件，或用 `-w '%{http_code}\n'` 单独记录状态码。

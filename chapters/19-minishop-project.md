@@ -264,7 +264,7 @@ pytest 绿不等于页面按钮可用，也不等于性能达标。
 
 ---
 
-起步实操全部指向本项目。本章收口：[实操 19-1](../../practice/19-project-pack/README.md)（`python3 practice/run.py 19-1`）。清单见 [practice/README.md](../../practice/README.md)。
+起步实操全部指向本项目。本章收口：[实操 19-1](../practice/19-project-pack/README.md)（`python3 practice/run.py 19-1`）。清单见 [practice/README.md](../practice/README.md)。
 
 ## MiniShop 工作实战：完整项目包 ⭐⭐⭐
 

@@ -3,19 +3,20 @@ $ pwd
 
 $ ls
 README.md
-[34m__pycache__[39;49m[0m
-[34mautomation[39;49m[0m
-[34mbugs[39;49m[0m
-[34mdata[39;49m[0m
-[34mdocs[39;49m[0m
-[34mevidence[39;49m[0m
-[34mfrontend[39;49m[0m
-[34mlogs[39;49m[0m
-[34mpostman[39;49m[0m
+__pycache__
+automation
+bugs
+data
+docs
+evidence
+frontend
+jmeter
+logs
+postman
 pytest.ini
 requirements.txt
 run.bat
-[31mrun.py[39;49m[0m
-[31mrun.sh[39;49m[0m
+run.py
+run.sh
 server.py
-[34mtests[39;49m[0m
+tests

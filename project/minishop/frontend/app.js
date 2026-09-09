@@ -52,7 +52,7 @@ loginForm.addEventListener("submit", async (event) => {
   if (registerPanel) registerPanel.hidden = true;
   shopPanel.hidden = false;
   document.getElementById("who").textContent = phone + " (" + body.role + ")";
-  await refreshProducts("");
+  await refreshProducts();
   await refreshCart();
 });
 

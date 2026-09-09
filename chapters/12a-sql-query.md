@@ -365,7 +365,7 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 
 ## MiniShop 工作实战（上）
 
-只读查询种子库（授权教学库）。语句见 `project/minishop/docs/sql-check.md`。本机输出：`project/minishop/evidence/sql/seed-join.txt`。
+只读查询 MiniShop v1.0 种子库（授权环境）。语句见 `project/minishop/docs/sql-check.md`。本机种子 JOIN：`project/minishop/evidence/sql/seed-join.txt` 第一节（鼠标 qty 1）。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案。
 
 ## 小练习
 
@@ -411,7 +411,7 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 
 ## 本章可运行性说明
 
-JOIN 语句已在本机教学库执行，输出见 `project/minishop/evidence/sql/seed-join.txt`。
+v1.0 种子 JOIN 见 `project/minishop/evidence/sql/seed-join.txt` 第一节。12.4 教学库的 `COUNT` / `IS NULL` 练习不要对着该文件对答案。
 
 ## 参考资料
 

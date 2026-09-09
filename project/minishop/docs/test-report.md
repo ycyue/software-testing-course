@@ -26,7 +26,7 @@ P0 功能与接口检查通过，含注册（合法 / 非法手机号与密码 /
 | --- | --- | --- |
 | Web 冒烟 | `/` 含登录与注册表单；`/admin.html` 200；错误密码见「登录失败」；qty=11 页面提示 `qty exceeds stock` | `evidence/screenshots/` |
 | 接口 | 注册 201/400/409；登录 200+HttpOnly Cookie；qty=10 200、qty=11 400；下单 201 无 status | `evidence/http/` |
-| SQL | Tester A：鼠标 qty 10 stock 10（证据会话中先写了合法 10），键盘 qty 2 stock 5；qty=11 未写入 | `evidence/sql/seed-join.txt` |
+| SQL | 种子：鼠标 qty 1 stock 10、键盘 qty 2 stock 5。证据会话 qty=10 后仍不是 11 | `evidence/sql/seed-join.txt` |
 | 日志 | `login ok user=13800138000`；`inventory reject ... qty=11` | `evidence/logs/app-sample.log` |
 | 性能 | 未加压 | — |
 

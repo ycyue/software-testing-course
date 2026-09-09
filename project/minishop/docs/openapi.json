@@ -104,16 +104,33 @@
     "/api/orders": {
       "post": {
         "summary": "Create order; not idempotent; body has id only",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["sku", "qty"],
+                "properties": {
+                  "sku": {"type": "string"},
+                  "qty": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {"description": "Created id"},
-          "400": {"description": "Rule error"},
-          "401": {"description": "Unauthorized"}
+          "400": {"description": "Rule or type error"},
+          "401": {"description": "Unauthorized"},
+          "404": {"description": "Unknown sku"},
+          "409": {"description": "Stock changed"}
         }
       }
     },
     "/api/orders/{id}": {
       "get": {
-        "summary": "Get own order",
+        "summary": "Get own order; other users and admin get 403",
         "parameters": [
           {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}
         ],

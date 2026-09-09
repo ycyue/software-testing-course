@@ -160,39 +160,6 @@ def capture_http_sql_log(base: str) -> None:
         "password": "Test1234",
     })
 
-    db = ROOT / "data" / "minishop.sqlite"
-    sql_text = ""
-    if db.exists():
-        conn = sqlite3.connect(str(db))
-        conn.row_factory = sqlite3.Row
-        rows = conn.execute(
-            """
-            SELECT u.phone, p.sku, c.qty, p.stock
-            FROM cart_items AS c
-            INNER JOIN users AS u ON c.user_id = u.id
-            INNER JOIN products AS p ON c.product_id = p.id
-            WHERE u.phone = '13800138000'
-            ORDER BY p.id
-            """
-        ).fetchall()
-        over = conn.execute(
-            """
-            SELECT qty FROM cart_items c
-            JOIN products p ON p.id = c.product_id
-            JOIN users u ON u.id = c.user_id
-            WHERE u.phone = '13800138000' AND p.sku = 'SKU-DEMO-001'
-            """
-        ).fetchone()
-        conn.close()
-        lines = ["phone\tsku\tqty\tstock"]
-        for row in rows:
-            lines.append(f"{row['phone']}\t{row['sku']}\t{row['qty']}\t{row['stock']}")
-        qty = over["qty"] if over else None
-        lines.append("")
-        lines.append(f"SKU-DEMO-001 qty after qty=11 reject: {qty} (must not be 11)")
-        sql_text = "\n".join(lines) + "\n"
-    _write(EVIDENCE / "sql" / "seed-join.txt", sql_text or "database missing\n")
-
     log_src = ROOT / "logs" / "app.log"
     log_dst = EVIDENCE / "logs" / "app-sample.log"
     if log_src.exists():
@@ -203,6 +170,48 @@ def capture_http_sql_log(base: str) -> None:
             sample.append(line)
         log_dst.parent.mkdir(parents=True, exist_ok=True)
         log_dst.write_text("\n".join(sample[-40:]) + ("\n" if sample else ""), encoding="utf-8")
+
+
+def cart_join_snapshot(db: Path) -> tuple[list[str], object]:
+    if not db.exists():
+        return ["database missing"], None
+    conn = sqlite3.connect(str(db))
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute(
+        """
+        SELECT u.phone, p.sku, c.qty, p.stock
+        FROM cart_items AS c
+        INNER JOIN users AS u ON c.user_id = u.id
+        INNER JOIN products AS p ON c.product_id = p.id
+        WHERE u.phone = '13800138000'
+        ORDER BY p.id
+        """
+    ).fetchall()
+    over = conn.execute(
+        """
+        SELECT qty FROM cart_items c
+        JOIN products p ON p.id = c.product_id
+        JOIN users u ON u.id = c.user_id
+        WHERE u.phone = '13800138000' AND p.sku = 'SKU-DEMO-001'
+        """
+    ).fetchone()
+    conn.close()
+    lines = ["phone\tsku\tqty\tstock"]
+    for row in rows:
+        lines.append(f"{row['phone']}\t{row['sku']}\t{row['qty']}\t{row['stock']}")
+    qty = over["qty"] if over else None
+    return lines, qty
+
+
+def write_seed_join(seed_lines: list[str], after_lines: list[str], after_qty) -> None:
+    text = (
+        "# 种子（启动后、改购物车前）\n"
+        + "\n".join(seed_lines)
+        + "\n\n# qty=10 允许、qty=11 拒绝之后\n"
+        + "\n".join(after_lines)
+        + f"\n\nSKU-DEMO-001 qty after qty=11 reject: {after_qty} (must not be 11)\n"
+    )
+    _write(EVIDENCE / "sql" / "seed-join.txt", text)
 
 
 def capture_screenshots(base: str) -> None:
@@ -299,15 +308,21 @@ def evidence() -> int:
     linux_dir = EVIDENCE / "linux"
     linux_dir.mkdir(parents=True, exist_ok=True)
     pwd = subprocess.check_output(["pwd"], cwd=ROOT, text=True)
-    ls = subprocess.check_output(["ls"], cwd=ROOT, text=True)
+    ls_env = os.environ.copy()
+    ls_env["CLICOLOR"] = "0"
+    ls = subprocess.check_output(["/bin/ls"], cwd=ROOT, text=True, env=ls_env)
     _write(linux_dir / "pwd-ls.txt", f"$ pwd\n{pwd}\n$ ls\n{ls}")
     df = subprocess.check_output(["df", "-h", "."], cwd=ROOT, text=True)
     _write(linux_dir / "df.txt", df)
 
     proc, base = start_server_process()
     try:
-        capture_http_sql_log(base)
+        db = ROOT / "data" / "minishop.sqlite"
+        seed_lines, _seed_qty = cart_join_snapshot(db)
         capture_screenshots(base)
+        capture_http_sql_log(base)
+        after_lines, after_qty = cart_join_snapshot(db)
+        write_seed_join(seed_lines, after_lines, after_qty)
         log_src = ROOT / "logs" / "app.log"
         if log_src.exists():
             grep = subprocess.check_output(
@@ -315,15 +330,17 @@ def evidence() -> int:
                 text=True,
             )
             _write(linux_dir / "grep-app-log.txt", grep)
+        body_path = linux_dir / "login-body.json"
         curl_login = subprocess.check_output(
             [
-                "curl", "-sS", "-D", "-", "-o", "/tmp/minishop-login-body.json",
+                "curl", "-sS", "-D", "-", "-o", str(body_path),
                 "-H", "Content-Type: application/json",
                 "-d", '{"phone":"13800138000","password":"Test1234"}',
                 f"{base}/api/login",
             ],
             text=True,
         )
+        body_path.unlink(missing_ok=True)
         redacted = []
         for line in curl_login.splitlines():
             if line.lower().startswith("set-cookie:"):

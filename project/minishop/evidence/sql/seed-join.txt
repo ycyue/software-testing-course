@@ -1,3 +1,9 @@
+# 种子（启动后、改购物车前）
+phone	sku	qty	stock
+13800138000	SKU-DEMO-001	1	10
+13800138000	SKU-DEMO-002	2	5
+
+# qty=10 允许、qty=11 拒绝之后
 phone	sku	qty	stock
 13800138000	SKU-DEMO-001	10	10
 13800138000	SKU-DEMO-002	2	5
