@@ -365,7 +365,49 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 
 ## MiniShop 工作实战（上）
 
-只读查询 MiniShop v1.0 种子库（授权环境）。语句见 `project/minishop/docs/sql-check.md`。本机种子 JOIN：`project/minishop/evidence/sql/seed-join.txt` 第一节（鼠标 qty 1）。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案。
+只读查询 MiniShop v1.0 种子库（授权环境）。语句见 `project/minishop/docs/sql-check.md`。本机种子 JOIN：`project/minishop/evidence/sql/seed-join.txt` 第一节（鼠标 qty 1）。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案。写操作放到 12B。
+
+## 常见错误
+
+### 错误 1：`WHERE display_name = NULL`
+
+修正：`NULL` 不能用 `=` 比较为真。要用 `IS NULL` / `IS NOT NULL`。
+
+### 错误 2：`SELECT *` 总是更专业
+
+修正：测什么列写什么列。`*` 会把无关字段和以后才加的列混进结果，缺陷更难稳定复现。
+
+### 错误 3：把 12.4 教学库的用户 3 当成 MiniShop 管理员
+
+修正：教学库第三账号是 `13800138002` 且 `display_name` 为 `NULL`，用来练 `COUNT` 和 `IS NULL`。v1.0 管理员是 `13800138099`。
+
+### 错误 4：JOIN 对上了就不必看页面
+
+修正：SQL 证明库里的值。页面显示 11、库里仍是 1，仍是缺陷；反过来也是。交叉验证在 12B 和实操 12-1。
+
+### 错误 5：没有 `ORDER BY` 就 `LIMIT 1` 当固定预期
+
+修正：哪一行先返回不确定，缺陷无法稳定复现。
+
+## 面试角度 ⭐⭐⭐
+
+### 为什么 UI 对了还要查库？
+
+结论：页面只是一条观察通道，业务状态往往在库里。  
+示例：购物车显示 2，JOIN 出来还是旧值，仍按缺陷处理。  
+边界：只在授权测试库查；生产库连只读也要谨慎。
+
+### `NULL` 和空字符串有什么差别？
+
+结论：不是一回事。`NULL` 表示缺失，空字符串是长度为 0 的值。  
+示例：教学库用户 3 的 `display_name` 为 `NULL`，`COUNT(display_name)` 不计这一行。  
+边界：需求要规定未填显示名是禁止、空串还是 `NULL`。
+
+### JOIN 在测试里做什么？
+
+结论：把用户、购物车行、商品拼成一条可核对的观察。  
+示例：Tester A 种子应为鼠标 qty 1 stock 10、键盘 qty 2 stock 5。  
+边界：不要编造订单状态字段；v1.0 订单成功只返回 `id`。
 
 ## 小练习
 
@@ -408,6 +450,10 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 - [ ] 我会写带 WHERE 的 SELECT
 - [ ] 我能解释 JOIN 在核对购物车时的作用
 - [ ] 我知道 NULL 不是空字符串
+
+## 本章总结
+
+SELECT 先问数据在哪。`NULL` 不是空字符串，JOIN 用来交叉核对购物车。写操作、事务和安全改数放到 12B。
 
 ## 本章可运行性说明
 

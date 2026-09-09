@@ -257,6 +257,50 @@ python3 run.py test
 
 ![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
 
+fixture、parametrize 和教学 pytest 包见 [16B](16b-pytest-fixtures.md)。仓库套件用 `python3 run.py test`；实操 16-1 解释 37 / 1。
+
+## 常见错误
+
+### 错误 1：对预期 400 的请求先 `raise_for_status()`
+
+修正：4xx 会在断言前变成异常，分不清“实现成了 400”还是“实现成了 500”。先看 `status_code`，再断言 Body。
+
+### 错误 2：直接敲 `pytest`，不用 `python3 -m pytest`
+
+修正：`-m` 保证用的是当前解释器（通常是 venv）里的 pytest，避免系统路径上另一个副本。
+
+### 错误 3：测试函数叫 `login_ok`、文件叫 `login.py`
+
+修正：pytest 默认收集 `test_*.py` 和 `*_test.py` 里以 `test_` 开头的函数。否则一条都不会跑。
+
+### 错误 4：接口自动化 ROI 永远最高，所以只写脚本不点页面
+
+修正：ROI 必须带场景。稳定、重复、漏测损失大的判定适合自动化；还在改文案的页面先手工。
+
+### 错误 5：把教学 `/login` 服务当成 MiniShop v1.0
+
+修正：教学服务常只让 `qty=1` 成功。正式契约是 `/api/`，`qty=10` 允许，见 PRD。
+
+## 面试角度 ⭐⭐⭐
+
+### 什么场景适合先上 pytest？
+
+结论：判定已经明确、步骤重复、失败代价高。  
+示例：MiniShop 超库存和缺字段，每次回归都跑。  
+边界：全新页面还在改文案，先手工。接口 ROI 不是永远最高。
+
+### 为什么用 `python3 -m pytest`？
+
+结论：跟着当前解释器走，避免装错环境。  
+示例：先 `python3 run.py setup` 再 `python3 run.py test`。  
+边界：系统里可能还有另一个 `pytest`，直接敲命令会跑到它。
+
+### xfail 是失败还是已修复？
+
+结论：都不是。它表示已知缺陷按预期失败并被标记。  
+示例：仓库 37 passed、1 xfailed，对应 BUG-001 仍开放。  
+边界：不要把 xfail 说成“测试挂了”，也不要写进报告当已修复。
+
 ## 小练习
 
 ### 练习 1
@@ -293,6 +337,10 @@ python3 run.py test
 - [ ] 我会运行 pytest
 - [ ] 我会用 requests 发 JSON
 - [ ] 我不会对预期 400 先 `raise_for_status`
+
+## 本章总结
+
+pytest 把已经明确的判定交给脚本重复执行。先会跑、会断言状态码，再谈 fixture。xfail 记录的是仍开放的缺陷。
 
 ## 本章可运行性说明
 

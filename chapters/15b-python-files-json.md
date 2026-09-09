@@ -20,6 +20,10 @@
 
 已完成 15A。
 
+## 场景导入
+
+接口返回一串商品 JSON。截图能证明“看见了”，但不能让别人明天按同一把尺子复核。把响应写成文件、用 `json.loads` 读回来、断言鼠标库存是 10——这才是证据。实操 15-1 只练读懂；工作实战还要你自己写 `cart_cases.json`。
+
 ## 15.9 模块、import、venv 与 pip ⭐⭐⭐
 
 ![venv 是项目的包装箱，不是安全沙箱](assets/diagrams/ch15-venv.png)
@@ -481,6 +485,44 @@ cases_ok 8
 
 第 19 章仓库已提供 `project/minishop/requirements.txt` 与 `python3 run.py setup`。本章仍要求你先在**自己的练习目录**建 venv，不要拿课程仓库当乱装包的实验场。
 
+## 常见错误
+
+### 错误 1：用 `eval` 解析 JSON
+
+修正：`eval` 执行代码。测试脚本用 `json.loads`。标准 JSON 用双引号，`null` 对应 Python 的 `None`。
+
+### 错误 2：`sudo pip install` 改系统 Python
+
+修正：用当前解释器的 `python3 -m pip`，再配合 venv，只影响本项目。
+
+### 错误 3：JSON 里 `11` 和 `11.0` 当成同一类型
+
+修正：到 Python 后一个是 `int`，一个是 `float`。测“必须是整数数量”时看 `type`，不能只看 `== 11`。
+
+### 错误 4：把密码或完整 token 写进练习文件并提交
+
+修正：教学占位符可以；真实凭证不行。`exercises/` 里同样禁止。
+
+## 面试角度 ⭐⭐⭐
+
+### 为什么不要 `eval` JSON？
+
+结论：`eval` 跑的是代码，不是数据格式。  
+示例：`json.loads('{"qty": 1}')` 得到字典；`eval` 在恶意输入下可以执行任意表达式。  
+边界：连“看起来像字典的字符串”也不要用 `eval`。
+
+### venv 是安全沙箱吗？
+
+结论：不是。它只是项目的包装箱，隔离的是包装位置。  
+场景：本项目的 pytest 装在 `project/minishop/.venv`，不往系统 Python 里塞。  
+边界：venv 挡不住你对未授权主机发请求。
+
+### 测试脚本怎样处理中文 JSON？
+
+结论：读写都用 UTF-8；`json.dumps(..., ensure_ascii=False)` 便于自己阅读。  
+示例：商品名「无线鼠标」不应先被 `\u` 转义搞乱再断言。  
+边界：发给接口的 JSON 仍须是合法 UTF-8 文本。
+
 ## 小练习
 
 ### 练习 2
@@ -523,6 +565,10 @@ D. JSON 的 `null` 对应 Python 的 `None`，标准 JSON 用双引号而不是�
 - [ ] 我知道用 venv，而不是 `sudo pip`
 - [ ] 我会用 `json.loads` 而不是 `eval`
 - [ ] 我能完成数据检查脚本，且不编造订单状态
+
+## 本章总结
+
+文件和 JSON 是接口响应最常见的形态。用 venv 装包，用 `json.loads` 而不是 `eval`，不要把密码写进仓库。
 
 ## 本章可运行性说明
 

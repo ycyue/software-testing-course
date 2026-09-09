@@ -19,6 +19,10 @@
 
 已完成 16A。
 
+## 场景导入
+
+每条测试都自己登录一次，token 写得到处都是。fixture 把前置抽出来；parametrize 把 qty=1/10/11 和缺字段四态展开。抽错了也会出事：`autouse` 登录后再测 401，往往测脏。
+
 ## 16.6 fixture 与 scope ⭐⭐⭐
 
 ![fixture 准备环境，parametrize 展开数据](assets/diagrams/ch16-fixture.png)
@@ -519,6 +523,43 @@ def test_create_order_unauthorized(base_url):
 
 仓库正式结果（2026-09-09）：`37 passed, 1 xfailed`。输出：`project/minishop/evidence/pytest-output.txt`。HTML 报告：`evidence/pytest-report.html`。
 
+## 常见错误
+
+### 错误 1：给 401 用例 `autouse` token fixture
+
+修正：会先多登录一次；若再共用 Session 或 Cookie，就测不到未认证。需要 token 的测试显式写参数。
+
+### 错误 2：教学服务全绿，就当成 MiniShop v1.0 已测完
+
+修正：教学路径常是 `/login` 且只让 `qty=1`。仓库套件是 37 passed / 1 xfailed，xfail 仍是 BUG-001。
+
+### 错误 3：fixture 里写判定，parametrize 里准备环境
+
+修正：fixture 准备观察所需的前置，不负责发明判定。六种 Body 用 parametrize 展开。
+
+### 错误 4：两次下单成功却去断言订单 `status`
+
+修正：v1.0 和教学下单成功都只保证 `id`。默认不幂等：两个 id。没有状态机。
+
+## 面试角度 ⭐⭐⭐
+
+### fixture 和 parametrize 各干什么？
+
+结论：fixture 准备环境，parametrize 展开数据。  
+示例：`base_url` / `token` 用 fixture；购物车缺字段、null、空串、错误类型用 parametrize。  
+边界：不要用 autouse token 去测 401。
+
+### 教学绿和仓库 37/1 是一回事吗？
+
+结论：不是。教学服务练写法；v1.0 套件才是项目证据。  
+示例：`python3 run.py test` → 37 passed, 1 xfailed。  
+边界：简历里只写仓库里能指出来的数字，并以本机最新输出为准。
+
+### 连续两次创建订单，自动化应断言什么？
+
+结论：两次都 201、两个不同 `id`、Body 没有 `status`。  
+边界：若以后需求改成幂等，再改期望，不要现在编状态机。
+
 ## 小练习
 
 ### 练习 5
@@ -574,6 +615,10 @@ D. GET 比 POST 安全，所以登录必须用 GET
 - [ ] 我知道 401 不要 autouse token
 - [ ] 我不会把教学绿当成正式契约
 - [ ] 我能跑通 `python3 run.py test`
+
+## 本章总结
+
+fixture 准备前置，parametrize 展开数据。401 不要 autouse token。教学绿不是 v1.0 契约；仓库基线仍是 37 passed / 1 xfailed。
 
 ## 阶段测验
 

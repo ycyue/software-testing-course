@@ -313,8 +313,48 @@ exercises/chapter-08-minishop-web-functional.md
 - 不虚构尚未基线化的接口路径、订单状态或 Token 字段名；
 - 不在报告中粘贴密码或完整 Token。
 
----
+## 常见错误
 
+### 错误 1：Cookie、Session、Token 是三种可互换的登录产品
+
+修正：它们层次不同，常常配合使用。Cookie 是浏览器保存并可能自动发送的机制；Session 是服务端会话状态；Token 是凭证。Session ID 或 Token 都可以放进 Cookie。
+
+### 错误 2：`HttpOnly` 能阻止请求携带 Cookie
+
+修正：`HttpOnly` 只阻止脚本读取 Cookie。浏览器仍会在后续请求里自动带上它。MiniShop 登录同时下发 JSON `token` 和 HttpOnly Cookie。
+
+### 错误 3：页面藏掉后台按钮，就算测过权限
+
+修正：权限以服务器判定为准。直接访问 URL 或打 `/api/admin/*`，普通用户应 403。见实操 8-1。
+
+### 错误 4：Bearer Token 就是 JWT，有 Token 就不再用 Cookie
+
+修正：Bearer 是出示方式，不是某一种令牌格式。系统可以同时用 Cookie 和 Token。
+
+### 错误 5：产品说“只保证 Chrome”，其他浏览器没测也算通过
+
+修正：计划写明 P0 组合；范围外列入未测项和剩余风险，不要默认为通过。兼容性和响应式也要分开写。
+
+## 面试角度 ⭐⭐⭐
+
+### 为什么不能说 Cookie、Session、Token 是三种登录方式？
+
+结论：层次不同，常配合使用，不是三选一产品。  
+原理：Cookie 管怎么存和带；Session 管服务端状态；Token 管出示什么凭证。  
+示例：MiniShop 登录 200 同时给 JSON `token` 和 `Set-Cookie: HttpOnly`。后续接口以 `Authorization: Bearer` 为准。  
+边界：不要把 `sessionStorage` 说成服务端 Session。
+
+### 横向越权和纵向越权有什么区别？
+
+结论：横向是同级访问他人资源；纵向是低权限做高权限的事。  
+示例：用户 B 读用户 A 的订单应 403；普通用户打 `/api/admin/products` 应 403。  
+边界：只在授权测试账号上复现；报告写两个角色和脱敏 URL。
+
+### HttpOnly 的边界是什么？
+
+结论：脚本读不到这条 Cookie，请求仍可能带上它。  
+场景：XSS 不容易偷到 HttpOnly Cookie，但 CSRF 和服务端鉴权仍要另测。  
+边界：前端把 token 放进 `sessionStorage` 时，脚本仍可读；这和 HttpOnly Cookie 不是同一层。
 
 ## 小练习
 
@@ -363,6 +403,10 @@ D. 有 Token 的系统一定不再使用 Cookie
 - [ ] 我能说明 HttpOnly 的边界
 - [ ] 我能设计越权用例
 - [ ] 我能区分兼容性和响应式
+
+## 本章总结
+
+Cookie、Session、Token 不是三种可互换产品。权限看服务器判定，不看按钮在不在。兼容性写范围，响应式写视口，未测项必须显式留下。
 
 ## 本章可运行性说明
 

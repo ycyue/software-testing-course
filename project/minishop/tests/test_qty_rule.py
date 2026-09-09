@@ -1,9 +1,4 @@
-def qty_allowed(qty, stock):
-    if type(qty) is not int or type(stock) is not int:
-        return False
-    if qty < 1:
-        return False
-    return qty <= stock
+from server import qty_allowed
 
 
 def test_qty_one_allowed():

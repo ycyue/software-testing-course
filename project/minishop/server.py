@@ -133,6 +133,14 @@ def valid_password(password: str) -> bool:
     return has_letter and has_digit
 
 
+def qty_allowed(qty, stock) -> bool:
+    if type(qty) is not int or type(stock) is not int:
+        return False
+    if qty < 1:
+        return False
+    return qty <= stock
+
+
 class MiniShopHandler(BaseHTTPRequestHandler):
     db_path = DEFAULT_DB
     log_path = DEFAULT_LOG
@@ -382,7 +390,7 @@ class MiniShopHandler(BaseHTTPRequestHandler):
             conn.close()
             self._json(400, {"error": "qty not positive"})
             return
-        if qty > product["stock"]:
+        if not qty_allowed(qty, product["stock"]):
             self._app_log(
                 f"inventory reject sku={sku} stock={product['stock']} qty={qty}"
             )
@@ -434,7 +442,7 @@ class MiniShopHandler(BaseHTTPRequestHandler):
             conn.close()
             self._json(400, {"error": "qty not positive"})
             return
-        if qty > product["stock"]:
+        if not qty_allowed(qty, product["stock"]):
             self._app_log(f"inventory reject sku={sku} stock={product['stock']} qty={qty}")
             conn.close()
             self._json(400, {"error": "qty exceeds stock"})

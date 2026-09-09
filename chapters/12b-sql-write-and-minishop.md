@@ -19,6 +19,10 @@ INSERT/UPDATE/DELETE 会改数据。必须先 SELECT 验证范围，只在授权
 
 已完成 12A。
 
+## 场景导入
+
+页面把数量改成 11，接口返回 400。若你只截一张失败提示，仍不知道库里有没有写成 11。先 SELECT 再谈改；改完再 SELECT。实操 12-1 就是这条交叉验证。
+
 ## 12.12 `INSERT` ⭐⭐⭐
 
 ```sql
@@ -242,6 +246,43 @@ sqlite3 ~/minishop-sql-lab.sqlite
 
 本机证据：qty=11 拒绝后购物车不得为 11，见 `evidence/sql/seed-join.txt` 与 `tests/test_api.py::test_cart_qty_11_does_not_persist`。
 
+## 常见错误
+
+### 错误 1：不带 `WHERE` 的 `UPDATE` / `DELETE`
+
+修正：先用同一条件 `SELECT` 看范围，再在事务里改。忘记 `WHERE` 会改整表。
+
+### 错误 2：把 `TRUNCATE` 当成所有引擎都有的语句
+
+修正：SQLite 没有 `TRUNCATE`。回滚语义也因引擎而异，不能抄成通则。
+
+### 错误 3：接口拒绝了就不必再查库
+
+修正：`qty=11` 返回 400 之后，SQL 里该 SKU 仍不能是 11。页面、接口、库要对上。
+
+### 错误 4：在未授权库或生产库做写操作练习
+
+修正：只在自有或书面授权的教学库改数。实操 12-1 用临时库，退出即删。
+
+## 面试角度 ⭐⭐⭐
+
+### 改数据之前为什么要先 SELECT？
+
+结论：先确认影响范围，再决定 COMMIT 还是 ROLLBACK。  
+示例：`WHERE id = 2` 的 DELETE，先 SELECT 应只看到目标行。  
+边界：授权测试库才能改；生产即使“只改一行”也不属于本章练习。
+
+### UI 对了库不对，算缺陷吗？
+
+结论：算。观察通道不一致就是失效。  
+示例：页面显示 2，JOIN 仍是旧 qty。  
+边界：先确认查的是同一用户、同一 SKU、同一环境。
+
+### SQLite 有没有 TRUNCATE？
+
+结论：没有。清空表要用 `DELETE`，且仍须授权和范围确认。  
+边界：MySQL/PostgreSQL 的 `TRUNCATE` 也不是“比 DELETE 更安全的测试习惯”。
+
 ## 小练习
 
 ### 练习 6
@@ -291,6 +332,10 @@ D. 在生产只更新一行并立刻 `COMMIT`
 - [ ] 我只在授权教学库修改
 - [ ] 我知道 SQLite 无 TRUNCATE
 - [ ] 我能完成 MiniShop SQL 验证包
+
+## 本章总结
+
+改数据前先 SELECT 范围；UI 对了库不对，仍是缺陷。只在授权教学库写，优先放进事务，发现范围不对就 ROLLBACK。
 
 ## 阶段测验
 
