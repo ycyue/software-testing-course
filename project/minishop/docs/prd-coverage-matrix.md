@@ -23,5 +23,5 @@
 未覆盖（明确留下，不假装通过）：
 
 - 支付、物流、优惠券、订单状态机：PRD 非范围。
-- Postman GUI Collection Runner：本机未点击；集合 JSON 与脚本已入库。
+- Postman GUI Collection Runner：本机未点击；集合 JSON 与脚本已入库（含空搜索 / 越权 / 非法注册）。
 - 无头 UI 逐控件套件：截图为 Playwright + 本机 Chrome 的手工等价路径，不是回归套件。

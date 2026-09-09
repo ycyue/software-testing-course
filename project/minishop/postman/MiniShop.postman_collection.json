@@ -2,7 +2,7 @@
   "info": {
     "name": "MiniShop v1.0 Teaching",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Personal practice. Informal production contract. No secrets in repo. Import with MiniShop.postman_environment.json. Fill password only as a current value on your machine."
+    "description": "Personal practice. Informal production contract. No secrets in repo. Import with MiniShop.postman_environment.json. Fill password only as a current value on your machine. 空搜索按 R-SEARCH 断言，当前会失败，对应 BUG-001；不要把 Runner 全绿当成没有缺陷。"
   },
   "item": [
     {
@@ -35,6 +35,21 @@
       }
     },
     {
+      "name": "注册-非法手机号",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('400 invalid phone', function () {",
+        "  pm.response.to.have.status(400);",
+        "  pm.expect(pm.response.json().error).to.eql('invalid phone');",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"phone\":\"1380013800\",\"password\":\"{{password}}\"}"},
+        "url": "{{baseUrl}}/api/register"
+      }
+    },
+    {
       "name": "搜索商品",
       "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
         "pm.test('200 array hit', function () {",
@@ -45,6 +60,17 @@
         "});"
       ]}}],
       "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=鼠标"}
+    },
+    {
+      "name": "空搜索-BUG-001",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('R-SEARCH: blank keyword must not return full catalog', function () {",
+        "  const items = pm.response.json().items || [];",
+        "  const closed = pm.response.code === 400 || items.length === 0;",
+        "  pm.expect(closed, 'BUG-001 still open: blank keyword returns the catalog').to.eql(true);",
+        "});"
+      ]}}],
+      "request": {"method": "GET", "header": [], "url": "{{baseUrl}}/api/products?keyword=   "}
     },
     {
       "name": "登录-正确",
@@ -62,6 +88,41 @@
         "method": "POST",
         "header": [{"key": "Content-Type", "value": "application/json"}],
         "body": {"mode": "raw", "raw": "{\"phone\":\"{{phone}}\",\"password\":\"{{password}}\"}"},
+        "url": "{{baseUrl}}/api/login"
+      }
+    },
+    {
+      "name": "登录-用户B",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('200 token B', function () {",
+        "  pm.response.to.have.status(200);",
+        "  const json = pm.response.json();",
+        "  pm.expect(json.token).to.be.a('string').and.not.empty;",
+        "  pm.environment.set('tokenB', json.token);",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"phone\":\"{{phoneB}}\",\"password\":\"{{password}}\"}"},
+        "url": "{{baseUrl}}/api/login"
+      }
+    },
+    {
+      "name": "登录-管理员",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('200 token admin', function () {",
+        "  pm.response.to.have.status(200);",
+        "  const json = pm.response.json();",
+        "  pm.expect(json.token).to.be.a('string').and.not.empty;",
+        "  pm.expect(json.role).to.eql('admin');",
+        "  pm.environment.set('tokenAdmin', json.token);",
+        "});"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"phone\":\"{{phoneAdmin}}\",\"password\":\"{{password}}\"}"},
         "url": "{{baseUrl}}/api/login"
       }
     },
@@ -130,7 +191,7 @@
           {"key": "Content-Type", "value": "application/json"},
           {"key": "Authorization", "value": "Bearer {{token}}"}
         ],
-        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"},
+        "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-003\",\"qty\":1}"},
         "url": "{{baseUrl}}/api/orders"
       }
     },
@@ -144,6 +205,34 @@
         "header": [{"key": "Content-Type", "value": "application/json"}],
         "body": {"mode": "raw", "raw": "{\"sku\":\"SKU-DEMO-001\",\"qty\":1}"},
         "url": "{{baseUrl}}/api/orders"
+      }
+    },
+    {
+      "name": "越权-他人订单",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('403 other user', function () {",
+        "  pm.response.to.have.status(403);",
+        "  const json = pm.response.json();",
+        "  pm.expect(json.id).to.not.eql(pm.environment.get('lastOrderId'));",
+        "});"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{tokenB}}"}],
+        "url": "{{baseUrl}}/api/orders/{{lastOrderId}}"
+      }
+    },
+    {
+      "name": "越权-管理员读明细",
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('403 admin cannot read items via this path', function () {",
+        "  pm.response.to.have.status(403);",
+        "});"
+      ]}}],
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{tokenAdmin}}"}],
+        "url": "{{baseUrl}}/api/orders/{{lastOrderId}}"
       }
     }
   ]

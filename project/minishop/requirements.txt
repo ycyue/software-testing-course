@@ -1,4 +1,5 @@
 # MiniShop v1.0 student runtime for tests.
 # Server itself is stdlib-only (python3 server.py / python3 run.py serve).
 pytest==9.1.1
+pytest-html==4.2.0
 requests==2.34.2

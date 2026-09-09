@@ -14,7 +14,7 @@
 
 | 实操 | 状态 |
 | --- | --- |
-| 1-1 观察/判定/证据 | **Complete**（以你跑出的 `validation/latest.json` 为准；预期复现 BUG-001） |
+| 1-1 观察/判定/证据 | **Complete**（跑完会在本机写出 `validation/latest.json`，该文件不入库；预期复现 BUG-001） |
 | 4-1 需求评审 | **Reader exercise**（模板在 `04-requirement-review/`） |
 | 5-1 库存边界 | **Complete**（qty=10 通过、qty=11 拒绝） |
 | 6-1 缺陷报告 | **Reader exercise**（模板在 `06-bug-report/`） |

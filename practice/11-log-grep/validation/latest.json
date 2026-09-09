@@ -1,9 +1,0 @@
-{
-  "lab": "11-1",
-  "ran_at": "2026-09-09T04:44:39Z",
-  "http_status": 400,
-  "log_hits": [
-    "2026-09-09 12:44:38,584 INFO  inventory reject sku=SKU-DEMO-001 stock=10 qty=11"
-  ],
-  "verdict": "HTTP 400 和日志 inventory reject 对上了。只看页面「操作失败」你不知道服务端是否按库存规则拒绝。"
-}

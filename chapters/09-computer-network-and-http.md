@@ -433,7 +433,7 @@ GET 商品搜索把 `keyword=mouse` 放在 query 是常见且合理的：它可�
 
 第 8 章说过：`HttpOnly` 阻止脚本读取 Cookie，**不**阻止浏览器在后续请求的 `Cookie` 头里带上它。本章你可以在请求头里直接看到这个结果。
 
-不要把 Header 名称写成 MiniShop 已冻结的接口契约。真实字段以后续 OpenAPI 为准。
+不要把 Header 名称写成 MiniShop 已冻结的接口契约。v1.0 字段以第 19 章 OpenAPI 为准。
 
 ---
 

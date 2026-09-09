@@ -31,6 +31,11 @@ def base_url(tmp_path_factory):
     httpd.shutdown()
 
 
+@pytest.fixture(autouse=True)
+def reset_seed_db(base_url):
+    server.reset_db(server.MiniShopHandler.db_path)
+
+
 @pytest.fixture
 def token_a(base_url):
     response = requests.post(

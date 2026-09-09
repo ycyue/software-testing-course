@@ -23,7 +23,7 @@ python3 run.py evidence   # pytest + curl/SQL/日志/截图（截图需要本机
 
 Windows 可用 `run.bat`。macOS / Linux 可用 `./run.sh`。
 
-`server.py` 只使用标准库，不装依赖也能 `python3 server.py`。pytest 需要 `requirements.txt` 里的 `pytest` 与 `requests`。
+`server.py` 只使用标准库，不装依赖也能 `python3 server.py`。pytest 需要 `requirements.txt` 里的 `pytest`、`pytest-html` 与 `requests`。
 
 默认 `MINISHOP_RESET=1`：每次启动重建教学库。
 

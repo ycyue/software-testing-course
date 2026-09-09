@@ -1,9 +1,0 @@
-{
-  "lab": "15-1",
-  "ran_at": "2026-09-09T04:44:40Z",
-  "status": 200,
-  "item_count": 3,
-  "mouse_stock": 10,
-  "products_file": "practice/15-json-check/validation/products.json",
-  "verdict": "JSON 已落盘再读回：三件商品，鼠标库存 10。测试用 Python 是为了处理观察结果，不是为了成为开发。"
-}

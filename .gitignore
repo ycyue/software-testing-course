@@ -6,3 +6,5 @@ venv/
 .pytest_cache/
 project/minishop/data/*.sqlite
 project/minishop/logs/*.log
+practice/**/validation/latest.json
+practice/15-json-check/validation/products.json

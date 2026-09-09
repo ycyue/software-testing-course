@@ -25,7 +25,7 @@ python3 practice/run.py 1-1 --check
 1-1、5-1、8-1、9-1、11-1、12-1、13-1、15-1 只依赖 Python 3 标准库，会自己拉起临时 MiniShop。  
 16-1、19-1 需要先 `python3 project/minishop/run.py setup`。
 
-克隆仓库 ≠ 实操完成。状态见 [STATUS.md](STATUS.md)。
+克隆仓库 ≠ 实操完成。状态见 [STATUS.md](STATUS.md)。`validation/latest.json` 是你本机跑出来的证据，已加入 `.gitignore`，不会把工作区弄脏。
 
 ## 怎么做
 
@@ -33,7 +33,7 @@ python3 practice/run.py 1-1 --check
 | --- | --- |
 | **先做** | 目标、一条命令、验收条件。从 [1-1](01-observation-oracle-evidence/) 开始 |
 | **再改** | 你改哪一个输入，结论如何变（空白关键字、qty、SQL） |
-| **能交代** | `validation/latest.json`、缺陷是否仍开放，别人能否复核 |
+| **能交代** | 本机 `validation/latest.json`（不入库）、缺陷是否仍开放，别人能否复核 |
 
 ## 可运行实操
 

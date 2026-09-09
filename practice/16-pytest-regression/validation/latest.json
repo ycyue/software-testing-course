@@ -1,9 +1,0 @@
-{
-  "lab": "16-1",
-  "ran_at": "2026-09-09T06:29:31Z",
-  "returncode": 0,
-  "pytest_missing": false,
-  "passed_37": true,
-  "xfailed_1": true,
-  "verdict": "37 passed, 1 xfailed。xfail 对应 BUG-001：空搜索仍返回全量，PRD 要求不应如此。不要把 xfail 说成「测试挂了」，也不要说成「已经修了」。"
-}

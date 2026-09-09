@@ -278,11 +278,11 @@ Runner 只证明**这一组请求在当前环境下的断言**。它不是性能
    `project/minishop/postman/MiniShop.postman_environment.json`。
 4. 在 Environments 里选中 `MiniShop local`。`baseUrl` 应为 `http://127.0.0.1:8765`。把 `password` 填成当前值 `Test1234`，**不要**勾选成可分享的初始值，也不要提交回 Git。
 5. 另开终端：`cd project/minishop && python3 run.py serve`。
-6. 打开 Collection。顺序建议：注册（若 `newPhone` 已用过会 409，改一个未占用号）→ 搜索 → **登录-正确**（脚本会 `pm.environment.set('token', ...)`）→ 改数量 1 / 10 / 11 → 创建订单 → 无凭证创建。
-7. 点 **Collection Runner**，确认登录在需要认证的请求之前，跑一遍。记录通过/失败数（文字即可）。
+6. 打开 Collection。顺序建议：注册-非法手机号 → 注册（若 `newPhone` 已用过会 409，改一个未占用号）→ 搜索 → 空搜索-BUG-001 → **登录-正确 / 用户B / 管理员**（分别写入 `token` / `tokenB` / `tokenAdmin`）→ 改数量 1 / 10 / 11 → 创建订单 → 无凭证创建 → 越权-他人订单 → 越权-管理员读明细。
+7. 点 **Collection Runner**，确认登录在需要认证的请求之前，跑一遍。记录通过/失败数（文字即可）。**空搜索按 R-SEARCH 会失败**，对应仍开放的 BUG-001；不要把这一条红当成集合坏了。
 8. 导出前清空环境里的 password 与 token 当前值。
 
-集合里已带 `pm.test` / `pm.expect`。qty=11 断言 400；创建订单断言 201、有 `id`、无 `status`。这是 v1.0 路径 `/api/`，不要和本章后文教学 `/login` 混成同一契约。
+集合里已带 `pm.test` / `pm.expect`。qty=11 断言 400；创建订单断言 201、有 `id`、无 `status`；非法注册 400；用户 B 与管理员读他人订单 403。空搜索按 R-SEARCH 断言，当前会失败（BUG-001）。这是 v1.0 路径 `/api/`，不要和本章后文教学 `/login` 混成同一契约。
 
 本机同等接口证据（curl/pytest，不是 Runner 截图）：
 

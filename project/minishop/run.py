@@ -72,11 +72,10 @@ def run_pytest(extra: list[str] | None = None) -> int:
     text = (proc.stdout or "") + (proc.stderr or "")
     out.write_text(text, encoding="utf-8")
     print(text, end="" if text.endswith("\n") else "\n")
-    # HTML report is optional; do not fail the course run if plugin missing.
     html_cmd = [py(), "-m", "pytest", "-q", f"--html={html}", "--self-contained-html"]
     html_proc = subprocess.run(html_cmd, cwd=ROOT, capture_output=True, text=True)
     if html_proc.returncode not in (0, 1) and "unrecognized arguments" in (html_proc.stderr or ""):
-        print("pytest-html not installed; skipped HTML report (optional).")
+        print("pytest-html missing; run python3 run.py setup")
     elif html.exists():
         print("wrote", html)
     return proc.returncode
