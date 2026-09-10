@@ -93,11 +93,11 @@ flowchart TD
 
 Chrome DevTools 的图标位置、中文翻译和子标签名称会随版本变化。测试应记住**要完成的事**：
 
-- 在跳转后仍能看到登录请求 → **Preserve log**（保留日志）
+- 有文档跳转时仍能看到跳转前的请求 → **Preserve log**（保留日志）
 - 避免旧缓存掩盖问题 → **Disable cache**（停用缓存）
 - 把浏览器请求变成命令行 → **Copy as cURL**
 - 模拟慢网络 → Network 的限速（throttling）
-- 看等待首字节还是下载慢 → **Timing** 中的 **Waiting (TTFB)** 与内容下载
+- 看等待首字节还是下载慢 → **Timing** 中的 **Waiting for server response**（旧文档/旧版可能写 **Waiting (TTFB)**）与内容下载
 
 官方文档将 Preserve log、Disable cache、Copy as cURL 作为 Network 功能名。若你的 Chrome 把 Preserve log 显示成“保留日志”，指的是同一功能。找不到选项时，先让 DevTools 处于焦点，再用 Command Menu（Windows / Linux：`Ctrl+Shift+P`，macOS：`Cmd+Shift+P`）搜索英文功能名。
 
@@ -239,13 +239,15 @@ Network 是本章的核心。正确顺序：
 ![Preserve log 和 Disable cache 不是同一个开关](assets/diagrams/ch10-two-switches.png)
 
 
-默认情况下，导航或刷新会清空 Network 列表。登录成功后常发生跳转，**登录那条 POST 会消失**。
+默认情况下，**文档导航或刷新**会清空 Network 列表。勾选 **Preserve log** 后，跳转前后的请求留在同一列表里，你才能看到：
 
-勾选 **Preserve log** 后，跳转前后的请求留在同一列表里。你才能看到：
-
-- 登录 POST 的状态码和 `Set-Cookie`；
+- 跳转前那条请求的状态码和 `Set-Cookie`；
 - 紧接着的 30x；
 - 落地页的 GET 是否带上了 Cookie。
+
+**不要把 MiniShop 登录配成「会清空列表」。** MiniShop v1.0 登录成功只是把登录区隐藏、商品区显示（`loginPanel.hidden = true; shopPanel.hidden = false`），**不是整页跳转**。因此即使没勾 Preserve log，登录 `POST /api/login` 通常还在列表里。不要据此认为这个开关没用。
+
+要亲眼看到「导航清空列表」：登录后点商品区的「后台」进入 `/admin.html`（一次文档导航）。对比未勾选时登录 POST 消失、勾选后还在。若只测登录、不点后台，就写「本次无整页跳转，Preserve log 未改变列表」。
 
 测完建议关掉 Preserve log，以免列表无限增长、把下一次定位变慢。清空列表再开始下一次复现。
 
@@ -326,7 +328,7 @@ Network 面板提供限速（throttling），用预设近似慢网，例如 3G�
 ![慢要拆成 TTFB 和下载两段](assets/diagrams/ch10-ttfb.png)
 
 
-打开请求的 **Timing**（时序）视图。Chrome 文档把 **Waiting (TTFB)** 解释为：浏览器在等待响应的**第一个字节**，其中包含一次往返延迟，以及服务器准备响应的时间。
+打开请求的 **Timing**（时序）。现行 Chrome 英文 UI 把等待首字节这一段标成 **Waiting for server response**（官方文档和旧版本仍可能写 **Waiting (TTFB)**；中文界面可能是「等待服务器响应」一类措辞，以你屏幕上的字为准）。它包含一次**已建立连接之后**的往返，以及服务器准备响应的时间；**不含** Timing 面板里单独列出的 DNS、建连、TLS。这与 web.dev/CrUX 的页面 TTFB（从开始导航算到首字节）不是同一把尺子。限速下的绝对值不能当生产 SLA。
 
 简化阅读：
 
@@ -334,18 +336,18 @@ Network 面板提供限速（throttling），用预设近似慢网，例如 3G�
 | --- | --- | --- |
 | 排队 / 停滞（Queueing / Stalled） | 连接数限制、主线程忙 | 同时请求过多，不一定是接口逻辑 |
 | DNS、建连、TLS | 网络与证书 | 环境、代理、HTTPS |
-| Waiting (TTFB) | 到首字节的等待 | 服务端处理慢或链路延迟 |
+| Waiting for server response（文档仍可能写 Waiting (TTFB)） | 已建连后等到首字节 | 服务端处理慢或链路延迟；不是页面级 TTFB |
 | Content Download | 下载正文 | 体积大、带宽小、未压缩 |
 
 “页面慢”要拆开：
 
-- 慢在文档的 TTFB：更像服务端或网关；
+- 慢在文档的 Waiting（等首字节）：更像服务端或网关；
 - 慢在一张未压缩大图的下载：更像资源策略；
-- 慢在某个接口 TTFB，页面其余已渲染：更像该接口或其依赖。
+- 慢在某个接口 Waiting，页面其余已渲染：更像该接口或其依赖。
 
 瀑布图（waterfall）按时间排列请求。主文档阻塞后续资源时，后面的条会整体后移。不要把每一条长条都写成同一个 Bug。
 
-TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 URL、TTFB 大约多少、限速是否开启、是否 Disable cache、重复几次是否稳定。
+Waiting（等首字节）高不能自动写成“数据库没索引”。缺陷里应写：哪条 URL、Waiting 大约多少、限速是否开启、是否 Disable cache、重复几次是否稳定。
 
 ---
 
@@ -355,7 +357,7 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 
 1. 打开 Chrome，进入授权测试环境登录页；
 2. 打开 DevTools → Network；
-3. 勾选 **Preserve log**；建议同时勾选 **Disable cache**；
+3. 建议勾选 **Disable cache**。**Preserve log** 只在接下来会有**文档跳转**时才是保住旧请求的关键；MiniShop v1.0 登录不是跳转，勾不勾登录 POST 通常都还在；
 4. 清空列表；
 5. 输入指定测试账号（不要在记录中写密码）；
 6. 提交登录；
@@ -364,7 +366,7 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 9. 记录：方法、URL、状态码、`Content-Type`、是否出现 `Set-Cookie`、响应 Body 类型、随后落地请求是否带 `Cookie` 或 `Authorization`；
 10. 若失败：看是请求未发出、4xx/5xx、200+业务失败，还是成功后下一跳丢失登录态。
 
-对照第 9 章阅读清单。若发生跳转却没勾选 Preserve log，先不要下结论“没有登录请求”。
+对照第 9 章阅读清单。若发生文档跳转却没勾选 Preserve log，先不要下结论“没有登录请求”。MiniShop 要演示清空效果：登录后点「后台」进入 `/admin.html`，对比勾选与未勾选。
 
 ---
 
@@ -377,11 +379,13 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 3. 清空列表后刷新；
 4. 等页面达到可操作或明确超时；
 5. 按 Time 排序或看瀑布图，找出最长时间的几条；
-6. 打开 Timing：区分 TTFB 与 Content Download；
+6. 打开 Timing：区分 **Waiting for server response**（旧称 Waiting (TTFB)）与 Content Download；
 7. 记录资源类型（文档、接口、图片、脚本）和 URL；
 8. 关掉限速再测一次，说明慢是“仅限速下出现”还是“正常网络也出现”。
 
 不要把限速下的绝对毫秒写成 MiniShop 的正式性能指标。第 3 章和第 18 章要求阈值来自需求。本章产出的是**定位证据**：慢的是哪条请求、慢在等待还是下载。
+
+本机 `127.0.0.1` 上即使开了较慢限速，接口 Waiting 也常常仍然短，被拉长的多半是图片或脚本的 Content Download。这正好说明限速卡的是传输，不是 MiniShop 的算法。记录写「Waiting 短、下载长」即可。不要把限速下的绝对毫秒写成 MiniShop 性能缺陷，也不要编造数据库慢。三条最长的都是文档或接口且 Waiting 仍短，也据实写。
 
 ---
 
@@ -390,7 +394,7 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 审查环境无显示器，**未能截取 Chrome DevTools 面板本身**。下面步骤用本机 Chrome 对 v1.0 真页面执行；仓库保存的是同一轮的页面截图和请求记录。你必须在自己的 Chrome 里打开 DevTools 完成门槛。
 
 1. 终端执行 `cd project/minishop && python3 run.py serve`，浏览器打开打印出的 `MINISHOP_BASE_URL`。
-2. 用 `Cmd+Option+I`（macOS）打开 DevTools，切到 **Network**，勾选 **Preserve log** 和 **Disable cache**，清空列表。
+2. 用 `Cmd+Option+I`（macOS）打开 DevTools，切到 **Network**，勾选 **Disable cache**，清空列表。Preserve log 不是登录的必选项：v1.0 登录是同页 `hidden` 切换，未勾选时 `POST /api/login` 通常还在。若要看「导航清空列表」，登录成功后点「后台」进入 `/admin.html`，对比勾选与未勾选。
 3. 首页应看到登录和注册表单：
 
 ![MiniShop 登录与注册页](assets/01-login.png)
@@ -403,9 +407,9 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 
 ![登录成功后的商品与购物车](assets/03-shop.png)
 
-6. 搜索框输入三个空格并搜索。Network 过滤 `products`。按 R-SEARCH 不应全量；本机实现仍返回三件，记 BUG-001：
+6. 搜索框输入三个空格并搜索。Network 过滤 `products`，确认请求带 `keyword=` 或空格。按 R-SEARCH 不应全量；本机实现仍返回三件，记 BUG-001。下面这张 `04-search-empty-bug001.png` **几乎等于**登录后的商品目录（与 `03-shop.png` 肉眼不可分），**不能**当空搜索证据，也不要伪造一张 DevTools 面板图来顶替。可核对的证据是 `project/minishop/evidence/http/03-products-empty-keyword.txt`。
 
-![空白搜索仍返回三件商品](assets/04-search-empty-bug001.png)
+![与目录页几乎相同，不能当空搜索证据](assets/04-search-empty-bug001.png)
 
 7. 购物车数量改为 11 并提交。`POST /api/cart/items` 应为 **400**，页面提示 `qty exceeds stock`，列表里该 SKU 不得变成 11：
 
@@ -496,7 +500,7 @@ exercises/chapter-10-minishop-devtools.md
 
 ### 错误 2：跳转后找不到登录 POST，就断定没发请求
 
-修正：先检查 Preserve log。
+修正：若刚才发生了文档导航或刷新，先检查 Preserve log。MiniShop v1.0 登录本身不跳转，找不到 POST 时更应先查是否先开了 Network、过滤是否过窄，而不是先怪这个开关。
 
 ### 错误 3：Elements 里改通了，就认为产品已修复
 
@@ -520,7 +524,7 @@ exercises/chapter-10-minishop-devtools.md
 
 ### 错误 8：限速下的 TTFB 数字直接当成线上性能指标
 
-修正：限速是近似。报告写预设名称、是否 Disable cache，以及相对哪条请求慢。
+修正：限速是近似。报告写预设名称、是否 Disable cache，以及相对哪条请求慢。本机 `127.0.0.1` 上接口 Waiting 常常仍然短，不要据此编造 MiniShop 数据库慢。
 
 ### 错误 9：看到 CORS 报错就写“后端没有这个接口”
 
@@ -545,8 +549,8 @@ exercises/chapter-10-minishop-devtools.md
 ### Preserve log 和 Disable cache 有什么区别？
 
 结论：Preserve log 防止导航清空请求列表；Disable cache 避免用本地缓存冒充首次加载。  
-示例：登录跳转必须开 Preserve log，才能看到登录 POST。  
-边界：Disable cache 通常只在 DevTools 打开时有效。
+示例：有整页/文档跳转时才必须开 Preserve log。MiniShop v1.0 登录是同页 `hidden` 切换，未勾选时登录 POST 通常还在；要看清空效果，登录后点「后台」进 `/admin.html`。  
+边界：Disable cache 通常只在 DevTools 打开时有效。Preserve log 解决的是文档跳转，不是「凡登录必勾」。
 
 ### 如何判断问题在前端还是后端？
 
@@ -556,9 +560,9 @@ exercises/chapter-10-minishop-devtools.md
 
 ### 什么是 TTFB？
 
-结论：Waiting (TTFB) 是等到响应首字节的时间，包含网络往返和服务器准备时间。  
-示例：接口 TTFB 很长而下载很短，优先查服务端处理或链路，而不是图片体积。  
-边界：DevTools 限速会扭曲绝对值，不能当生产 SLA。
+结论：现行 Chrome 英文 Timing 把等首字节这一段标成 **Waiting for server response**（官方文档和旧版仍可能写 **Waiting (TTFB)**）。它包含已建连之后的往返和服务器准备时间，**不含** Timing 里单独列出的 DNS、建连、TLS；也不是 web.dev/CrUX 从导航起算的页面 TTFB。  
+示例：接口 Waiting 很长而下载很短，优先查服务端处理或链路，而不是图片体积。  
+边界：DevTools 限速会扭曲绝对值，不能当生产 SLA。本机 localhost 上接口 Waiting 常常仍然短。
 
 ### Copy as cURL 要注意什么？
 
@@ -618,7 +622,7 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 ## 练习答案
 
 1. 否则请求可能在打开面板前已经完成，列表里看不到最关键的那一条。
-2. Preserve log。跳转默认会清空列表，登录 POST 常因此消失。
+2. Preserve log。若题干里的「跳到首页」是文档导航，跳转默认会清空列表，登录 POST 常因此消失。MiniShop v1.0 登录本身不跳转，那条 POST 通常还在。
 3. 说明库存文案可能由脚本写入 DOM，源代码不等于运行后页面。不能据此断言后端没返回库存，应打开实际数据请求的 Response。
 4. B。A、C、D 夸大了该选项的作用范围和时效。
 5. 把协议成功当成业务成功。必须打开 Response/Preview。
@@ -626,7 +630,7 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 7. 更像资源体积或带宽导致的下载慢，而不是该接口服务端计算慢。需记录限速预设、是否 Disable cache、URL 和类型、是否可复现。
 8. 假设一：前端脚本在发请求前出错。假设二：按钮未绑定或客户端校验拦住。没有对应请求，就不能说后端接口挂了——请求可能尚未离开浏览器。
 9. 浏览器按跨源策略未把响应交给页面脚本；Network 显示服务器已给出 200。应记录请求 URL、状态码和 Console 原文，交给前后端一起看 CORS 配置，而不是写“接口不存在”。
-10. 示例：打开登录页 → 打开 Network → 勾选 Preserve log（及按需 Disable cache）→ 清空列表 → 提交登录 → 筛出登录请求 → 记录方法、状态码、是否 `Set-Cookie`。合理等价步骤即可。
+10. 示例：打开登录页 → 打开 Network → 按需 Disable cache → 清空列表 → 提交登录 → 筛出登录请求 → 记录方法、状态码、是否 `Set-Cookie`。v1.0 登录无整页跳转，Preserve log 不是抓住 POST 的前提；若要演示该开关，登录后点「后台」做一次文档跳转对比。合理等价步骤即可。
 
 ---
 
@@ -642,15 +646,15 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 - [ ] 我知道 Disable cache 通常仅在 DevTools 打开时有效
 - [ ] 我能在 Copy as cURL 后脱敏
 - [ ] 我能用限速制造慢网观察，而不把数字当 SLA
-- [ ] 我能区分 TTFB 与 Content Download
+- [ ] 我能区分 Timing 里 Waiting for server response（旧称 Waiting (TTFB)）与 Content Download
 - [ ] 我能给出前端/后端待验证假设而不是判决
 - [ ] 我能完成登录与慢加载取证记录
 
 ### 进入下一章的自测门槛
 
 1. 练习 1～10 至少完成 9 题，且第 2、5、6、8 题能用自己的话回答；
-2. 在授权站点亲手完成一次：Preserve log 下抓住会跳转的请求；
-3. 能解释 TTFB 含往返与服务器准备时间；
+2. 在授权站点亲手完成一次：要么在文档跳转（如 MiniShop「后台」`/admin.html`）下用 Preserve log 抓住跳转前的请求，要么书面证明本次无整页跳转；
+3. 能解释 Timing 里 **Waiting for server response**（旧称 Waiting (TTFB)）含已建连后的往返与服务器准备时间，且不等于 web.dev 页面 TTFB；
 4. 完成 MiniShop DevTools 取证包。
 
 ## 本章总结
@@ -667,7 +671,7 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 
 ## 本章可运行性说明
 
-本章操作依赖本机 Google Chrome。审查用 Playwright + 本机 Chrome 截取了 MiniShop **页面**（登录失败、商品区、空搜索、qty=11），并用真实响应整理了请求表；**未截取 DevTools 面板 UI**。功能名称依据 Chrome for Developers《Network features reference》（Preserve log、Disable cache、Copy as cURL、Waiting (TTFB)）于 2026-09-08 核验。
+本章操作依赖本机 Google Chrome。审查用 Playwright + 本机 Chrome 截取了 MiniShop **页面**（登录失败、商品区、空搜索、qty=11），并用真实响应整理了请求表；**未截取 DevTools 面板 UI**。功能名称依据 Chrome for Developers《Network features reference》（Preserve log、Disable cache、Copy as cURL；文档仍可能写 Waiting (TTFB)）以及现行 Chrome Timing UI（**Waiting for server response**）。官方文档页面可能滞后于面板文案。
 
 界面文案、预设名称和子标签（Payload / Request 等）可能随 Chrome 版本变化。以功能名为准，必要时先让 DevTools 处于焦点，再用 Command Menu 搜索。
 
