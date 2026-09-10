@@ -170,7 +170,7 @@ Body 是请求或响应中头字段空行之后的内容。GET 商品列表的�
 
 示例 A 是一般站点的表单登录形态。示例 B 对齐 MiniShop v1.0：`POST /api/login`。密码用占位符；对着本机 MiniShop 复现时用教学账号 `Test1234`，不要把真实密码写进命令历史。
 
-### 示例 A：表单登录
+### 示例 A：一般站点的表单登录（`/login`，不是 MiniShop）
 
 ```text
 POST /login HTTP/1.1
@@ -199,7 +199,7 @@ Content-Length: 0
 4. 响应用 `Set-Cookie` 下发会话标识，属性与第 8 章一致；
 5. 这份示例用 `302`，浏览器常把 POST 之后的 302 改成 GET 再去 `Location`。规范上更贴“请用 GET 看另一个资源”的是 303；307/308 会保持原方法。测试要看实际后继请求的方法和落地 URL，单看这一次响应 Body 可能为空。
 
-### 示例 B：JSON 登录并返回 Token
+### 示例 B：MiniShop v1.0 的 JSON 登录（`/api/login`）
 
 MiniShop v1.0 登录就是 `POST /api/login`（默认 `http://127.0.0.1:8765`）。示例 A 的 `/login` 只是一般站点形态，对着 MiniShop 打会 404。项目收口在第 19 章，路径现在就可以用。
 
@@ -214,9 +214,12 @@ Content-Type: application/json
 ```text
 HTTP/1.1 200 OK
 Content-Type: application/json
+Set-Cookie: minishop_session=<redacted>; Path=/; HttpOnly
 
 {"result":"ok","token":"<redacted>"}
 ```
+
+与实操 9-1、PRD `R-AUTH` 一样：成功登录同时有 JSON `token` 和 `Set-Cookie`，不是只返回 Token。
 
 后续请求可能出现：
 
@@ -351,6 +354,8 @@ exercises/chapter-09-minishop-http-observation.md
 ---
 
 ## 小练习
+
+练习 1～5 在 [09A](09a-network-http-semantics.md)。本节从 6 续编到 10，不是缺了前五题。
 
 ### 练习 6
 

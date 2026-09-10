@@ -2,11 +2,12 @@
 
 > **一句话核心：** 文件和 JSON 是接口响应最常见的形态。
 
+> 重要级别：⭐⭐⭐ 必须掌握  
 > 上一节：[15A 语法与数据](15a-python-syntax.md)
 
 ## 这一章解决什么问题
 
-把上半章的数据检查写成可重复脚本：venv、文件、异常、`json.loads`。仍然不安装 pytest（第 16 章）。
+把上半章的数据检查写成可重复脚本：venv、文件、异常、`json.loads`。上半章不发 HTTP。实操 15-1 用标准库对 MiniShop 发一次 `GET /api/products`（不安装 requests）；下面工作实战只处理本地 JSON，也不发 HTTP。仍然不安装 pytest（第 16 章）。
 
 ## 学习目标
 
@@ -22,7 +23,7 @@
 
 ## 场景导入
 
-接口返回一串商品 JSON。截图能证明“看见了”，但不能让别人明天按同一把尺子复核。把响应写成文件、用 `json.loads` 读回来、断言鼠标库存是 10——这才是证据。实操 15-1 只练读懂；工作实战还要你自己写 `cart_cases.json`。
+接口返回一串商品 JSON。截图能证明“看见了”，但不能让别人明天按同一把尺子复核。把响应写成文件、用 `json.loads` 读回来、断言鼠标库存是 10——这才是证据。实操 15-1 用标准库读一次真实 `GET /api/products`；工作实战还要你自己写 `cart_cases.json`（不发 HTTP）。
 
 ## 15.9 模块、import、venv 与 pip ⭐⭐⭐
 
@@ -205,10 +206,9 @@ missing qty
 
 ---
 
-## 15.12 JSON 与 Python 对照
+## 15.12 JSON 与 Python 对照 ⭐⭐⭐
 
 ![缺字段、null、空串、错误类型要分开](assets/diagrams/ch15-four-json.png)
- ⭐⭐⭐
 
 第 13 章按 RFC 8259 讲 JSON。Python 标准库 `json` 负责文本和对象的转换。官方文档可能仍引用较早的 RFC 编号；测试关心的对象、数组、`true` / `false` / `null` 规则与 RFC 8259 一致。
 
@@ -304,7 +304,7 @@ float
 ---
 
 
-配套可运行实操：[实操 15-1 读商品 JSON](../practice/15-json-check/README.md)（`python3 practice/run.py 15-1`）。工作实战仍要你自己写 `cart_cases.json` 和检查脚本。
+配套可运行实操：[实操 15-1 读商品 JSON](../practice/15-json-check/README.md)（`python3 practice/run.py 15-1`）。它用标准库发一次 `GET /api/products`，为第 16 章预习形状；不安装 requests。工作实战仍要你自己写 `cart_cases.json` 和检查脚本，**不发 HTTP**。
 
 ## MiniShop 工作实战：教学数据检查脚本 ⭐⭐⭐
 
@@ -483,7 +483,7 @@ cases_ok 8
 ---
 
 
-第 19 章仓库已提供 `project/minishop/requirements.txt` 与 `python3 run.py setup`。本章仍要求你先在**自己的练习目录**建 venv，不要拿课程仓库当乱装包的实验场。
+仓库已提供 `project/minishop/requirements.txt` 与 `python3 run.py setup`。本章仍要求你先在**自己的练习目录**建 venv，不要拿课程仓库当乱装包的实验场；也不要在本章安装 requests / pytest。
 
 ## 常见错误
 
@@ -524,6 +524,8 @@ cases_ok 8
 边界：发给接口的 JSON 仍须是合法 UTF-8 文本。
 
 ## 小练习
+
+题号跨上下册：本节为 2、7、9、10；其余在 15A。
 
 ### 练习 2
 
@@ -572,7 +574,7 @@ D. JSON 的 `null` 对应 Python 的 `None`，标准 JSON 用双引号而不是�
 
 ## 本章可运行性说明
 
-`json.loads`/`dumps` 示例曾在 Python 3.14.3 执行。venv 未写入课程仓库。
+`json.loads`/`dumps` 示例曾在 Python 3.14.3 执行。venv 未写入课程仓库。实操 15-1 用标准库 `GET /api/products`；工作实战 `cart_cases.json` 不发 HTTP。本章不安装 requests / pytest。
 
 ## 参考资料
 

@@ -28,6 +28,6 @@ python3 practice/run.py 12-1
 
 ## 验收条件
 
-- API 与 SQL 的 `qty` 均为 2
+- API 与 SQL 的 `qty` 均为 2（合法改数，不是 qty=11）
 - 打印了 JOIN 语句
 - 写出 `validation/latest.json`

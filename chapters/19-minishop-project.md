@@ -75,6 +75,7 @@ flowchart TD
 | `postman/` | Collection v2.1 与环境（密码留空） |
 | `tests/` | pytest |
 | `automation/` | 指向 tests |
+| `jmeter/` | 第 18 章骨架，未加压 |
 | `logs/` | 应用日志 |
 | `bugs/` | 缺陷 |
 | `README.md` | 启动说明 |
@@ -141,7 +142,7 @@ MINISHOP_BASE_URL=http://127.0.0.1:8765
 
 - 计划：`docs/test-plan.md`（范围、策略、入口/出口、风险）
 - 测试点：`docs/test-points.md`
-- 用例：`docs/test-cases.md`（含注册 P0 与步骤）
+- 用例：`docs/test-cases.md`（含注册 P0 与步骤；商品列表由 pytest 覆盖，用例表不单列）
 - 覆盖矩阵：`docs/prd-coverage-matrix.md`
 
 出口标准包括：P0 无未关闭缺陷；自动化与 `evidence/pytest-output.txt` 一致（审查为 37 passed + 1 xfailed）；覆盖矩阵已填；不编造订单状态。
@@ -355,7 +356,7 @@ exercises/chapter-19-minishop-run.md
 
 ### 你这个项目做了什么？
 
-结论：个人项目 MiniShop v1.0，测登录、购物车库存、下单和权限，带 pytest 与一笔开放缺陷。  
+结论：个人项目 MiniShop v1.0，测注册、登录、购物车库存、下单和权限，带 pytest 与一笔开放缺陷。  
 示例：qty=11 返回 400，日志有 inventory reject。  
 边界：无支付、无订单状态机、不是公司系统。
 

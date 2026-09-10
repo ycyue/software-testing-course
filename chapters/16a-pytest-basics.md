@@ -195,18 +195,18 @@ print(response.status_code)
 | `POST /api/login` 错误密码 | `401` |
 | `GET /api/products?keyword=鼠标` | `200`，命中无线鼠标 |
 | `POST /api/cart/items` `qty=1` 或 `qty=10`（需 Bearer） | `200` |
-| `POST /api/cart/items` `qty=11` | `400` |
+| `POST /api/cart/items` `qty=11`（需 Bearer） | `400` |
 | `POST /api/orders` 无 Bearer | `401` |
 | `POST /api/orders` 带 token | `201`，有 `id`，无 `status` |
 | 连续两次成功下单 | 两个不同 `id` |
 
-自动化必须按**当前被测系统**写期望。`qty=10` 现在就应该是 200，不要写成「第 19 章才允许」。教学密码是仓库写明的 `Test1234`，只许用在本机，不要提交别的真实密码。
+自动化必须按**当前被测系统**写期望。`qty=10` → 200，`qty=11` → 400，购物车要 Bearer。教学密码是仓库写明的 `Test1234`，只许用在本机，不要提交别的真实密码。
 
 ---
 
 ## 16.5 登录 API 测试 ⭐⭐⭐
 
-下面函数依赖 16.6 的 fixture，完整可运行文件见本章实战。
+下面函数依赖 16.6 的 `base_url` fixture，完整可运行文件见 [16B](16b-pytest-fixtures.md) 与仓库 `tests/test_api.py`。
 
 ```python
 import requests
@@ -214,10 +214,10 @@ import requests
 TIMEOUT = 5
 
 
-def test_login_ok(base_url, phone, password):
+def test_login_ok(base_url):
     response = requests.post(
         f"{base_url}/api/login",
-        json={"phone": phone, "password": password},
+        json={"phone": "13800138000", "password": "Test1234"},
         timeout=TIMEOUT,
     )
     assert response.status_code == 200
@@ -227,23 +227,23 @@ def test_login_ok(base_url, phone, password):
     assert "Set-Cookie" in response.headers
 
 
-def test_login_wrong_password(base_url, phone):
+def test_login_wrong_password(base_url):
     response = requests.post(
         f"{base_url}/api/login",
-        json={"phone": phone, "password": "wrong-password"},
+        json={"phone": "13800138000", "password": "wrong-password"},
         timeout=TIMEOUT,
     )
     assert response.status_code == 401
 ```
 
-`base_url` / `phone` / `password` 来自下一节的 fixture。成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续接口以 `Authorization: Bearer` 为准。
+`base_url` 来自下一节的 fixture（仓库 `conftest.py` 会起临时端口）。成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续接口以 `Authorization: Bearer` 为准。密码 `Test1234` 只许本机。
 
 不要在 query 里传密码。不要把这次拿到的 token 粘到别的测试文件里当常量——下一节用 fixture。
 
 ---
 
 
-安装请优先使用仓库依赖（第 19 章项目）：
+安装请优先使用仓库依赖：
 
 ```bash
 cd project/minishop
@@ -300,6 +300,8 @@ fixture、parametrize 见 [16B](16b-pytest-fixtures.md)。仓库套件用 `pytho
 边界：不要把 xfail 说成“测试挂了”，也不要写进报告当已修复。
 
 ## 小练习
+
+题号跨上下册：上半章为 1～4；其余在 16B。
 
 ### 练习 1
 

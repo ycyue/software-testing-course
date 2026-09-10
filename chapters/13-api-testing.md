@@ -525,7 +525,7 @@ exercises/chapter-13-minishop-api.md
 ### 如何测接口权限？
 
 结论：未认证、坏凭证、同级他人资源、更低角色访问管理接口。  
-示例：用户 B 的 Token 访问用户 A 的 `/orders/{id}`。  
+示例：用户 B 的 Token 访问用户 A 的 `/api/orders/{id}`。  
 边界：401/403 以契约为准；Body 不得带他人数据。
 
 ### 什么是幂等？下单为什么要测两次？

@@ -371,6 +371,8 @@ GET 商品搜索把 `keyword=mouse` 放在 query 是常见且合理的：它可�
 
 ## 小练习
 
+练习编号 1～5 在本节；6～10 在 [09B](09b-http-message-observe.md)。拆章后从 1 编到 10，中间没有缺题。
+
 ### 练习 1
 
 访问 `https://shop.example.test:8443/products` 时，IP 和端口分别解决什么问题？默认 HTTPS 端口是多少？为什么这里仍要写 8443？
@@ -434,7 +436,7 @@ D. 只要改用 POST，就可以不用 HTTPS
 
 ## 本章可运行性说明
 
-本节没有必须启动的服务。示意图是讲解图。动手观察报文见 09B 与实操 9-1。
+本节没有必须启动的服务。示意图是讲解图。动手观察报文见 09B 与实操 9-1（MiniShop `POST /api/login`）。
 
 ## 参考资料
 
@@ -446,6 +448,6 @@ D. 只要改用 POST，就可以不用 HTTPS
 - 本仓库 [第 8 章：Web 功能测试](08-web-functional-testing.md)
 - 本仓库 [全局内容质量标准](../standards/QUALITY_STANDARD_v1.0.md)
 
-## 下一章预告
+## 下一节预告
 
 下一节进入 [09B 报文观察](09b-http-message-observe.md)。把一次登录拆成方法、路径、头、体，对照 MiniShop `POST /api/login`，并完成实操 9-1。

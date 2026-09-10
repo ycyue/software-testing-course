@@ -10,18 +10,18 @@
 <body>
 <div class="page">
   <p class="kicker">第 3 章示意图 · 分类是多把尺子，不是互斥标签</p>
-  <h1>同一次「错误密码登录」，可以同时戴六顶帽子</h1>
+  <h1>同一次「错误密码登录」，可以同时落在六条轴上</h1>
   <p class="lead">不要争论「这到底算功能测试还是黑盒测试」。一次活动本来就可以按不同轴命名。</p>
   <div class="card" style="text-align:center;margin-bottom:18px;">
     <p style="font-size:22px;margin:8px 0 14px;">操作：在 MiniShop 输入错误密码并提交</p>
-    <span class="stamp">功能测试：登录规则对不对</span>
-    <span class="stamp">黑盒：不看源码，看输入输出</span>
-    <span class="stamp">系统级：当完整应用来测</span>
-    <span class="stamp">手工：人在页面上点</span>
-    <span class="stamp">也可自动化：同一规则写成 pytest</span>
-    <span class="stamp">回归候选：修完登录后要再跑</span>
+    <span class="stamp">是否执行：动态（软件在跑）</span>
+    <span class="stamp">级别：系统测试</span>
+    <span class="stamp">质量目标：功能测试</span>
+    <span class="stamp">技术依据：黑盒</span>
+    <span class="stamp">执行方式：手工（也可自动化）</span>
+    <span class="stamp">目的/时机：回归候选</span>
   </div>
-  <p>兼容性、性能、安全是另外的轴。把「网络差」收回兼容性，或把易用性说成 ISO 25010 原文，都会把尺子用歪。</p>
+  <p>性能、兼容性、安全属于质量目标轴，不是另开的轴。把「网络差」收回兼容性，或把交互能力说成 ISO 25010 原文「易用性」，都会把尺子用歪。</p>
   <p class="caption">示意图：分类用来交流范围，不是给同一次测试发唯一身份证。</p>
 </div>
 </body>

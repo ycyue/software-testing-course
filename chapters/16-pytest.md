@@ -7,7 +7,7 @@
 1. [16A pytest 基础](16a-pytest-basics.md)
 2. [16B fixture、参数化与 MiniShop 自动化](16b-pytest-fixtures.md)
 
-作业在 16B：读 `project/minishop/tests/` · [实操 16-1](../practice/16-pytest-regression/)
+作业在 16B：读 `project/minishop/tests/`，跑 `python3 run.py test`（37 passed / 1 xfailed）· [实操 16-1](../practice/16-pytest-regression/)
 
 阶段测验：[阶段测验 5](quizzes/stage-5-api.md)
 

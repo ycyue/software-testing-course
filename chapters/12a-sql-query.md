@@ -365,7 +365,7 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 
 ## MiniShop 工作实战（上）
 
-只读查询 MiniShop v1.0 种子库（授权环境）。语句见 `project/minishop/docs/sql-check.md`。本机种子 JOIN：`project/minishop/evidence/sql/seed-join.txt` 第一节（鼠标 qty 1）。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案。写操作放到 12B。
+只读查询 MiniShop v1.0 种子库（授权环境）。最小动作：打开 `project/minishop/docs/sql-check.md` 里的 JOIN，对照 `project/minishop/evidence/sql/seed-join.txt` 第一节。验收：Tester A 两行——鼠标 `SKU-DEMO-001` qty 1 stock 10、键盘 `SKU-DEMO-002` qty 2 stock 5。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案。写操作放到 12B。
 
 ## 常见错误
 
@@ -410,6 +410,8 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 边界：不要编造订单状态字段；v1.0 订单成功只返回 `id`。
 
 ## 小练习
+
+练习编号 1～5 在本节；6～10 在 [12B](12b-sql-write-and-minishop.md)。拆章后从 1 编到 10，中间没有缺题。
 
 ### 练习 1
 
@@ -464,6 +466,6 @@ v1.0 种子 JOIN 见 `project/minishop/evidence/sql/seed-join.txt` 第一节。1
 - [12B](12b-sql-write-and-minishop.md)
 - SQLite 文档
 
-## 下一章预告
+## 下一节预告
 
 [第 12 章（下）](12b-sql-write-and-minishop.md)

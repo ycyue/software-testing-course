@@ -568,7 +568,7 @@ print(add_item("b"))
 ['b']
 ```
 
-函数要 `return` 对调用者有用的值。只 `print` 不返回，下一章 pytest 很难断言。密码、完整 token 不要当返回值打印到会提交的文件里。
+函数要 `return` 对调用者有用的值。只 `print` 不返回，第 16 章 pytest 很难断言。密码、完整 token 不要当返回值打印到会提交的文件里。
 
 Python 的 `assert` 在条件为假时抛出 `AssertionError`：
 
@@ -605,7 +605,7 @@ assert not qty_allowed(11, 10)
 
 ### 错误 4：本章目标是成为 Python 开发工程师
 
-修正：只为处理观察结果。不讲 class、装饰器、异步；HTTP 和 pytest 放到后面的章。
+修正：只为处理观察结果。不讲 class、装饰器、异步；发 HTTP 的预习在 15B，pytest 在第 16 章。
 
 ### 错误 5：`True` 拿来当库存数量
 
@@ -633,6 +633,8 @@ assert not qty_allowed(11, 10)
 
 ## 小练习
 
+题号跨上下册：上半章为 1、3、4、5、6、8；其余在 15B。
+
 ### 练习 1
 
 为什么本章强调“不成为 Python 开发工程师”，却仍把变量、字典和 JSON 列为必须掌握？
@@ -643,7 +645,7 @@ assert not qty_allowed(11, 10)
 
 ### 练习 4
 
-对 `{}`、`{"qty": null}`、`{"qty": ""}`、`{"qty": 11}` 分别写出：键是否存在、`get("qty")` 的结果、你的分类标签。
+对 JSON 形状 `{}`、`{"qty": null}`、`{"qty": ""}`、`{"qty": 11}` 分别写出：键是否存在、`get("qty")` 的结果、你的分类标签。不要把它们当成 Python 字面量（`null` 不是合法 Python）。
 
 ### 练习 5
 
@@ -697,7 +699,7 @@ Python 是为了处理观察结果。先分清类型和真值，再谈文件和 
 
 ## 本章可运行性说明
 
-语法示例曾在 Python 3.14.3 执行。本章不安装 pytest / requests，不发 HTTP。发 HTTP 的预习在 15B 实操 15-1。
+语法示例曾在 Python 3.14.3 执行。上半章不安装 pytest / requests，不发 HTTP。发 HTTP 的预习在 15B 实操 15-1（标准库 `GET /api/products`）。
 
 ## 参考资料
 

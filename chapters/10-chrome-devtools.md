@@ -351,7 +351,7 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 
 ## 10.14 MiniShop 登录定位 ⭐⭐⭐
 
-教学步骤。路径、状态码以实际环境为准，不冻结正式接口。
+教学步骤。当前实现登录就是 `POST /api/login`；冻结仪式在第 19 章。状态码以实际响应为准。Chrome 界面仍以功能名为准。
 
 1. 打开 Chrome，进入授权测试环境登录页；
 2. 打开 DevTools → Network；
@@ -360,7 +360,7 @@ TTFB 高不能自动写成“数据库没索引”。缺陷里应写：哪条 UR
 5. 输入指定测试账号（不要在记录中写密码）；
 6. 提交登录；
 7. 过滤 Fetch/XHR 或搜索 `login`；
-8. 打开那条 POST（若实际是别的路径，以列表为准）；
+8. 打开 `POST /api/login`；
 9. 记录：方法、URL、状态码、`Content-Type`、是否出现 `Set-Cookie`、响应 Body 类型、随后落地请求是否带 `Cookie` 或 `Authorization`；
 10. 若失败：看是请求未发出、4xx/5xx、200+业务失败，还是成功后下一跳丢失登录态。
 
@@ -593,7 +593,7 @@ D. 关掉 DevTools 后继续对整台电脑生效
 
 ### 练习 5
 
-教学报文 `POST /login` 返回 200，Body 为 `{"success":false}`（v1.0 登录路径是 `/api/login`）。只看 Status 列的绿色 200，会犯什么错？
+`POST /api/login` 返回 200，Body 为 `{"success":false}`。只看 Status 列的绿色 200，会犯什么错？
 
 ### 练习 6
 
@@ -669,9 +669,9 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 
 本章操作依赖本机 Google Chrome。审查用 Playwright + 本机 Chrome 截取了 MiniShop **页面**（登录失败、商品区、空搜索、qty=11），并用真实响应整理了请求表；**未截取 DevTools 面板 UI**。功能名称依据 Chrome for Developers《Network features reference》（Preserve log、Disable cache、Copy as cURL、Waiting (TTFB)）于 2026-09-08 核验。
 
-界面文案、预设名称和子标签（Payload / Request 等）可能随 Chrome 版本变化。以功能名为准，必要时用 Command Menu 搜索。
+界面文案、预设名称和子标签（Payload / Request 等）可能随 Chrome 版本变化。以功能名为准，必要时先让 DevTools 处于焦点，再用 Command Menu 搜索。
 
-登录路径、构建号和 Cookie 名为教学示例，不冻结 MiniShop 正式接口。HAR 与 cURL 必须脱敏。安全测试只允许在授权环境进行。
+当前实现登录就是 `/api/login`；冻结仪式在第 19 章。Chrome UI 文案和预设名仍以功能名为准。构建号和 Cookie 名以实际响应为准。HAR 与 cURL 必须脱敏。安全测试只允许在授权环境进行。
 
 ## 参考资料
 

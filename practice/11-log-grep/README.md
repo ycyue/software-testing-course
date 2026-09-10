@@ -25,6 +25,6 @@ grep -E "login ok|inventory reject" evidence/logs/app-sample.log
 
 ## 验收条件
 
-- HTTP 400
-- 日志至少一行含 `inventory reject` 和 `qty=11`
+- HTTP 400（不是 500）
+- 日志至少一行含 `inventory reject` 和 `qty=11`（仓库样本级别是 INFO，不要默认 grep ERROR）
 - 写出 `validation/latest.json`

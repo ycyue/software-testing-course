@@ -29,9 +29,11 @@ INSERT/UPDATE/DELETE 会改数据。必须先 SELECT 验证范围，只在授权
 
 只在授权教学库执行。插入前先 `SELECT` 该 `user_id` / `product_id` 是否已有行，避免盲目再插一条。
 
-
-
 ```sql
+SELECT id, user_id, product_id, qty
+FROM cart_items
+WHERE user_id = 1 AND product_id = 3;
+
 INSERT INTO cart_items (user_id, product_id, qty)
 VALUES (1, 3, 1);
 ```
@@ -291,6 +293,8 @@ sqlite3 ~/minishop-sql-lab.sqlite
 
 ## 小练习
 
+练习 1～5 在 [12A](12a-sql-query.md)。本节从 6 续编到 10，不是缺了前五题。
+
 ### 练习 6
 
 哪一项符合安全改数？
@@ -302,11 +306,11 @@ D. 在生产只更新一行并立刻 `COMMIT`
 
 ### 练习 7
 
-`LEFT JOIN` 后 `SKU-DEMO-001` 出现两行、`SKU-DEMO-003` 的数量为空，分别说明什么？
+（查询含义见 12A 的 LEFT JOIN。）写操作前看到 `SKU-DEMO-001` 出现两行、`SKU-DEMO-003` 的数量为空，分别说明什么？能否按「两行」去 `DELETE` 商品？
 
 ### 练习 8
 
-没有 `ORDER BY` 的 `SELECT sku FROM products LIMIT 1` 有什么风险？
+（无 `ORDER BY` 的 `LIMIT` 见 12A。）没有 `ORDER BY` 的 `SELECT sku FROM products LIMIT 1` 拿来当 `UPDATE`/`DELETE` 目标，有什么风险？
 
 ### 练习 9
 
@@ -321,9 +325,9 @@ D. 在生产只更新一行并立刻 `COMMIT`
 
 6. B。
 
-7. 两行：该商品被两个购物车行引用，JOIN 复制了商品侧。空数量：没有匹配的购物车行，LEFT JOIN 保留商品。
+7. 两行：该商品被两个购物车行引用，JOIN 复制了商品侧，不是两件商品。空数量：没有匹配的购物车行，LEFT JOIN 保留商品。不能按「两行」删商品；先 SELECT 出 `cart_items` 主键再改。
 
-8. 每次返回哪一行不确定，缺陷无法稳定复现。
+8. 每次返回哪一行不确定；拿去写会改到不确定的行，缺陷也无法稳定复现。
 
 9. 说明持久化数据未出现 `qty > stock`；不能说明页面没显示 11，也不能说明接口没返回错误数字。还要看响应和 DOM。
 

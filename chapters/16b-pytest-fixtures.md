@@ -2,6 +2,8 @@
 
 > **一句话核心：** fixture 负责准备观察所需的前置，不负责发明判定。
 
+> 重要级别：⭐⭐⭐ 必须掌握  
+> 核心章节发布目标：≥95/100  
 > 上一节：[16A pytest 基础](16a-pytest-basics.md)
 
 ## 这一章解决什么问题
@@ -10,7 +12,7 @@
 
 ## 学习目标
 
-- 用 fixture 注入 `base_url` 和 `token`；
+- 用 fixture 注入 `base_url` 和 `token_a`；
 - 401 用例不要 autouse token；
 - 用 parametrize 覆盖数量与四态；
 - 读 `pytest.ini` 的 `testpaths`。
@@ -55,9 +57,9 @@ def base_url():
 | `package` | 包 | ⭐ 了解 |
 | `session` | 整次 pytest | 登录贵、启动服务 |
 
-token 用默认 `function` 最稳：每个需要它的测试自己登录一次。登录很慢时再改为 `scope="session"`。不要把 token fixture 设成 `autouse=True`：无凭证用例也会先多打一次登录；若再共用 `requests.Session` 或自动带上 Cookie，401 就会测脏。本章的 token fixture 只 `return` 字符串，不会自动粘到没有声明该参数的请求上，但不要依赖这种巧合。
+`token_a` 用默认 `function` 最稳：每个需要它的测试自己登录一次。登录很慢时再改为 `scope="session"`。不要把 `token_a` 设成 `autouse=True`：无凭证用例也会先多打一次登录；若再共用 `requests.Session` 或自动带上 Cookie，401 就会测脏。仓库里 `token_a` 只 `return` 字符串，不会自动粘到没有声明该参数的请求上，但不要依赖这种巧合。
 
-需要收尾时用 `yield`：`yield` 之前是准备，之后是清理。token fixture 直接 `return` 字符串即可。
+需要收尾时用 `yield`：`yield` 之前是准备，之后是清理。`token_a` 直接 `return` 字符串即可。
 
 fixture 里的 `assert` 失败算 **setup 错误**，测试函数体还没执行。先看是环境（服务没启动）还是业务断言失败。
 
@@ -78,7 +80,7 @@ fixture 里的 `assert` 失败算 **setup 错误**，测试函数体还没执行
 ![401 用例不要先自动登录](assets/diagrams/ch16-no-autouse.png)
 
 
-下面两段是**片段**，须放进 `conftest.py` / `tests/test_orders.py`，不能单独当脚本执行。
+下面两段是**片段**，须放进 `conftest.py` / `tests/test_api.py`，不能单独当脚本执行。仓库里 fixture 名叫 `token_a`。
 
 ```python
 import pytest
@@ -88,10 +90,10 @@ TIMEOUT = 5
 
 
 @pytest.fixture
-def token(base_url, phone, password):
+def token_a(base_url):
     response = requests.post(
         f"{base_url}/api/login",
-        json={"phone": phone, "password": password},
+        json={"phone": "13800138000", "password": "Test1234"},
         timeout=TIMEOUT,
     )
     assert response.status_code == 200
@@ -100,14 +102,14 @@ def token(base_url, phone, password):
     return value
 ```
 
-需要认证的测试声明 `token` 参数：
+需要认证的测试声明 `token_a` 参数：
 
 ```python
-def test_create_order_returns_id(base_url, token):
+def test_create_order_returns_id(base_url, token_a):
     response = requests.post(
         f"{base_url}/api/orders",
-        json={"sku": "SKU-DEMO-001", "qty": 1},
-        headers={"Authorization": f"Bearer {token}"},
+        json={"sku": "SKU-DEMO-003", "qty": 1},
+        headers={"Authorization": f"Bearer {token_a}"},
         timeout=5,
     )
     assert response.status_code == 201
@@ -116,7 +118,7 @@ def test_create_order_returns_id(base_url, token):
     assert "status" not in body
 ```
 
-无凭证用例**不要**声明 `token`，也不要复用 `requests.Session` 里已经存下的 Cookie 来“顺便”带登录态——除非你在测 Cookie 认证。MiniShop 购物车和订单看的是 Bearer。Cookie 与 Bearer 可同时出现在登录响应里。
+无凭证用例**不要**声明 `token_a`，也不要复用 `requests.Session` 里已经存下的 Cookie 来“顺便”带登录态——除非你在测 Cookie 认证。MiniShop 购物车和订单看的是 Bearer。Cookie 与 Bearer 可同时出现在登录响应里。
 
 ---
 
@@ -145,17 +147,17 @@ TIMEOUT = 5
     ],
     ids=["ok", "eq_stock", "over_stock", "missing", "null", "empty_str", "wrong_type", "zero"],
 )
-def test_cart_qty_cases(base_url, token, body, status):
+def test_cart_qty_cases(base_url, token_a, body, status):
     response = requests.post(
         f"{base_url}/api/cart/items",
         json=body,
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token_a}"},
         timeout=TIMEOUT,
     )
     assert response.status_code == status
 ```
 
-`ids` 出现在收集列表和失败报告里，比默认的 `[body0]` 好读。仓库 `tests/test_api.py` 就是这张表。
+`ids` 出现在收集列表和失败报告里，比默认的 `[body0]` 好读。仓库 `tests/test_api.py` 就是这张表：含 `qty=10` → 200，且带 Bearer。
 
 一次只变一个主要无效条件，与第 13 章一致。购物车**必须**带 Bearer，无凭证是另一条 401，不要和四态叠在一起。
 
@@ -196,7 +198,7 @@ python3 -m pytest
 python3 -m pytest -q
 python3 -m pytest --collect-only -q
 python3 -m pytest -k login
-python3 -m pytest tests/test_orders.py
+python3 -m pytest tests/test_api.py
 ```
 
 `-k login` 按名字过滤。`--collect-only` 只看收集到哪些测试，不发请求。
@@ -268,7 +270,7 @@ python3 run.py test
 
 ## 常见错误
 
-### 错误 1：给 401 用例 `autouse` token fixture
+### 错误 1：给 401 用例 `autouse` `token_a`
 
 修正：会先多登录一次；若再共用 Session 或 Cookie，就测不到未认证。需要 token 的测试显式写参数。
 
@@ -289,7 +291,7 @@ python3 run.py test
 ### fixture 和 parametrize 各干什么？
 
 结论：fixture 准备环境，parametrize 展开数据。  
-示例：`base_url` / `token` 用 fixture；购物车缺字段、null、空串、错误类型用 parametrize。  
+示例：`base_url` / `token_a` 用 fixture；购物车 `qty=10/11` 与缺字段、null、空串、错误类型用 parametrize（须带 Bearer）。  
 边界：不要用 autouse token 去测 401。
 
 ### 仓库 37/1 能说成没有缺陷吗？
@@ -305,9 +307,11 @@ python3 run.py test
 
 ## 小练习
 
+题号跨上下册：本节为 5～10；其余在 16A。
+
 ### 练习 5
 
-`token` fixture 的默认 scope 是什么？为什么 401 用例不能 `autouse` 这个 fixture？
+`token_a` fixture 的默认 scope 是什么？为什么 401 用例不能 `autouse` 这个 fixture？
 
 ### 练习 6
 
@@ -337,7 +341,7 @@ D. GET 比 POST 安全，所以登录必须用 GET
 
 ## 练习答案
 
-5. `function`。`autouse` 会让无凭证测试先多登录一次；若再共用 Session 或 Cookie，就测不到 401。需要 token 的测试显式写参数。
+5. `function`。`autouse` 会让无凭证测试先多登录一次；若再共用 Session 或 Cookie，就测不到 401。需要 token 的测试显式写参数（仓库里是 `token_a`）。
 
 6. 不会。放在项目或 `tests` 目录的 `conftest.py`。
 

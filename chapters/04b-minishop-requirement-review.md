@@ -299,8 +299,8 @@ exercises/chapter-04-minishop-requirement-review.md
 ## 本章检查清单
 
 - [ ] 我能指出教学规则和 v1.0 PRD 的差别
-- [ ] 我能写三条带依据的评审意见
-- [ ] 我能从规则列出测试点
+- [ ] 我能写至少 5 条分类问题（歧义/遗漏/矛盾/不可测试），且不把验证码写入 v1.0 已确认规则
+- [ ] 我能从规则列出测试点（至少覆盖功能、异常、边界、权限）
 
 ## 本章总结
 
@@ -317,4 +317,4 @@ exercises/chapter-04-minishop-requirement-review.md
 
 ## 下一章预告
 
-第 5 章《测试用例设计》。
+第 5 章《测试用例设计》：[05-test-case-design.md](05-test-case-design.md)。

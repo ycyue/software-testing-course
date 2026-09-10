@@ -7,7 +7,7 @@
 1. [09A 网络地图与 HTTP 语义](09a-network-http-semantics.md)（IP/端口、TCP、TLS、safe/幂等、GET/POST）
 2. [09B 报文观察](09b-http-message-observe.md)（四格、状态码、登录报文）
 
-作业在 09B · [实操 9-1](../practice/09-http-observe/)
+作业：09A 练习 1～5；09B 练习 6～10 · [实操 9-1](../practice/09-http-observe/)
 
 阶段测验：[阶段测验 3](quizzes/stage-3-web.md)（建议学完第 10 章再做）
 

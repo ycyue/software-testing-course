@@ -223,6 +223,8 @@ less app.log
 
 `grep` 在**文件内容**里找文本。`find` 在**目录树**里找文件。
 
+下面 `grep ERROR` 是一般排障示例，不是 MiniShop 仓库样本。`qty=11` 的 `inventory reject` 在 `evidence/logs/app-sample.log` 里是 **INFO**；对着 MiniShop 请 grep `inventory reject`，不要默认 ERROR。
+
 ```bash
 grep ERROR app.log
 grep -n ERROR app.log
@@ -412,10 +414,10 @@ scp tester@192.0.2.10:/var/log/minishop/app.log ./
 
 `curl` 在终端发 HTTP 请求。它复现的是接口，不是浏览器渲染。第 10 章 Copy as cURL 的结果，脱敏后可以在这里跑。
 
-最小读取。下面 `PORT` 和 `/products` 是**教学占位**，不要对着正在跑的 MiniShop 原样粘贴。v1.0 是 `http://127.0.0.1:8765/api/products`。
+最小读取。MiniShop v1.0 是 `http://127.0.0.1:8765/api/products`，不要打无前缀的 `/products`。
 
 ```bash
-curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:PORT/products?keyword=mouse"
+curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:8765/api/products?keyword=mouse"
 ```
 
 | 选项 | 作用 |
@@ -432,13 +434,13 @@ curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:PORT/products?keywor
 | `-w '%{http_code}'` | 额外打印状态码，便于脚本化记录 |
 | `-k` | 忽略 TLS 证书错误；**仅**在已知原因的测试环境使用 |
 
-教学 POST（密码占位，勿写入真实密码）。路径 `/login` 与端口 `8080` 仍是教学占位；MiniShop v1.0 为 `POST http://127.0.0.1:8765/api/login`。
+登录 POST。MiniShop v1.0 为 `POST http://127.0.0.1:8765/api/login`（不是 `/login`，不是占位端口 `PORT`/`8080`）。密码用占位符，勿写入真实密码；本机复现用教学账号 `Test1234`。
 
 ```bash
 curl -sS -D - \
   -H "Content-Type: application/json" \
   -d '{"phone":"13800138000","password":"<redacted>"}' \
-  "http://127.0.0.1:PORT/login"
+  "http://127.0.0.1:8765/api/login"
 ```
 
 对照第 9 章阅读状态行、`Content-Type`、`Set-Cookie` 和 Body。`200` 仍要看 Body 是否业务失败。若头和 Body 混在一起不便复制，可用 `-D` 把头打到终端、`-o` 把 Body 写入文件，或用 `-w '%{http_code}\n'` 单独记录状态码。
@@ -609,8 +611,8 @@ inventory reject sku=SKU-DEMO-001 stock=10 qty=11
 ### 如何用 curl 验证登录接口？
 
 结论：对授权 URL 发 POST，看状态码、`Set-Cookie` 或 Body，不把密码写进可分享记录。  
-示例：对照第 9 章报文结构。  
-边界：curl 成功不代表页面渲染成功。
+示例：MiniShop v1.0 为 `POST http://127.0.0.1:8765/api/login`，对照第 9 章报文结构。  
+边界：curl 成功不代表页面渲染成功。不要打 `/login`。
 
 ---
 
@@ -667,12 +669,12 @@ macOS 上输入 `free -h` 失败。这能说明 MiniShop 内存泄漏吗？
 2. 依赖于当前工作目录。更稳妥使用绝对路径，或先 `cd` 到固定目录再操作。
 3. 大文件会让终端卡死或刷掉有用信息。用 `head`、`tail`、`less`、`grep`。
 4. 内容用 `grep`；按文件名用 `find . -name '*.log'`。
-5. 取日志最后 100 行再筛 `ERROR`。`>` 会覆盖文件；若写成 `grep ERROR > app.log` 可能毁掉日志。
+5. 取日志最后 100 行再筛 `ERROR`。`>` 会覆盖文件；若写成 `grep ERROR > app.log` 可能毁掉日志。本题 `ERROR` 是一般排障示例；MiniShop `qty=11` 仓库样本是 INFO `inventory reject`，不要用 `grep ERROR` 打 `app-sample.log`。
 6. B。
 7. 用 `du -sh` 找大目录，申请授权后再清理。不应 `rm -rf /var/log` 或 `chmod 777`。
 8. 删除或替换 Cookie、Token、密码；确认测试 URL。不能证明按钮绑定和渲染，只验证该 HTTP 请求。
 9. 不能。`free` 主要是 Linux 命令，失败多半是本机系统差异。到 Linux 测试机再看内存。
-10. 示例：`grep SKU-DEMO-001 ~/minishop-linux-lab/logs/app.log`。粘贴命令、匹配行和时间戳；去掉密码、完整会话 ID 和无关个人信息。
+10. 示例：`grep "inventory reject" evidence/logs/app-sample.log`（或 `grep SKU-DEMO-001`）。匹配行是 INFO，不是 ERROR。粘贴命令、匹配行和时间戳；去掉密码、完整会话 ID 和无关个人信息。
 
 ---
 
@@ -712,9 +714,9 @@ macOS 上输入 `free -h` 失败。这能说明 MiniShop 内存泄漏吗？
 
 ## 本章可运行性说明
 
-下列命令已在审查环境的临时练习目录与本地教学 HTTP 服务上验证：`pwd`、`ls`、`mkdir`、`touch`、`cp`、`mv`、`rm`（仅删除练习文件）、`cat`、`head`、`tail`、`grep`、`find`、`echo`、重定向、`df`、`du`、`which`、`ps`、`chmod`（仅练习文件）、`curl` GET/POST。审查主机若为 macOS，`free -h` 按正文约定视为 Linux 专用，不作为本机必过项。
+下列命令已在审查环境的临时练习目录与本机 MiniShop v1.0（`http://127.0.0.1:8765`）上验证：`pwd`、`ls`、`mkdir`、`touch`、`cp`、`mv`、`rm`（仅删除练习文件）、`cat`、`head`、`tail`、`grep`、`find`、`echo`、重定向、`df`、`du`、`which`、`ps`、`chmod`（仅练习文件）、`curl` GET/POST。审查主机若为 macOS，`free -h` 按正文约定视为 Linux 专用，不作为本机必过项。
 
-`ssh`/`scp`、`top`、`kill`、`journalctl` 依赖真实远程主机或交互界面，正文以示例结构说明，不冒充已对 MiniShop 生产主机执行。
+`ssh`/`scp`、`top`、`kill`、`journalctl` 依赖真实远程主机或交互界面，正文以示例结构说明，不冒充已对远程 Linux 或 MiniShop 生产主机执行。
 
 教学日志、IP `192.0.2.10`、路径 `/var/log/minishop/` 均未冻结为正式规格。危险命令不得在未授权环境复述执行。
 
