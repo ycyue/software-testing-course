@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>同级偷看别人的柜子，和员工进了经理室，不是同一类钥匙问题</title></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>没认出你、同级偷看、员工进经理室，是三道门</title></head>
 <body><div class="page">
-<p class="kicker">第 8 章示意图 · 横向越权和纵向越权</p>
-<h1>同级偷看别人的柜子，和员工进了经理室，不是同一类钥匙问题</h1>
-<p class="lead">都叫权限问题，报告里要写清两个账号的角色、URL 和实际看到的数据。</p>
-<div class="row"><div class="col card"><span class="tag tag-warn">横向</span><h2>同级访问他人资源</h2><p style="font-size:16px;line-height:1.55">用户 B 请求用户 A 的 GET /api/orders/{id}，看到了 A 的订单。</p></div><div class="col card"><span class="tag tag-bad">纵向</span><h2>低权限做了高权限的事</h2><p style="font-size:16px;line-height:1.55">失效示例是普通用户打 /api/admin/products 得到 200。打开 /admin.html 静态页 200 ≠ API 403。</p></div></div>
+<p class="kicker">第 8 章示意图 · 三道门</p>
+<h1>没认出你、同级偷看、员工进经理室，是三道门</h1>
+<p class="lead">MiniShop 的门牌：未认证 401，横向 403，纵向 403。精确语义留到第 9 章。报告里要写清账号、URL 和实际看到的数据。</p>
+<div class="row"><div class="col card"><span class="tag tag-info">401</span><h2>还没证明你是谁</h2><p style="font-size:16px;line-height:1.55">无 Bearer 且无 Cookie minishop_session，访问 GET /api/orders/{id}。只去掉 Authorization、Cookie 还在，MiniShop 仍会认人。</p></div><div class="col card"><span class="tag tag-warn">横向 403</span><h2>认得你，不是你的柜子</h2><p style="font-size:16px;line-height:1.55">用户 B 带自己的 token 读 A 的订单，预期 403。200 才是失效。</p></div><div class="col card"><span class="tag tag-bad">纵向 403</span><h2>认得你，但这是经理室</h2><p style="font-size:16px;line-height:1.55">普通用户打 /api/admin/orders 得到 403。打开 /admin.html 静态页 200 ≠ API 403。</p></div></div>
 <p class="caption">示意图：隐藏菜单 ≠ 权限。静态页 200 ≠ API 403。直接访问接口、换账号、换窗口都要测。只在授权教学账号上做。</p>
 </div></body></html>

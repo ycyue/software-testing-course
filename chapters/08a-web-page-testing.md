@@ -104,7 +104,7 @@ Web 功能测试验证用户通过浏览器完成业务时，系统是否满足�
     <label for="phone">手机号</label>
     <input id="phone" name="phone" type="text" required maxlength="11" autocomplete="username">
     <label for="password">密码</label>
-    <input id="password" name="password" type="password" required minlength="8" maxlength="20" autocomplete="current-password">
+    <input id="password" name="password" type="password" required minlength="8" maxlength="16" autocomplete="current-password">
     <button type="submit">登录</button>
   </form>
   <p id="result" hidden>已触发提交（教学页面不会真正登录）。</p>
@@ -277,15 +277,16 @@ https://shop.example.test:8443/products?keyword=mouse&page=2
 
 ### 注册
 
-在草案范围内，优先检查：
+测正在跑的 MiniShop v1.0 时，优先检查：
 
 - 必填项为空；
 - 手机号长度和字符（按当前教学规则或已确认规则）；
 - 重复注册；
-- 验证码错误、过期、重复使用——规则未确认就记实际行为并提问题，不擅自规定秒数；v1.0 **无**验证码，不要写进 MiniShop 必测；
 - 密码可见性切换是否只影响显示，不改变提交值；
 - 连续点击注册是否只创建一个账号；
 - 成功后是自动登录还是回到登录页。
+
+验证码错误、过期、重复使用只出现在第 4 章注册草案和通用站点练习里，**不是** MiniShop 优先检查项；v1.0 无验证码，不要写进项目必测。
 
 ### 登录
 
@@ -315,8 +316,8 @@ https://shop.example.test:8443/products?keyword=mouse&page=2
 
 1. 登录表单有 label 和 `type=password`；
 2. 错误密码页面提示「登录失败」；
-3. 空白搜索仍列出三件商品（BUG-001）；
-4. qty=11 提示 `qty exceeds stock`，列表该 SKU **不得变成 11**（本图中保持原来的 `qty=1`，不是「变成 10」）。
+3. **不要**把 `04-search-empty-bug001.png` 当空搜索证据：它几乎等于登录后的商品目录页（与 `03-shop.png` 肉眼不可分），关键字框空、「共 3 件」、三件商品——默认列表不带 keyword 也是这样。BUG-001 要看提交空/空白关键字后仍返回三件，请对 `project/minishop/evidence/http/03-products-empty-keyword.txt`（`keyword=%20%20%20`，200，三件）。不要伪造 DevTools 面板图。
+4. qty=11 提示 `qty exceeds stock`，列表该 SKU **不得变成 11**（本图中保持原来的 `qty=1`，不是「变成 10」）；输入框仍显示 11 也可以。
 
 完整 Web 测试包模板见 08B。
 
@@ -382,7 +383,7 @@ MiniShop 搜索只输入空格。列出至少四个应观察的结果，不能�
 
 ### 练习 10
 
-根据教学规则，为“库存 10 的商品，在购物车把数量改为 11”写出 Web 功能测试步骤、预期，以及若页面显示 11 时的缺陷标题。不要虚构接口路径。
+根据教学规则，为“库存 10 的商品，在购物车把数量改为 11”写出 Web 功能测试步骤、预期，以及若**商品列表**变成 11 时的缺陷标题。输入框仍显示 11 不算失败。不要虚构接口路径。
 
 
 ## 练习答案
@@ -395,7 +396,7 @@ MiniShop 搜索只输入空格。列出至少四个应观察的结果，不能�
 
 5. 示例：头像上传选择 0 字节 PNG 时提示成功，但重新进入页面仍显示默认头像。
 
-10. 步骤示例：登录测试账号；打开购物车；确认 SKU 教学商品库存显示 10、当前数量 1；把数量改为 11 并提交。预期：提交失败，数量保持合法值，出现超限或库存不足提示。v1.0 没有小计/价格，不要把小计写进 MiniShop 预期。缺陷标题示例：购物车在库存为 10 时可将数量修改为 11 且无失败提示。
+10. 步骤示例：登录测试账号；打开购物车；确认 SKU 教学商品库存显示 10、当前数量 1；把数量改为 11 并提交。预期：提交失败；页面提示 `qty exceeds stock`（或等价）；**商品列表/接口**该 SKU 仍为提交前的 `qty=1`；输入框可以仍显示 11，不要把「框里还是 11」当成失败，也不要把「数量保持合法值」写成已冻结的唯一判定。v1.0 没有小计/价格，不要把小计写进 MiniShop 预期。缺陷标题示例：购物车在库存为 10 时，提交 qty=11 后列表数量变成 11 且无失败提示。
 
 ---
 

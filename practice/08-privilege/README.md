@@ -16,6 +16,8 @@ PRD `R-PERM`：用户不得读写他人订单；非管理员不得访问 `/api/a
 | A | `GET /api/admin/orders` | 403 |
 | 管理员 | `GET /api/admin/orders` | 200 |
 
+脚本替你带的是 **Bearer**。分层观察（Cookie / Session / Token 不是三选一）对照 `project/minishop/evidence/http/01-login-ok.txt`：同一份成功登录里既有 `Set-Cookie` 也有 JSON `token`。未认证 401 不在上表五格里，可自己对 `/api/orders/{id}` **同时去掉** Bearer 和 Cookie `minishop_session` 看一眼；只去掉 Bearer、Cookie 还在，会仍是 200。
+
 ## 最小命令
 
 ```bash

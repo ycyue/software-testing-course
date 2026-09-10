@@ -23,7 +23,10 @@
 
 ## 场景导入
 
-用户 A 把订单 id 发给已登录的用户 B，B 用 `GET /api/orders/{id}` 读到了 A 的订单。这不是“链接坏了”，是权限问题。v1.0 页面始终是 `/`，**没有**可分享的「A 的购物车 URL」。
+登录成功后刷新，商品页还认得你；换一个隐私窗口打开同一地址，又要重新登录。
+系统「还记得我」靠的不是三种可换的登录产品，而是不同层的零件：谁是你（Token / Session ID）、服务器记不记（Session）、浏览器怎么带着走（Cookie 或请求头）。
+
+权限问题放到 8.14：用户 B 用 `GET /api/orders/{id}` 读 A 的订单。v1.0 页面始终是 `/`，**没有**可分享的「A 的购物车 URL」。
 
 ## 8.11 Cookie、Session、Session ID 和 Token 不是三种替代技术 ⭐⭐⭐
 
@@ -64,10 +67,10 @@ Cookie 解决的是：HTTP 请求本身不自动记住你是谁，浏览器可�
 | `Expires` / `Max-Age` | 过期后浏览器不应再带上该 Cookie |
 | `Secure` | 只在 HTTPS（以及部分 localhost 情况）发送；Safari 对 localhost 例外的支持可能不同 |
 | `HttpOnly` | JavaScript 的 `document.cookie` 读不到它；登录会话类 Cookie 常见此属性。它**不**阻止浏览器在后续请求里自动带上该 Cookie，脚本发起的同站请求通常仍会带上 |
-| `SameSite` | 控制跨站请求是否带 Cookie。未设置时，现代浏览器通常按 `Lax` 处理；`None` 必须同时有 `Secure` |
+| `SameSite` | 控制跨站请求是否带 Cookie。要分开三种情况：显式 `SameSite=Lax`；**未设置**（Chrome 等按更宽的 Lax-allow-unsafe，不等于显式 Lax）；`None` 必须同时有 `Secure`。MiniShop v1.0 Cookie 未设 SameSite |
 | `Path` / `Domain` | 决定哪些路径或主机名会带上它 |
 
-Cookie 会由浏览器在符合条件时自动附带，这与 CSRF（跨站请求伪造）风险相关。`SameSite=Lax`（现代浏览器对未设置 SameSite 的常见默认）会挡住大多数跨站 **POST**，购物车修改这类写操作通常因此带不上 Cookie；顶层跨站 **GET** 导航、`SameSite=None; Secure`、或旧浏览器仍可能带上登录态。`SameSite` 和额外的 CSRF 令牌都是常见缓解手段，不是本章要演练的攻击。测试时若在授权环境发现跨站请求仍能改购物车，应记录实际的方法、`SameSite` 值和是否带上 Cookie，而不是对外部系统做攻击实验。
+Cookie 会由浏览器在符合条件时自动附带，这与 CSRF（跨站请求伪造）风险相关。显式 `SameSite=Lax` 会挡住大多数跨站 **POST**，购物车修改这类写操作通常因此带不上 Cookie。**未设置 SameSite ≠ 显式 Lax**：Chrome 等对未设置属性的 Cookie 使用更宽的 Lax-allow-unsafe，Cookie 写入后大约 2 分钟内，顶层跨站 POST 仍可能带上。MiniShop v1.0 的 `Set-Cookie` 只有 `HttpOnly; Path=/`，属于未设置，不要把「默认 Lax」写成「跨站 POST 一定带不上」。顶层跨站 **GET** 导航、`SameSite=None; Secure`、或旧浏览器仍可能带上登录态。`SameSite` 和额外的 CSRF 令牌都是常见缓解手段，不是本章要演练的攻击。测试时若在授权环境发现跨站请求仍能改购物车，应记录实际的方法、`SameSite` 值（含「未设置」）和是否带上 Cookie，而不是对外部系统做攻击实验。
 
 当前浏览器还可能限制第三方 Cookie。如果 MiniShop 把登录放在跨站 iframe 里，功能失败不一定是账号密码错误。本章不展开分区 Cookie（CHIPS）细节。
 
@@ -126,11 +129,13 @@ Bearer Token 来自 HTTP 认证实践（RFC 6750）。核心含义是：**谁持
 Authorization: Bearer <token>
 ```
 
-当前实现后续请求用这一写法；冻结仪式在第 19 章。第 9 章再看真实请求头；第 13、14 章再在接口工具里使用。
+同一份 RFC 还要求：带 Bearer 的请求必须走 TLS（HTTPS）；**禁止**把 Bearer 放进可明文发送的 Cookie。MiniShop v1.0 明确不做 HTTPS，登录同时下发 JSON `token` 与 `Set-Cookie: minishop_session=同一串; HttpOnly; Path=/`（无 `Secure`）。这是本机教学范围，不是 RFC 6750 的完整用法，不要抄到生产或写成「已按 RFC 6750 落地」。
+
+当前实现后续请求用 `Authorization: Bearer`；**没有 Bearer 时，服务端仍会读 Cookie `minishop_session`**。冻结仪式在第 19 章。第 9 章再看真实请求头；第 13、14 章再在接口工具里使用。
 
 对 Web 功能测试的意义：
 
-- 浏览器页面登录成功后，后续接口调用可能自动带 Cookie，也可能由页面脚本加上 Bearer Token；
+- 浏览器页面登录成功后，后续接口调用可能自动带 Cookie，也可能由页面脚本加上 Bearer Token。MiniShop 在已登录浏览器里只去掉 Authorization、Cookie 还在，仍会认人；
 - 复制别人的 Bearer Token 就等于复制了那份访问资格，所以缺陷单、截图、日志里要脱敏；
 - Token 过期、登出作废、权限变更后旧 Token 是否立即失效，属于登录态和权限测试，而不是“页面按钮还在不在”。
 
@@ -162,16 +167,24 @@ Cookie 被删除、被改坏或过期后，功能应回到未登录或友好错�
 
 ## 8.14 权限测试 ⭐⭐⭐
 
-![横向越权和纵向越权不是同一把钥匙](assets/diagrams/ch08-privilege.png)
+![没认出你、同级偷看、员工进经理室，是三道门](assets/diagrams/ch08-privilege.png)
 
 权限测试回答：当前身份允许做什么。第 3 章已要求未登录不能看订单、普通用户不能进后台、用户不能读他人订单。示意图里 `/admin.html` 得到 200 只说明静态文档能打开：**静态页 200 ≠ API 403**；v1.0 预期是页面可 200，`GET /api/admin/*` 对普通用户为 403。本章把它变成可执行步骤。
 
 | 类型 | 含义 | MiniShop 例子 |
 | --- | --- | --- |
-| 未认证 | 没有有效登录态 | 无 Bearer 访问 `/api/cart` 或 `/api/orders` → 401 |
+| 未认证 | 没有有效登录态 | 无 Bearer **且** 无 Cookie `minishop_session` 访问 `GET /api/cart`、`GET /api/orders/{id}` 或 `POST /api/orders` → 401。没有 `GET /api/orders` 列表接口，打它是 **404**，不是 401。只去掉 Authorization、Cookie 还在 → 仍可能 200/201 |
 | 横向越权 | 同级用户访问他人资源 | 用户 B 访问用户 A 的 `GET /api/orders/{id}` → **403** |
 | 纵向越权 | 低权限访问高权限功能 | 普通用户访问 `/api/admin/*` → **403**（`/admin.html` 静态页 200 ≠ API 403） |
 | 认证后权限变化 | 禁用、锁定、角色变更后旧登录态 | v1.0 **无**禁用/锁定；其他系统要测，不要编进项目用例 |
+
+8.13 说过：状态码的精确读法留到第 9 章。这里三个数字只是 MiniShop 的门牌，先当观察标签：
+
+- 没带有效登录凭证（无 Bearer **且** 无会话 Cookie）→ **401**：系统还不承认你是谁。MiniShop 无 Bearer 时仍读 Cookie `minishop_session`；已登录浏览器里只删 Authorization 不够。
+- 已经是用户 B，去开用户 A 的 `GET /api/orders/{id}` → **403**：认得你，但这不是你的柜子（横向）。
+- 已经是普通用户，去打 `/api/admin/*` → **403**：认得你，但这是经理室（纵向）。
+
+`/admin.html` 静态页 200 ≠ API 403。不要在本章背 RFC。实操 8-1 把两格 403 跑出来；未认证 401 要用 curl 或脚本对 `GET /api/orders/{id}` **同时去掉** `Authorization` 和 Cookie。只去掉 Bearer、Cookie 还在，会仍是 200。
 
 步骤建议（与实操 8-1 同一条通道）：
 
@@ -342,7 +355,7 @@ exercises/chapter-08-minishop-web-functional.md
 
 结论：层次不同，常配合使用，不是三选一产品。  
 原理：Cookie 管怎么存和带；Session 管服务端状态；Token 管出示什么凭证。  
-示例：MiniShop 登录 200 同时给 JSON `token` 和 `Set-Cookie: HttpOnly`。后续接口以 `Authorization: Bearer` 为准。  
+示例：MiniShop 登录 200 同时给 JSON `token` 和 `Set-Cookie: HttpOnly`。后续请求可以带 `Authorization: Bearer`；没有 Bearer 时 Cookie `minishop_session` 仍能认人。  
 边界：不要把 `sessionStorage` 说成服务端 Session。
 
 ### 横向越权和纵向越权有什么区别？
@@ -411,7 +424,7 @@ Cookie、Session、Token 不是三种可互换产品。权限看服务器判定�
 
 ## 本章可运行性说明
 
-Cookie/Session/Token 层次为教学模型。v1.0 登录同时下发 token 与 HttpOnly Cookie，见 `evidence/http/01-login-ok.txt`。
+Cookie/Session/Token 层次为教学模型。v1.0 登录同时下发 token 与 HttpOnly Cookie `minishop_session`，见 `evidence/http/01-login-ok.txt`。无 Bearer 时服务端仍读该 Cookie。v1.0 无 HTTPS，不是 RFC 6750 完整用法。
 
 ## 参考资料
 
