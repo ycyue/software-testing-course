@@ -132,7 +132,7 @@ Cookie、Session、Token 仍是不同层次。UI 自动化登录可能同时碰�
 | --- | --- | --- |
 | 是什么 | 面向端到端测试的浏览器自动化库，官方支持 Chromium、Firefox、WebKit | 以 W3C WebDriver 为主的浏览器自动化生态，语言绑定多 |
 | 等待 | 官方强调操作前的自动可操作性检查（auto-wait） | 常用显式等待；把 `sleep` 当默认等待容易碎 |
-| 定位 | 推荐 `getByRole` / `getByLabel` / `getByTestId` 等 | 常用 id、CSS、XPath 等；同样应避免超长绝对路径 |
+| 定位 | 推荐 Python：`get_by_role` / `get_by_label` / `get_by_test_id`（JS 文档写作 `getByRole` 等，pytest 里不要照抄 camelCase） | 常用 id、CSS、XPath 等；同样应避免超长绝对路径 |
 | 新项目 | 不少团队作为默认选项 | 大量存量项目和多语言栈仍在用 |
 | 与 pytest | 官方提供 pytest 插件 | 可与 pytest 一起用，需自己组织 fixture |
 
