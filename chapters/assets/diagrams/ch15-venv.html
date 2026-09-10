@@ -4,6 +4,6 @@
 <p class="kicker">第 15 章示意图 · 虚拟环境</p>
 <h1>给这个项目一套隔离的解释器和包装箱，不是安全沙箱</h1>
 <p class="lead">venv 不管 HTTP 权限，也不能代替授权测试环境。不要 sudo pip。</p>
-<div class="row"><div class="col card"><span class="tag tag-warn">系统 Python</span><h2>所有人共用</h2><p style="font-size:16px;line-height:1.55">sudo pip 可能把包装到你没用的解释器，也难卸载。</p></div><div class="col card"><span class="tag tag-ok">.venv</span><h2>只服务本项目</h2><p style="font-size:16px;line-height:1.55">python3 -m venv .venv 后 pip install -r requirements.txt</p></div><div class="col card"><span class="tag tag-info">课程仓库</span><h2>第 19 章已备好</h2><p style="font-size:16px;line-height:1.55">cd project/minishop && python3 run.py setup</p></div></div>
-<p class="caption">示意图：.venv 不要进 Git。Windows 激活脚本见第 15 章，审查未点击。</p>
+<div class="row"><div class="col card"><span class="tag tag-warn">系统 Python</span><h2>所有人共用</h2><p style="font-size:16px;line-height:1.55">不要 sudo pip，也不要 --break-system-packages。</p></div><div class="col card"><span class="tag tag-ok">.venv</span><h2>只服务本项目</h2><p style="font-size:16px;line-height:1.55">python3 -m venv .venv 后 python3 -m pip list，本章只该看到 pip</p></div><div class="col card"><span class="tag tag-info">课程仓库</span><h2>第 19 章再装</h2><p style="font-size:16px;line-height:1.55">本章不要在仓库里装包。</p></div></div>
+<p class="caption">示意图：.venv 不要进 Git。Windows 激活脚本见第 15 章。</p>
 </div></body></html>
