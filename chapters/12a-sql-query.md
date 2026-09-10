@@ -73,7 +73,7 @@ products.id <----- cart_items.product_id
 
 没有外键时，库里可能出现 `user_id = 99` 这种幽灵用户。有外键且引擎真正启用约束时，这样的插入应失败。
 
-SQLite 默认**不强制**外键，需要 `PRAGMA foreign_keys = ON;`。MySQL 需使用支持外键的引擎（常见 InnoDB）。PostgreSQL 默认强制外键。测试前要问清：约束开了没有，不要假设“有外键列就一定插不进去”。
+SQLite 默认**不强制**外键，需要 `PRAGMA foreign_keys = ON;`。这个开关按**当前连接**生效，**不会写入** sqlite 文件：关掉终端再打开，又变回关闭，每次用 `sqlite3` 打开教学库都要再执行一次。MySQL 需使用支持外键的引擎（常见 InnoDB）。PostgreSQL 默认强制外键。测试前要问清：约束开了没有，不要假设“有外键列就一定插不进去”。
 
 ---
 
@@ -148,6 +148,18 @@ INSERT INTO cart_items(id, user_id, product_id, qty) VALUES
 
 MySQL 建表常用 `INT AUTO_INCREMENT`，PostgreSQL 常用 `GENERATED … AS IDENTITY` 或 `SERIAL`。查询部分下面通用。
 
+本机跟做（独立教学文件，不要打开 MiniShop 主库）：
+
+```bash
+sqlite3 ~/minishop-sql-lab.sqlite
+```
+
+提示符变成 `sqlite>` 后，把本节上面的 `PRAGMA`～`INSERT` 整段贴进去。`.tables` 应看到 `users` `products` `cart_items`。
+
+不要对 `project/minishop/data/minishop.sqlite` 跑这段 INSERT：那套表有 `password_hash`、`role`，用户 3 是 `13800138099`。后面的 `COUNT(*)` / `IS NULL` 只对这份教学库成立。
+
+`PRAGMA foreign_keys = ON` 按连接生效，不会写入 sqlite 文件。下次再打开同一个 `~/minishop-sql-lab.sqlite`，仍要先执行这一句，再测外键。
+
 ---
 
 ## 12.5 CRUD ⭐⭐⭐
@@ -164,6 +176,14 @@ MySQL 建表常用 `INT AUTO_INCREMENT`，PostgreSQL 常用 `GENERATED … AS ID
 ---
 
 ## 12.6 `SELECT` ⭐⭐⭐
+
+下面语句在 12.4 建好的教学库里执行。若还没打开：
+
+```bash
+sqlite3 ~/minishop-sql-lab.sqlite
+```
+
+每次重开都要再执行 `PRAGMA foreign_keys = ON;`（开关不进文件，只对当前这次连接有效）。
 
 ```sql
 SELECT id, phone, display_name
@@ -365,7 +385,7 @@ SELECT id, phone FROM users WHERE display_name IS NULL;
 
 ## MiniShop 工作实战（上）
 
-只读查询 MiniShop v1.0 种子库（授权环境）。最小动作：打开 `project/minishop/docs/sql-check.md` 里的 JOIN，对照 `project/minishop/evidence/sql/seed-join.txt` 第一节。验收：Tester A 两行——鼠标 `SKU-DEMO-001` qty 1 stock 10、键盘 `SKU-DEMO-002` qty 2 stock 5。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案。写操作放到 12B。
+只读查询 MiniShop v1.0 种子库（授权环境）。最小动作：打开 `project/minishop/docs/sql-check.md` 里的 JOIN，对照 `project/minishop/evidence/sql/seed-join.txt` 第一节。验收：Tester A 两行——鼠标 `SKU-DEMO-001` qty 1 stock 10、键盘 `SKU-DEMO-002` qty 2 stock 5。不要把 12.4 教学库的用户 3（`13800138002` / `NULL`）和这份 v1.0 证据对答案；也不要用 `sqlite3` 打开 `project/minishop/data/minishop.sqlite` 当 12.4 教学库。动手 SELECT 用 `~/minishop-sql-lab.sqlite`。书面产出可记在 `exercises/chapter-12a-join.md`。写操作放到 12B。
 
 ## 常见错误
 

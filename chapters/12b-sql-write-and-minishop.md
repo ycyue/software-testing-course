@@ -27,20 +27,39 @@ INSERT/UPDATE/DELETE 会改数据。必须先 SELECT 验证范围，只在授权
 
 ## 12.12 `INSERT` ⭐⭐⭐
 
-只在授权教学库执行。插入前先 `SELECT` 该 `user_id` / `product_id` 是否已有行，避免盲目再插一条。
+只在授权教学库执行。插入前先 `SELECT` 该 `user_id` / `product_id` 是否已有行，避免盲目再插一条。每次打开 `sqlite3` 都要先 `PRAGMA foreign_keys = ON;`：这个开关按连接生效，不写入文件，重开终端默认又是关的。
 
 ```sql
+PRAGMA foreign_keys = ON;
+
+BEGIN;
+
 SELECT id, user_id, product_id, qty
 FROM cart_items
 WHERE user_id = 1 AND product_id = 3;
 
 INSERT INTO cart_items (user_id, product_id, qty)
 VALUES (1, 3, 1);
+
+SELECT id, user_id, product_id, qty
+FROM cart_items
+WHERE user_id = 1 AND product_id = 3;
+
+ROLLBACK;
 ```
 
-这会给 Tester A 加一行耳机。外键开启时，`user_id = 99` 应失败。审查中在 `PRAGMA foreign_keys = ON` 下插入不存在的用户，SQLite 报 `FOREIGN KEY constraint failed`。
+这会在事务里给 Tester A 加一行耳机；`ROLLBACK` 后库里仍没有这行。sqlite3 默认自动提交，只抄 `INSERT` 会永久留下耳机，后面 LEFT JOIN 里 `SKU-DEMO-003` 的 qty 就不再为空。若已经误插入，用主键 `DELETE` 清掉自己的行。
 
-插入后立刻 `SELECT` 核对，不要假设成功。练习插入应放在事务里回滚，或随后用主键 `DELETE` 清掉自己的行，避免污染别人的用例——第 5 章的数据独立性在库里同样适用。
+外键是否拦住幽灵用户，只对**当前这次连接**成立。审查中同连接先 `ON` 再插入不存在的用户，SQLite 报 `FOREIGN KEY constraint failed`：
+
+```sql
+PRAGMA foreign_keys = ON;
+INSERT INTO cart_items (user_id, product_id, qty)
+VALUES (99, 1, 1);
+-- 期望：FOREIGN KEY constraint failed
+```
+
+若没报错、行插进去了，说明这次连接没打开外键。立刻 `DELETE FROM cart_items WHERE user_id = 99;`，再执行 `PRAGMA foreign_keys = ON;` 后重试。插入后立刻 `SELECT` 核对，不要假设成功。
 
 ---
 
@@ -212,7 +231,7 @@ exercises/chapter-12-minishop-sql.md
 sqlite3 ~/minishop-sql-lab.sqlite
 ```
 
-进入后执行本章 12.4 的建表与插入，再完成：
+进入后先执行 `PRAGMA foreign_keys = ON;`（按连接生效，不写入文件；昨天建好的库今天重开仍是关闭）。若表还不存在，再执行 12.4 的建表与插入；表已在就不要重复 `CREATE`。然后完成：
 
 1. 按手机号查询用户；
 2. 一条 `JOIN`，列出该用户购物车的 sku、qty、stock；

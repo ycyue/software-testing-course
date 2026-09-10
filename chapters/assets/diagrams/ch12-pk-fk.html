@@ -3,7 +3,18 @@
 <body><div class="page">
 <p class="kicker">第 12 章示意图 · 主键和外键</p>
 <h1>主键认出「哪一行」，外键说「它属于谁」</h1>
-<p class="lead">购物车行自己有 id，同时又必须指向一个真实用户和一个真实商品。</p>
-<div class="row"><div class="col card"><span class="tag tag-ok">主键</span><h2>这一行的身份证</h2><p style="font-size:16px;line-height:1.55">users.id、products.sku（唯一）。没有它，两行鼠标会分不清。</p></div><div class="col card"><span class="tag tag-info">外键</span><h2>指向别人的身份证</h2><p style="font-size:16px;line-height:1.55">cart_items.user_id → users.id。用户不存在就不能挂一条车。</p></div></div>
-<p class="caption">示意图：教学库打开 PRAGMA foreign_keys = ON。删用户前要知道购物车行还指不指着他。</p>
+<p class="lead">三张表的主键都是 id。sku、phone 是 UNIQUE，能防重复，但不是主键。购物车行必须同时指向真实用户和真实商品。</p>
+<div class="row">
+  <div class="col card">
+    <span class="tag tag-ok">主键</span>
+    <h2>这一行的身份证</h2>
+    <p style="font-size:16px;line-height:1.55">users.id、products.id、cart_items.id。没有主键，两行鼠标会分不清。sku 是 UNIQUE 不是 PK：JOIN 购物车时连的是 products.id，不是 sku 文本。</p>
+  </div>
+  <div class="col card">
+    <span class="tag tag-info">外键</span>
+    <h2>指向别人的身份证</h2>
+    <p style="font-size:16px;line-height:1.55">cart_items.user_id → users.id，且 cart_items.product_id → products.id。用户或商品不存在，就不能挂一条车。</p>
+  </div>
+</div>
+<p class="caption">示意图：主键是三张表的 id；sku 是 UNIQUE 不是主键。外键两条都要连。PRAGMA foreign_keys 按连接生效，每次打开 sqlite3 都要再 ON。</p>
 </div></body></html>

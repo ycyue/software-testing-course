@@ -4,44 +4,58 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="_theme.css">
   <style>
-    table { width:100%; border-collapse: collapse; font-size:14px; }
-    th { text-align:left; background:#e2e8f0; padding:6px 8px; }
-    td { border-top:1px solid var(--line); padding:6px 8px; font-family:ui-monospace,Menlo,monospace; }
+    table { width:100%; border-collapse: collapse; font-size:13px; }
+    th { text-align:left; background:#e2e8f0; padding:5px 7px; }
+    td { border-top:1px solid var(--line); padding:5px 7px; font-family:ui-monospace,Menlo,monospace; }
+    .null { color: var(--amber); font-weight: 600; }
+    .callout {
+      margin-top: 12px;
+      background: var(--amber-soft);
+      color: var(--amber);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
 <div class="page">
-  <p class="kicker">第 12 章示意图 · 页面上的一行，库里可能是三张表拼出来的</p>
+  <p class="kicker">第 12 章示意图 · 12.4 教学库（不是 MiniShop v1.0 种子）</p>
   <h1>购物车不是「一个格子」，是用户、商品、数量三张表的会合</h1>
-  <p class="lead">页面写「SKU-DEMO-001 qty=1」。要核对真伪，得把用户表和商品表 JOIN 起来。MiniShop 种子数据如下。</p>
+  <p class="lead">这是 12.4 教学库。页面写「SKU-DEMO-001 qty=1」，要核对真伪得把三张表 JOIN 起来。用户 3 是 13800138002、display_name 为 NULL，不是 admin。</p>
   <div class="row">
     <div class="col card">
-      <h2>users</h2>
+      <h2>users（3 行）</h2>
       <table>
-        <tr><th>id</th><th>phone</th></tr>
-        <tr><td>1</td><td>13800138000</td></tr>
-        <tr><td>2</td><td>13800138001</td></tr>
+        <tr><th>id</th><th>phone</th><th>display_name</th></tr>
+        <tr><td>1</td><td>13800138000</td><td>Tester A</td></tr>
+        <tr><td>2</td><td>13800138001</td><td>Tester B</td></tr>
+        <tr><td>3</td><td>13800138002</td><td class="null">NULL</td></tr>
       </table>
     </div>
     <div class="col card">
-      <h2>products</h2>
+      <h2>products（3 行，含耳机）</h2>
       <table>
-        <tr><th>id</th><th>sku</th><th>stock</th></tr>
-        <tr><td>1</td><td>SKU-DEMO-001</td><td>10</td></tr>
-        <tr><td>2</td><td>SKU-DEMO-002</td><td>5</td></tr>
+        <tr><th>id</th><th>sku</th><th>name</th><th>stock</th></tr>
+        <tr><td>1</td><td>SKU-DEMO-001</td><td>无线鼠标</td><td>10</td></tr>
+        <tr><td>2</td><td>SKU-DEMO-002</td><td>键盘</td><td>5</td></tr>
+        <tr><td>3</td><td>SKU-DEMO-003</td><td>耳机</td><td>3</td></tr>
       </table>
     </div>
     <div class="col card" style="border:2px solid var(--teal);">
-      <h2>cart_items</h2>
+      <h2>cart_items（3 行）</h2>
       <table>
-        <tr><th>user_id</th><th>product_id</th><th>qty</th></tr>
-        <tr><td>1</td><td>1</td><td>1</td></tr>
-        <tr><td>1</td><td>2</td><td>2</td></tr>
+        <tr><th>id</th><th>user_id</th><th>product_id</th><th>qty</th></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>2</td><td>1</td><td>2</td><td>2</td></tr>
+        <tr><td>3</td><td>2</td><td>1</td><td>1</td></tr>
       </table>
     </div>
   </div>
-  <p style="margin-top:16px;">JOIN 之后 Tester A 应看到：鼠标 qty 1 / stock 10，键盘 qty 2 / stock 5。页面显示 11 而这里仍是 1，问题在展示；这里变成 11，才是超卖。</p>
-  <p class="caption">示意图：主键认出一行，外键把行连起来。改数前先 SELECT，只在授权教学库操作。</p>
+  <p style="margin-top:14px;font-size:15px;line-height:1.55">JOIN 之后 Tester A：鼠标 qty 1 / stock 10，键盘 qty 2 / stock 5。耳机无人加购，LEFT JOIN 时 qty 为空。COUNT(*) 用户 = 3，COUNT(display_name) = 2。</p>
+  <p class="callout">对照：MiniShop v1.0 用户 3 是 13800138099 Admin。禁止拿 002 当管理员，也禁止拿本图对 seed-join.txt 做 COUNT。</p>
+  <p class="caption">示意图：12.4 教学库全表。页面上的一行来自用户、商品、购物车三张表会合，不是 MiniShop v1.0 种子。</p>
 </div>
 </body>
 </html>
