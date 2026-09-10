@@ -157,14 +157,14 @@ assert 11 <= 10
 
 ## 16.4 requests 发 HTTP ⭐⭐⭐
 
-requests 把第 9、13 章的 HTTP 变成函数调用。下面是**片段**：把 `PORT` 换成教学服务端口后再运行。
+requests 把第 9、13 章的 HTTP 变成函数调用。下面是**片段**：MiniShop 默认 `http://127.0.0.1:8765`。
 
 ```python
 import requests
 
 response = requests.get(
-    "http://127.0.0.1:PORT/products",
-    params={"keyword": "mouse"},
+    "http://127.0.0.1:8765/api/products",
+    params={"keyword": "鼠标"},
     timeout=5,
 )
 print(response.status_code)
@@ -187,22 +187,20 @@ print(response.status_code)
 - `json=` 发 JSON；`data=` 配字典则是表单。测 JSON 接口用 `json=`。
 - 不要在断言失败信息里打印完整 token 或密码。
 
-教学服务行为与第 13、14 章一致，但是**教学约定**：
+当前 MiniShop 行为（与第 13、14 章、PRD 一致）：
 
-| 请求 | 教学结果 |
+| 请求 | 结果 |
 | --- | --- |
-| `POST /login` 正确 | `200`，`result=ok`，`token`，以及 `Set-Cookie` |
-| `POST /login` 错误密码 | `401` |
-| `GET /products` | `200`，`items` 为数组 |
-| `POST /cart/items` `qty=1` | `200` |
-| `POST /cart/items` `qty=11` | `400` |
-| `POST /orders` 无 Bearer | `401` |
-| `POST /orders` 带 `teach-token` | `201`，有 `id`，无 `status` 字段 |
+| `POST /api/login` 正确 | `200`，`result=ok`，`token`，以及 `Set-Cookie` |
+| `POST /api/login` 错误密码 | `401` |
+| `GET /api/products?keyword=鼠标` | `200`，命中无线鼠标 |
+| `POST /api/cart/items` `qty=1` 或 `qty=10`（需 Bearer） | `200` |
+| `POST /api/cart/items` `qty=11` | `400` |
+| `POST /api/orders` 无 Bearer | `401` |
+| `POST /api/orders` 带 token | `201`，有 `id`，无 `status` |
 | 连续两次成功下单 | 两个不同 `id` |
 
-教学购物车和教学下单**都只把 `qty=1` 当成功**。业务规则里 `qty=10`（等于库存）应允许，但教学服务未实现该分支。自动化必须按**当前被测系统**写期望，不要拿未实现的规则硬编成 200。第 19 章 MiniShop v1.0 才按 PRD 让 `qty=10` 通过。
-
-登录密码：教学服务把占位符 `<redacted>` 当作密码，以便和已发布的 curl 一致。正式环境用环境变量 `TEACH_PASSWORD`，不要把真实密码提交进仓库。
+自动化必须按**当前被测系统**写期望。`qty=10` 现在就应该是 200，不要写成「第 19 章才允许」。教学密码是仓库写明的 `Test1234`，只许用在本机，不要提交别的真实密码。
 
 ---
 
@@ -218,7 +216,7 @@ TIMEOUT = 5
 
 def test_login_ok(base_url, phone, password):
     response = requests.post(
-        f"{base_url}/login",
+        f"{base_url}/api/login",
         json={"phone": phone, "password": password},
         timeout=TIMEOUT,
     )
@@ -231,14 +229,14 @@ def test_login_ok(base_url, phone, password):
 
 def test_login_wrong_password(base_url, phone):
     response = requests.post(
-        f"{base_url}/login",
+        f"{base_url}/api/login",
         json={"phone": phone, "password": "wrong-password"},
         timeout=TIMEOUT,
     )
     assert response.status_code == 401
 ```
 
-`base_url` / `phone` / `password` 来自下一节的 fixture。成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续订单教学接口以 `Authorization: Bearer` 为准。
+`base_url` / `phone` / `password` 来自下一节的 fixture。成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续接口以 `Authorization: Bearer` 为准。
 
 不要在 query 里传密码。不要把这次拿到的 token 粘到别的测试文件里当常量——下一节用 fixture。
 
@@ -257,7 +255,7 @@ python3 run.py test
 
 ![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
 
-fixture、parametrize 和教学 pytest 包见 [16B](16b-pytest-fixtures.md)。仓库套件用 `python3 run.py test`；实操 16-1 解释 37 / 1。
+fixture、parametrize 见 [16B](16b-pytest-fixtures.md)。仓库套件用 `python3 run.py test`；实操 16-1 解释 37 / 1。
 
 ## 常见错误
 
@@ -277,9 +275,9 @@ fixture、parametrize 和教学 pytest 包见 [16B](16b-pytest-fixtures.md)。�
 
 修正：ROI 必须带场景。稳定、重复、漏测损失大的判定适合自动化；还在改文案的页面先手工。
 
-### 错误 5：把教学 `/login` 服务当成 MiniShop v1.0
+### 错误 5：对着 MiniShop 打 `POST /login`
 
-修正：教学服务常只让 `qty=1` 成功。正式契约是 `/api/`，`qty=10` 允许，见 PRD。
+修正：路径是 `/api/login`。无前缀会 404。购物车必须带 Bearer，`qty=10` 允许。
 
 ## 面试角度 ⭐⭐⭐
 
@@ -344,7 +342,7 @@ pytest 把已经明确的判定交给脚本重复执行。先会跑、会断言�
 
 ## 本章可运行性说明
 
-仓库套件：pytest 9.1.1，`37 passed, 1 xfailed`。教学 `/login` 服务不是 v1.0 契约。
+仓库套件：pytest 9.1.1，`37 passed, 1 xfailed`。对端是 `project/minishop` 的 `/api/`。
 
 ## 参考资料
 

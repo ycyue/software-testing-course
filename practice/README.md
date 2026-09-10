@@ -66,7 +66,7 @@ python3 practice/run.py 1-1 --check
 | 5-1 | 5 | ✅ | 库存边界两侧 | [05-…](05-qty-boundary/) |
 | 6-1 | 6 | 📖 | 按模板写缺陷单（可针对 BUG-001） | [06-…](06-bug-report/) |
 | 8-1 | 8 | ✅ | 他人订单 403、非管理员 403 | [08-…](08-privilege/) |
-| 9-1 | 9 | ✅ | HTTP 四格 | [09-…](09-http-observe/) |
+| 9-1 | 9 | ✅ | HTTP 四格 | [09-…](09-http-observe/) · [09B](../chapters/09b-http-message-observe.md) |
 | 10-1 | 10 | 📖 | DevTools 取证；**仓库没有面板截图** | [第 10 章](../chapters/10-chrome-devtools.md) |
 | 11-1 | 11 | ✅ | qty=11 后 grep 日志 | [11-…](11-log-grep/) |
 | 12-1 | 12 | ✅ | SQL 交叉验证 | [12-…](12-sql-cross-check/) |

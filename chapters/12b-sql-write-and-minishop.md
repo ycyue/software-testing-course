@@ -21,9 +21,15 @@ INSERT/UPDATE/DELETE 会改数据。必须先 SELECT 验证范围，只在授权
 
 ## 场景导入
 
-页面把数量改成 11，接口返回 400。若你只截一张失败提示，仍不知道库里有没有写成 11。先 SELECT 再谈改；改完再 SELECT。实操 12-1 就是这条交叉验证。
+页面把数量改成 11，接口返回 400。若你只截一张失败提示，仍不知道库里有没有写成 11。先 SELECT 再谈改；改完再 SELECT。qty=11 不落库看 `evidence/sql/seed-join.txt` 和 pytest `test_cart_qty_11_does_not_persist`。
+
+实操 12-1 是另一条：**合法**数量 `qty=2` 之后，用 SQL JOIN 核对接口与库一致。不要把 12-1 说成「就是测 qty=11」。
 
 ## 12.12 `INSERT` ⭐⭐⭐
+
+只在授权教学库执行。插入前先 `SELECT` 该 `user_id` / `product_id` 是否已有行，避免盲目再插一条。
+
+
 
 ```sql
 INSERT INTO cart_items (user_id, product_id, qty)

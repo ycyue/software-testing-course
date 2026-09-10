@@ -7,6 +7,8 @@
 1. [04A 需求分析与静态测试](04a-requirements-static-testing.md)
 2. [04B MiniShop 需求评审](04b-minishop-requirement-review.md)
 
+作业在 04B：[工作实战](04b-minishop-requirement-review.md#minishop-工作实战需求评审包) · [实操 4-1](../practice/04-requirement-review/)
+
 阶段测验：[阶段测验 2](quizzes/stage-2-analysis.md)（建议学完第 6 章再做）
 
 读完第二节后，进入第 5 章。

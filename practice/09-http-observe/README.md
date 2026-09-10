@@ -2,7 +2,7 @@
 
 > 配套第 9 章。HTTP 观察不是「看一下 Network」，而是能说出方法、路径、头、体。
 
-← [实操目录](../README.md) · 📖 [读第 9 章](../../chapters/09-computer-network-and-http.md)
+← [实操目录](../README.md) · 📖 [读 09B](../../chapters/09b-http-message-observe.md)
 
 ## Code map
 

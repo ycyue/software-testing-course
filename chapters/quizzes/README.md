@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | [阶段 1 基础与分类](stage-1-foundations.md) | 1、2、3、7 | 学完第 7 章 |
 | [阶段 2 需求、用例与缺陷](stage-2-analysis.md) | 4、5、6A、6B | 学完第 6 章（下） |
-| [阶段 3 Web 与 HTTP](stage-3-web.md) | 8A、8B、9、10 | 学完第 10 章 |
+| [阶段 3 Web 与 HTTP](stage-3-web.md) | 8A、8B、9A、9B、10 | 学完第 10 章 |
 | [阶段 4 Linux 与 SQL](stage-4-ops.md) | 11、12A、12B | 学完第 12 章（下） |
 | [阶段 5 接口与自动化](stage-5-api.md) | 13、14、15A、15B、16A、16B | 学完第 16 章（下） |
 | [阶段 6 项目收口](stage-6-project.md) | 17、18、19 | 学完第 19 章 |

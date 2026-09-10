@@ -6,7 +6,7 @@
 
 ## 这一章解决什么问题
 
-把 token 和 base_url 从每条测试里抽出来，用 parametrize 覆盖数量和四态。并完成教学接口 pytest 包。正式 MiniShop v1.0 套件在 `project/minishop/tests/`，不要把教学 `/login` 写成已冻结契约。
+把 token 和 base_url 从每条测试里抽出来，用 parametrize 覆盖数量和四态。工作实战是读懂并跑 `project/minishop/tests/`，不要另写一台 `/login` 教学服务。
 
 ## 学习目标
 
@@ -21,7 +21,7 @@
 
 ## 场景导入
 
-每条测试都自己登录一次，token 写得到处都是。fixture 把前置抽出来；parametrize 把 qty=1/10/11 和缺字段四态展开。抽错了也会出事：`autouse` 登录后再测 401，往往测脏。
+每条测试都自己登录一次，token 写得到处都是。fixture 把前置抽出来；parametrize 把 qty=1/10/11 和缺字段四态展开。抽错了也会出事：`autouse` 登录后再测 401，往往测脏。仓库 `conftest.py` 里 `token_a` **没有** autouse；另有 `reset_seed_db` 是 autouse，用来把库打回种子，不是拿来测 401 的。
 
 ## 16.6 fixture 与 scope ⭐⭐⭐
 
@@ -41,12 +41,11 @@ TIMEOUT = 5
 
 @pytest.fixture
 def base_url():
-    url = os.environ.get("TEACH_BASE_URL")
-    assert url, "TEACH_BASE_URL is required"
+    url = os.environ.get("MINISHOP_BASE_URL", "http://127.0.0.1:8765")
     return url.rstrip("/")
 ```
 
-`test_login_ok(base_url, phone, password)` 并不需要你手动调用 `base_url()`。
+`test_login_ok(base_url)` 并不需要你手动调用 `base_url()`。仓库套件自己起临时端口，见 `tests/conftest.py`。
 
 | scope | 何时创建一次 | 适用 |
 | --- | --- | --- |
@@ -58,9 +57,9 @@ def base_url():
 
 token 用默认 `function` 最稳：每个需要它的测试自己登录一次。登录很慢时再改为 `scope="session"`。不要把 token fixture 设成 `autouse=True`：无凭证用例也会先多打一次登录；若再共用 `requests.Session` 或自动带上 Cookie，401 就会测脏。本章的 token fixture 只 `return` 字符串，不会自动粘到没有声明该参数的请求上，但不要依赖这种巧合。
 
-需要收尾时用 `yield`：`yield` 之前是准备，之后是清理。教学服务没有登出接口，token fixture 直接 `return` 即可。
+需要收尾时用 `yield`：`yield` 之前是准备，之后是清理。token fixture 直接 `return` 字符串即可。
 
-fixture 里的 `assert` 失败算 **setup 错误**，测试函数体还没执行。先看是环境（没设 `TEACH_BASE_URL`、服务没启动）还是业务断言失败。
+fixture 里的 `assert` 失败算 **setup 错误**，测试函数体还没执行。先看是环境（服务没启动）还是业务断言失败。
 
 ---
 
@@ -91,7 +90,7 @@ TIMEOUT = 5
 @pytest.fixture
 def token(base_url, phone, password):
     response = requests.post(
-        f"{base_url}/login",
+        f"{base_url}/api/login",
         json={"phone": phone, "password": password},
         timeout=TIMEOUT,
     )
@@ -106,7 +105,7 @@ def token(base_url, phone, password):
 ```python
 def test_create_order_returns_id(base_url, token):
     response = requests.post(
-        f"{base_url}/orders",
+        f"{base_url}/api/orders",
         json={"sku": "SKU-DEMO-001", "qty": 1},
         headers={"Authorization": f"Bearer {token}"},
         timeout=5,
@@ -117,7 +116,7 @@ def test_create_order_returns_id(base_url, token):
     assert "status" not in body
 ```
 
-无凭证用例**不要**声明 `token`，也不要复用 `requests.Session` 里已经存下的 Cookie 来“顺便”带登录态——除非你在测 Cookie 认证。教学订单接口看的是 Bearer。Cookie 与 Bearer 可同时出现在登录响应里，检查哪一种以文档为准。
+无凭证用例**不要**声明 `token`，也不要复用 `requests.Session` 里已经存下的 Cookie 来“顺便”带登录态——除非你在测 Cookie 认证。MiniShop 购物车和订单看的是 Bearer。Cookie 与 Bearer 可同时出现在登录响应里。
 
 ---
 
@@ -136,26 +135,29 @@ TIMEOUT = 5
     "body, status",
     [
         ({"sku": "SKU-DEMO-001", "qty": 1}, 200),
+        ({"sku": "SKU-DEMO-001", "qty": 10}, 200),
         ({"sku": "SKU-DEMO-001", "qty": 11}, 400),
         ({"sku": "SKU-DEMO-001"}, 400),
         ({"sku": "SKU-DEMO-001", "qty": None}, 400),
         ({"sku": "SKU-DEMO-001", "qty": ""}, 400),
         ({"sku": "SKU-DEMO-001", "qty": "1"}, 400),
+        ({"sku": "SKU-DEMO-001", "qty": 0}, 400),
     ],
-    ids=["ok", "over_stock", "missing", "null", "empty_str", "wrong_type"],
+    ids=["ok", "eq_stock", "over_stock", "missing", "null", "empty_str", "wrong_type", "zero"],
 )
-def test_cart_qty_cases(base_url, body, status):
+def test_cart_qty_cases(base_url, token, body, status):
     response = requests.post(
-        f"{base_url}/cart/items",
+        f"{base_url}/api/cart/items",
         json=body,
+        headers={"Authorization": f"Bearer {token}"},
         timeout=TIMEOUT,
     )
     assert response.status_code == status
 ```
 
-`ids` 出现在收集列表和失败报告里，比默认的 `[body0]` 好读。
+`ids` 出现在收集列表和失败报告里，比默认的 `[body0]` 好读。仓库 `tests/test_api.py` 就是这张表。
 
-一次只变一个主要无效条件，与第 13 章一致。教学服务未校验购物车 Bearer，这是教学简化；正式接口以文档为准，不要把“没校验”写成 MiniShop 已上线行为。
+一次只变一个主要无效条件，与第 13 章一致。购物车**必须**带 Bearer，无凭证是另一条 401，不要和四态叠在一起。
 
 从 JSON 文件读用例也可以，本质仍是 parametrize 的数据来源。先把表写在装饰器里。
 
@@ -163,19 +165,16 @@ def test_cart_qty_cases(base_url, body, status):
 
 ## 16.10 目录结构与基础配置 ⭐⭐⭐
 
-推荐练习目录：
+仓库目录（不要另造 `teach_server.py`）：
 
 ```text
-minishop-api-tests/
-  .venv/
+project/minishop/
   pytest.ini
-  conftest.py
-  teach_server.py
   tests/
-    test_qty_allowed.py
-    test_login.py
-    test_cart.py
-    test_orders.py
+    conftest.py
+    test_api.py
+    test_register.py
+    test_qty_rule.py
 ```
 
 `pytest.ini`：
@@ -209,294 +208,37 @@ python3 -m pytest tests/test_orders.py
 
 配套可运行实操：[实操 16-1 pytest 基线](../practice/16-pytest-regression/README.md)（先 `python3 project/minishop/run.py setup`，再 `python3 practice/run.py 16-1`）。37 passed / 1 xfailed 对应 BUG-001 仍开放。
 
-## MiniShop 工作实战：教学接口 pytest 包 ⭐⭐⭐
+## MiniShop 工作实战：读仓库 pytest 包 ⭐⭐⭐
 
-在自己的练习目录完成。保存说明：
+不要复制一份 `teach_server.py`。对端就是 MiniShop，测试已经在 `project/minishop/tests/`。保存说明：
 
 ```text
 exercises/chapter-16-minishop-pytest.md
 ```
 
-教学服务 `teach_server.py` 使用 `class` 继承标准库 HTTP 服务器。你**不需要会写 class**；把它当成一台可启动的教学机器。审查用它验证测试，它不是 MiniShop 正式后端。发送 `Connection: close`，避免单线程服务被 keep-alive 卡住。
-
-```python
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import json
-import os
-import time
-
-TEACH_PHONE = os.environ.get("TEACH_PHONE", "13800138000")
-TEACH_PASSWORD = os.environ.get("TEACH_PASSWORD", "<redacted>")
-TEACH_TOKEN = "teach-token"
-STOCK = 10
-
-
-class TeachHandler(BaseHTTPRequestHandler):
-    def log_message(self, format, *args):
-        return
-
-    def _json(self, code, obj, extra_headers=None):
-        body = json.dumps(obj).encode()
-        self.send_response(code)
-        self.send_header("Content-Type", "application/json")
-        if extra_headers:
-            for key, value in extra_headers:
-                self.send_header(key, value)
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Connection", "close")
-        self.end_headers()
-        self.wfile.write(body)
-
-    def _read(self):
-        length = int(self.headers.get("Content-Length") or 0)
-        raw = self.rfile.read(length) if length else b""
-        if not raw:
-            return {}
-        return json.loads(raw)
-
-    def do_GET(self):
-        path = self.path.split("?", 1)[0]
-        if path == "/products":
-            self._json(200, {"items": [{"sku": "SKU-DEMO-001", "name": "mouse", "stock": STOCK}]})
-            return
-        self._json(404, {"error": "not found"})
-
-    def do_POST(self):
-        if self.path == "/login":
-            data = self._read()
-            if data.get("phone") == TEACH_PHONE and data.get("password") == TEACH_PASSWORD:
-                self._json(
-                    200,
-                    {"result": "ok", "token": TEACH_TOKEN},
-                    [("Set-Cookie", "session_demo=abc; HttpOnly; Path=/")],
-                )
-            else:
-                self._json(401, {"result": "fail"})
-            return
-        if self.path == "/cart/items":
-            data = self._read()
-            qty = data.get("qty")
-            if qty == 11:
-                self._json(400, {"error": "qty exceeds stock"})
-            elif qty == 1:
-                self._json(200, {"sku": data.get("sku"), "qty": 1})
-            else:
-                self._json(400, {"error": "bad qty"})
-            return
-        if self.path == "/orders":
-            auth = self.headers.get("Authorization", "")
-            if auth != f"Bearer {TEACH_TOKEN}":
-                self._json(401, {"error": "unauthorized"})
-                return
-            data = self._read()
-            if data.get("qty") == 11:
-                self._json(400, {"error": "qty exceeds stock"})
-                return
-            if data.get("qty") != 1:
-                self._json(400, {"error": "bad qty"})
-                return
-            self._json(201, {"id": f"ord-demo-{time.time_ns()}"})
-            return
-        self._json(404, {"error": "not found"})
-
-
-def main():
-    host = "127.0.0.1"
-    httpd = HTTPServer((host, 0), TeachHandler)
-    port = httpd.server_address[1]
-    print(f"TEACH_BASE_URL=http://{host}:{port}", flush=True)
-    httpd.serve_forever()
-
-
-if __name__ == "__main__":
-    main()
-```
-
-启动（另一个终端）：
+先跑：
 
 ```bash
-python3 teach_server.py
+cd project/minishop
+python3 run.py setup
+python3 run.py test
 ```
 
-它会打印 `TEACH_BASE_URL=http://127.0.0.1:端口`。然后：
+预期摘要：`37 passed, 1 xfailed`。然后打开三个文件，用自己的话写下来：
 
-```bash
-export TEACH_BASE_URL=http://127.0.0.1:端口
-python3 -m pytest -q
-```
+1. `tests/conftest.py`：`base_url` 怎样起临时端口；`token_a` 为什么不是 autouse；`reset_seed_db` 是干什么的。
+2. `tests/test_api.py`：`test_cart_qty_cases` 为什么 `qty=10` 是 200、购物车为什么带 Bearer。
+3. `tests/test_register.py`：合法注册为什么是 201、没有 token。
 
-Windows 用 `set TEACH_BASE_URL=...`。
-
-### `conftest.py`
-
-```python
-import os
-
-import pytest
-import requests
-
-TIMEOUT = 5
-
-
-@pytest.fixture
-def base_url():
-    url = os.environ.get("TEACH_BASE_URL")
-    assert url, "TEACH_BASE_URL is required, e.g. http://127.0.0.1:PORT"
-    return url.rstrip("/")
-
-
-@pytest.fixture
-def phone():
-    return os.environ.get("TEACH_PHONE", "13800138000")
-
-
-@pytest.fixture
-def password():
-    return os.environ.get("TEACH_PASSWORD", "<redacted>")
-
-
-@pytest.fixture
-def token(base_url, phone, password):
-    response = requests.post(
-        f"{base_url}/login",
-        json={"phone": phone, "password": password},
-        timeout=TIMEOUT,
-    )
-    assert response.status_code == 200
-    body = response.json()
-    value = body.get("token")
-    assert type(value) is str and value != ""
-    return value
-```
-
-### `tests/test_qty_allowed.py`
-
-```python
-def qty_allowed(qty, stock):
-    if type(qty) is not int or type(stock) is not int:
-        return False
-    if qty < 1:
-        return False
-    return qty <= stock
-
-
-def test_qty_one_allowed():
-    assert qty_allowed(1, 10) is True
-
-
-def test_qty_equals_stock():
-    assert qty_allowed(10, 10) is True
-
-
-def test_qty_over_stock():
-    assert qty_allowed(11, 10) is False
-
-
-def test_qty_wrong_type():
-    assert qty_allowed("11", 10) is False
-```
-
-`tests/test_login.py` 用 16.5 的两个函数。
-
-### `tests/test_cart.py`
-
-```python
-import pytest
-import requests
-
-TIMEOUT = 5
-
-
-def test_products_list(base_url):
-    response = requests.get(
-        f"{base_url}/products",
-        params={"keyword": "mouse"},
-        timeout=TIMEOUT,
-    )
-    assert response.status_code == 200
-    body = response.json()
-    assert type(body["items"]) is list
-
-
-@pytest.mark.parametrize(
-    "body, status",
-    [
-        ({"sku": "SKU-DEMO-001", "qty": 1}, 200),
-        ({"sku": "SKU-DEMO-001", "qty": 11}, 400),
-        ({"sku": "SKU-DEMO-001"}, 400),
-        ({"sku": "SKU-DEMO-001", "qty": None}, 400),
-        ({"sku": "SKU-DEMO-001", "qty": ""}, 400),
-        ({"sku": "SKU-DEMO-001", "qty": "1"}, 400),
-    ],
-    ids=["ok", "over_stock", "missing", "null", "empty_str", "wrong_type"],
-)
-def test_cart_qty_cases(base_url, body, status):
-    response = requests.post(
-        f"{base_url}/cart/items",
-        json=body,
-        timeout=TIMEOUT,
-    )
-    assert response.status_code == status
-```
-
-### `tests/test_orders.py`
-
-```python
-import requests
-
-TIMEOUT = 5
-
-
-def test_create_order_returns_id(base_url, token):
-    response = requests.post(
-        f"{base_url}/orders",
-        json={"sku": "SKU-DEMO-001", "qty": 1},
-        headers={"Authorization": f"Bearer {token}"},
-        timeout=TIMEOUT,
-    )
-    assert response.status_code == 201
-    body = response.json()
-    assert "id" in body
-    assert type(body["id"]) is str
-    assert "status" not in body
-
-
-def test_create_order_twice_not_idempotent(base_url, token):
-    payload = {"sku": "SKU-DEMO-001", "qty": 1}
-    headers = {"Authorization": f"Bearer {token}"}
-    first = requests.post(f"{base_url}/orders", json=payload, headers=headers, timeout=TIMEOUT)
-    second = requests.post(f"{base_url}/orders", json=payload, headers=headers, timeout=TIMEOUT)
-    assert first.status_code == 201
-    assert second.status_code == 201
-    assert first.json()["id"] != second.json()["id"]
-
-
-def test_create_order_unauthorized(base_url):
-    response = requests.post(
-        f"{base_url}/orders",
-        json={"sku": "SKU-DEMO-001", "qty": 1},
-        timeout=TIMEOUT,
-    )
-    assert response.status_code == 401
-```
-
-审查收集到 16 条，执行结果：
-
-```text
-................                                                         [100%]
-16 passed in 0.02s
-```
-
-耗时随机器变化。完整文件与 `teach_server.py` 以你练习目录中的拷贝为准；逻辑须与上表及第 13 章教学行为一致。
+可选加分：在练习目录**复制** `test_qty_rule.py` 的纯函数思路，加一条你自己的边界（不要改仓库里正在跑的套件，除非你在做第 19 章项目）。
 
 完成标准：
 
-1. 不连教学服务时，数量规则的纯函数测试能独立通过；
-2. 登录成功 / 错误密码；
-3. 购物车至少覆盖合法数量、超库存，以及缺字段 / `null` / 空字符串 / 错误类型之一组；
-4. 下单有 id、无状态名、重复提交两个 id、无凭证 401；
-5. Token 来自 fixture，密码来自环境变量或教学占位符；
-6. 说明：个人练习，非正式契约，未冒充已测通 MiniShop 全部订单状态。
+1. 本机 `run.py test` 数字能指出来（37 / 1，或以你最新输出为准）；
+2. 能解释 xfail 对应 BUG-001，不是「全绿」；
+3. 能指出购物车八组 parametrize 里 `eq_stock` 和 `over_stock`；
+4. 能说明无 Bearer 下单是 401、他人订单是 403；
+5. 不另造 `/login` 教学服务。
 
 记录模板：
 
@@ -505,17 +247,18 @@ def test_create_order_unauthorized(base_url):
 
 ## 环境
 - Python / pytest / requests 版本：
-- TEACH_BASE_URL：
-- 是否授权 / 是否教学服务：
+- 命令：`python3 run.py test`
 - 日期：
 
 ## 结果
 - 收集条数：
-- passed / failed：
-- 纯函数测试是否可单独跑：
+- passed / xfailed：
+- xfail 对应哪个缺陷：
 
-## 声明
-- 非正式 OpenAPI；无订单状态臆造；无真实密码入库。
+## 我读懂的三处
+- conftest：
+- 购物车 parametrize：
+- 注册：
 ```
 
 ---
@@ -529,17 +272,17 @@ def test_create_order_unauthorized(base_url):
 
 修正：会先多登录一次；若再共用 Session 或 Cookie，就测不到未认证。需要 token 的测试显式写参数。
 
-### 错误 2：教学服务全绿，就当成 MiniShop v1.0 已测完
+### 错误 2：把 xfail 说成全绿
 
-修正：教学路径常是 `/login` 且只让 `qty=1`。仓库套件是 37 passed / 1 xfailed，xfail 仍是 BUG-001。
+修正：仓库套件是 37 passed / 1 xfailed。xfail 对应仍开放的 BUG-001，不是「没有缺陷」。
 
 ### 错误 3：fixture 里写判定，parametrize 里准备环境
 
-修正：fixture 准备观察所需的前置，不负责发明判定。六种 Body 用 parametrize 展开。
+修正：fixture 准备观察所需的前置，不负责发明判定。购物车八组 Body 用 parametrize 展开。
 
 ### 错误 4：两次下单成功却去断言订单 `status`
 
-修正：v1.0 和教学下单成功都只保证 `id`。默认不幂等：两个 id。没有状态机。
+修正：v1.0 下单成功只保证 `id`。默认不幂等：两个 id。没有状态机。
 
 ## 面试角度 ⭐⭐⭐
 
@@ -549,9 +292,9 @@ def test_create_order_unauthorized(base_url):
 示例：`base_url` / `token` 用 fixture；购物车缺字段、null、空串、错误类型用 parametrize。  
 边界：不要用 autouse token 去测 401。
 
-### 教学绿和仓库 37/1 是一回事吗？
+### 仓库 37/1 能说成没有缺陷吗？
 
-结论：不是。教学服务练写法；v1.0 套件才是项目证据。  
+结论：不能。1 条 xfail 跟踪仍开放的 BUG-001。  
 示例：`python3 run.py test` → 37 passed, 1 xfailed。  
 边界：简历里只写仓库里能指出来的数字，并以本机最新输出为准。
 
@@ -572,11 +315,11 @@ def test_create_order_unauthorized(base_url):
 
 ### 练习 7
 
-用一句话区分 fixture 与 `@pytest.mark.parametrize`。购物车六种 Body 应主要用哪一个？
+用一句话区分 fixture 与 `@pytest.mark.parametrize`。购物车 qty 与四态应主要用哪一个？
 
 ### 练习 8
 
-连续两次 `POST /orders` 得到两个 `id`，自动化应断言什么？不要写订单状态名。
+连续两次 `POST /api/orders` 得到两个 `id`，自动化应断言什么？不要写订单状态名。
 
 ### 练习 9
 
@@ -589,7 +332,7 @@ D. GET 比 POST 安全，所以登录必须用 GET
 
 ### 练习 10
 
-列出教学登录测试最少要断言的 4 项（含一项失败密码）。密码如何提供？不要写订单状态名。
+列出 MiniShop 登录测试最少要断言的 4 项（含一项失败密码）。密码如何提供？不要写订单状态名。
 
 
 ## 练习答案
@@ -598,13 +341,13 @@ D. GET 比 POST 安全，所以登录必须用 GET
 
 6. 不会。放在项目或 `tests` 目录的 `conftest.py`。
 
-7. fixture 准备环境，parametrize 展开数据。六种 Body 用 parametrize。
+7. fixture 准备环境，parametrize 展开数据。购物车 qty / 四态用 parametrize。
 
-8. 两次都成功创建且 `id` 不同（教学服务不幂等）。若正式需求只允许一笔，再按正式文档改期望。
+8. 两次都成功创建且 `id` 不同（v1.0 默认不幂等）。若正式需求只允许一笔，再按正式文档改期望。
 
 9. C。A 违反 ROI 绝对化；B 把认证层次说成插件；D 是 GET/POST 安全神话。
 
-10. 状态码 200、`result=ok`、token 为非空字符串、错误密码 401。密码来自环境变量或教学占位符，不入库。合理四项即可。
+10. 状态码 200、`result=ok`、token 为非空字符串、错误密码 401。密码用仓库教学账号 `Test1234`，只许本机，不入库。合理四项即可。
 
 ---
 
@@ -613,12 +356,12 @@ D. GET 比 POST 安全，所以登录必须用 GET
 
 - [ ] 我会用 fixture 和 parametrize
 - [ ] 我知道 401 不要 autouse token
-- [ ] 我不会把教学绿当成正式契约
+- [ ] 我能解释 37 passed / 1 xfailed，不会说成全绿
 - [ ] 我能跑通 `python3 run.py test`
 
 ## 本章总结
 
-fixture 准备前置，parametrize 展开数据。401 不要 autouse token。教学绿不是 v1.0 契约；仓库基线仍是 37 passed / 1 xfailed。
+fixture 准备前置，parametrize 展开数据。401 不要 autouse token。仓库基线是 37 passed / 1 xfailed。
 
 ## 阶段测验
 
@@ -626,7 +369,7 @@ fixture 准备前置，parametrize 展开数据。401 不要 autouse token。教
 
 ## 本章可运行性说明
 
-`python3 run.py test` 本机 2026-09-09：37 passed, 1 xfailed。教学练习包与 v1.0 套件不是同一份契约。
+`python3 run.py test` 本机 2026-09-09：37 passed, 1 xfailed。对端是 `project/minishop`，没有第二套 `/login` 教学服务。
 
 ## 参考资料
 

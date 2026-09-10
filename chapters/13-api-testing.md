@@ -12,7 +12,7 @@
 
 页面能用，接口仍可能对错误类型放行；接口返回成功，库存仍可能没改。初级测试工程师必须会读接口文档，会构造 Path/Query/Header/Body，会区分缺失、空字符串和 `null`，会测权限和重复提交。
 
-本章路径、字段名和响应形状是**教学约定**，不是仓库级 MiniShop 正式 OpenAPI。v1.0 不定义订单状态机，也没有支付。正式契约以第 19 章 `project/minishop/docs/PRD.md` 与 OpenAPI 为准。
+本章可运行示例一律打仓库 MiniShop：`python3 project/minishop/run.py serve`，路径带 `/api/`，购物车 `qty=10` 允许、`qty=11` 拒绝，需要 `Authorization: Bearer`。当前实现与 PRD 一致；项目收口和「冻结仪式」在第 19 章，本章不要假装已经做完整项目包。v1.0 不定义订单状态机，也没有支付。
 
 ## 学习目标
 
@@ -26,7 +26,7 @@
 - 检查未登录、越权和错误凭证；
 - 用幂等和重复提交解释下单风险；
 - 用接口 + SQL 做一致性核对；
-- 完成 MiniShop 教学登录与创建订单的接口检查包。
+- 完成 MiniShop 登录、改数量与创建订单的接口检查包。
 
 ## 前置知识
 
@@ -56,7 +56,7 @@ flowchart LR
     E --> F[权限 / 幂等 / 边界]
 ```
 
-只对 MiniShop 教学服务或授权测试环境发请求。不要对未授权系统做爆破、越权扫描或注入。
+只对你启动的 MiniShop（默认 `http://127.0.0.1:8765`）或明确授权的测试环境发请求。不要对未授权系统做爆破、越权扫描或注入。
 
 ---
 
@@ -85,7 +85,7 @@ REST 是一种架构风格：用资源、统一的 HTTP 方法和表示（常见
 
 | 约定 | 例子（教学） | 测试含义 |
 | --- | --- | --- |
-| 用 URL 表示资源 | `/products/SKU-DEMO-001` | Path 错了就是找错对象 |
+| 用 URL 表示资源 | `/api/products`、`/api/orders/{id}` | Path 错了就是找错对象 |
 | 用方法表示动作 | `GET` 读取，`POST` 创建或提交 | 与第 9 章 safe/幂等一致 |
 | 用状态码分类结果 | `201` 创建，`401` 未认证 | 还要看 Body |
 | 用 JSON 表示数据 | `{"qty":1}` | 要核对 `Content-Type` |
@@ -173,16 +173,16 @@ JSON 是一种文本数据格式，常见于 HTTP Body。RFC 8259 规定了对�
 
 **OpenAPI Specification** 是描述 HTTP API 的标准文档格式（常见 3.x）。**Swagger** 一词常被用来称呼相关工具（编辑器、UI、代码生成）以及历史上的 Swagger 2.0 规范。测试时可以说“看 OpenAPI 文档 / Swagger UI”，但要知道：规范名是 OpenAPI，UI 只是阅读方式。
 
-教学片段（示例结构，非正式 MiniShop 契约）：
+仓库文档摘录（完整文件：`project/minishop/docs/openapi.json`）：
 
 ```json
 {
   "openapi": "3.0.3",
-  "info": {"title": "MiniShop Teaching API", "version": "0.0.0-teaching"},
+  "info": {"title": "MiniShop v1.0 API", "version": "1.0.0"},
   "paths": {
-    "/login": {
+    "/api/login": {
       "post": {
-        "summary": "教学登录",
+        "summary": "Login",
         "requestBody": {
           "required": true,
           "content": {
@@ -199,8 +199,8 @@ JSON 是一种文本数据格式，常见于 HTTP Body。RFC 8259 规定了对�
           }
         },
         "responses": {
-          "200": {"description": "登录成功（教学）"},
-          "401": {"description": "认证失败（教学）"}
+          "200": {"description": "OK with token; no order status field"},
+          "401": {"description": "Bad password"}
         }
       }
     }
@@ -226,11 +226,11 @@ Swagger UI 上的 “Try it out” 适合探索，正式记录仍要保存请求
 
 四个位置放不同种类的信息。测错位置等于没测到。
 
-| 位置 | 是什么 | 教学例子 | 测试关注 |
+| 位置 | 是什么 | MiniShop 例子 | 测试关注 |
 | --- | --- | --- | --- |
-| Path | URL 路径中的资源标识 | `/orders/ord-demo-01` | 编码、不存在的 id、他人的 id |
-| Query | `?` 之后 | `/products?keyword=mouse&page=2` | 缺失、空、类型、组合；不要放密码 |
-| Header | 报文头 | `Authorization`、`Content-Type`、`Idempotency-Key` | 缺失认证、错误 `Content-Type` |
+| Path | URL 路径中的资源标识 | `/api/orders/{id}` | 编码、不存在的 id、他人的 id |
+| Query | `?` 之后 | `/api/products?keyword=鼠标` | 缺失、空、类型、组合；不要放密码。商品名是「无线鼠标」，搜 `mouse` 会空 |
+| Header | 报文头 | `Authorization: Bearer …`、`Content-Type` | 缺失认证、错误 `Content-Type` |
 | Body | 实体 | JSON 对象 | 缺字段、null、边界、重复键（不依赖） |
 
 第 7、9 章已说明 query 不是 GET 专属；POST 也可以带 query。登录密码仍应放在 HTTPS 保护下的 Body，而不是 query。
@@ -243,20 +243,20 @@ Path 参数通常标识**哪一个**资源。把 `ord-demo-01` 改成另一个�
 
 ## 13.8 缺失、空值、`null`、错误类型、边界 ⭐⭐⭐
 
-以教学加购/改数量为例（规则沿用：数量为正整数且不得超过库存 10）：
+以 MiniShop 改数量为例（PRD `R-CART` / `R-CART-10`：正整数且不得超过当前库存 10；请求必须带 Bearer）：
 
 | 用例 | Body | 要观察 |
 | --- | --- | --- |
-| 正常 | `{"sku":"SKU-DEMO-001","qty":1}` | 成功；库中 qty=1 |
-| 等于库存 | `{"sku":"SKU-DEMO-001","qty":10}` | 按规则应允许；**教学服务未实现该分支，不要对它断言 200** |
-| 超过库存 | `{"sku":"SKU-DEMO-001","qty":11}` | 应拒绝；库中不得变成 11 |
-| 缺字段 | `{"sku":"SKU-DEMO-001"}` | 与文档 `required` 一致 |
-| `null` | `{"sku":"SKU-DEMO-001","qty":null}` | 不得当成 0 或当成不改 |
-| 空字符串 | `{"sku":"SKU-DEMO-001","qty":""}` | 不得静默成 0 |
-| 错误类型 | `{"sku":"SKU-DEMO-001","qty":"1"}` | 拒绝或按文档转换，但须有明确约定 |
-| 边界 | `qty` 为 `0`、`-1` 或极大整数 | 与第 5 章边界值一致 |
+| 正常 | `{"sku":"SKU-DEMO-001","qty":1}` | 200；库中 qty=1 |
+| 等于库存 | `{"sku":"SKU-DEMO-001","qty":10}` | **200**；库中 qty=10 |
+| 超过库存 | `{"sku":"SKU-DEMO-001","qty":11}` | 400 `qty exceeds stock`；库中不得变成 11 |
+| 缺字段 | `{"sku":"SKU-DEMO-001"}` | 400 `missing qty` |
+| `null` | `{"sku":"SKU-DEMO-001","qty":null}` | 400 `null qty` |
+| 空字符串 | `{"sku":"SKU-DEMO-001","qty":""}` | 400 `wrong type qty` |
+| 错误类型 | `{"sku":"SKU-DEMO-001","qty":"1"}` | 400 `wrong type qty` |
+| 边界 | `qty` 为 `0` | 400 `qty not positive` |
 
-审查用教学服务时：`qty=1` 返回 `200` 且回显数量；`qty=11` 返回 `400` 且 JSON 说明超过库存。**当前教学服务只把 `qty=1` 当成功**，`qty=10`（等于库存）按业务规则应允许，但教学服务未实现该分支，不要按 200 去报教学服务的缺陷。这是教学服务行为，不是已冻结的 MiniShop 错误码表。第 19 章 v1.0 才按 PRD 让 `qty=10` 通过。
+这四态的错误字符串与实操 13-1、`server.py` 一致。无 Bearer 时购物车是 401，不要先测形状。配套实操：`python3 practice/run.py 13-1`。
 
 设计纪律：
 
@@ -279,7 +279,7 @@ Path 参数通常标识**哪一个**资源。把 `ord-demo-01` 改成另一个�
 | --- | --- | --- |
 | 未认证 | 不带 Cookie / Bearer | `401` |
 | 坏凭证 | 过期或乱码 Token | `401` |
-| 横向越权 | 用户 B 访问用户 A 的购物车或订单 id | `403` 或 `404`（故意隐藏） |
+| 横向越权 | 用户 B 访问用户 A 的 `GET /api/orders/{id}` | MiniShop 为 **403**（有的系统用 404 隐藏资源） |
 | 纵向越权 | 普通用户调用管理接口 | `403` |
 | 认证后权限变化 | 禁用后再用旧 Token | 应失败 |
 
@@ -325,78 +325,86 @@ Path 参数通常标识**哪一个**资源。把 `ord-demo-01` 改成另一个�
 | 接口与库一致，页面不一致 | 更像前端 |
 | 用户 A 的接口改了用户 B 的行 | 权限 + 数据一致性缺陷 |
 
-教学库存规则仍是：数量不得超过可售库存。接口若返回成功，`cart_items.qty` 不得大于 `products.stock`。
+库存规则：数量不得超过可售库存。接口若返回成功，`cart_items.qty` 不得大于 `products.stock`。
 
 ---
 
-## 13.12 教学登录 API ⭐⭐⭐
+## 13.12 登录 API ⭐⭐⭐
 
-沿用第 9 章示例 B 的层次，不冻结正式路径。
+先启动 MiniShop：
+
+```bash
+cd project/minishop
+python3 run.py serve
+```
+
+默认 `http://127.0.0.1:8765`。`Test1234` 是仓库写明的教学密码，只许用在本机。
 
 请求：
 
 ```text
-POST /login HTTP/1.1
-Host: 127.0.0.1
+POST /api/login HTTP/1.1
+Host: 127.0.0.1:8765
 Content-Type: application/json
 
-{"phone":"13800138000","password":"<redacted>"}
+{"phone":"13800138000","password":"Test1234"}
 ```
 
-审查教学服务响应：
+成功时（脱敏后的形状）：
 
 ```text
 HTTP/1.1 200 OK
 Content-Type: application/json
-Set-Cookie: session_demo=abc; HttpOnly; Path=/
+Set-Cookie: minishop_session=<token>; HttpOnly; Path=/
 
-{"result":"ok","token":"teach-token"}
+{"result":"ok","token":"<token>","role":"user"}
 ```
 
 检查清单：
 
 - 密码在 Body，不在 query；
-- 错误密码应失败（教学服务对错误密码返回 `401`）；
-- 成功后后续请求如何出示身份：Cookie 和/或 `Authorization: Bearer`，二者不是互相替代的“登录产品”；
-- 响应不要在日志练习里保存明文密码。
+- 错误密码 → `401`；
+- 成功后 JSON 有 `token`，响应有 `Set-Cookie` `HttpOnly`；后续接口以 `Authorization: Bearer` 为准，Cookie 可并存，不是三选一；
+- 不要把 token 提交进 Git。
 
 ```bash
 curl -sS -D - \
   -H "Content-Type: application/json" \
-  -d '{"phone":"13800138000","password":"<redacted>"}' \
-  "http://127.0.0.1:PORT/login"
+  -d '{"phone":"13800138000","password":"Test1234"}' \
+  "http://127.0.0.1:8765/api/login"
 ```
 
-把 `PORT` 换成实际端口。真实密码不要进 history。
+没有 `/login`（无 `/api`）这条路由，打过去是 404。
 
 ---
 
-## 13.13 教学订单 API ⭐⭐⭐
+## 13.13 订单 API ⭐⭐⭐
 
 创建订单会改变数据，适合练 POST、幂等和权限。本章**只断言是否创建、是否返回 id**，不发明订单状态机。
 
-教学请求：
-
-```json
-{"sku":"SKU-DEMO-001","qty":1}
-```
-
-审查教学服务：
-
-- `POST /orders` 带有效教学 Token → `201`，Body 含 `id`，不含任何已冻结的状态名；
-- 缺少认证 → `401`；
-- `qty: 11` → `400`；
-- 连续两次成功 POST → 两个不同 `id`（演示 POST 创建默认不幂等）。
+Body 需要 `sku`。先登录拿到 token：
 
 ```bash
+TOKEN=$(curl -sS -H "Content-Type: application/json" \
+  -d '{"phone":"13800138000","password":"Test1234"}' \
+  "http://127.0.0.1:8765/api/login" | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+
 curl -sS -D - \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer teach-token" \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{"sku":"SKU-DEMO-001","qty":1}' \
-  "http://127.0.0.1:PORT/orders"
+  "http://127.0.0.1:8765/api/orders"
 ```
 
-MiniShop v1.0 订单成功只返回 `id`，没有支付字段和状态机。现在不要在简历里写“已测通 MiniShop 全部订单状态”。
+预期：
+
+- 带有效 Bearer → `201`，Body 含 `id`，**不含** `status`；
+- 缺少认证 → `401`；
+- 连续两次成功 POST → 两个不同 `id`（默认不幂等）。
+
+超库存应在购物车接口测：`POST /api/cart/items` `qty=11` → 400，不要指望下单接口替你练完库存规则。
+
+不要在简历里写“已测通 MiniShop 全部订单状态”。
 
 ---
 
@@ -404,7 +412,7 @@ MiniShop v1.0 订单成功只返回 `id`，没有支付字段和状态机。现�
 
 ## MiniShop 工作实战：接口检查包
 
-对教学服务或授权测试环境执行。保存：
+对已启动的 MiniShop 执行（`python3 project/minishop/run.py serve`）。对照文档用 `project/minishop/docs/openapi.json`，不要另造一份 `/login`。保存：
 
 ```text
 exercises/chapter-13-minishop-api.md
@@ -412,7 +420,7 @@ exercises/chapter-13-minishop-api.md
 
 必做：
 
-1. 对照一份文档（可用本章 OpenAPI 片段）列出登录接口的方法、必填、成功/失败码；
+1. 对照 `docs/openapi.json` 列出登录接口的方法、必填、成功/失败码；
 2. 正常登录一次（脱敏记录）；
 3. 至少四种异常：缺失、`null`、错误类型、边界（如 qty=11）；
 4. 一次未认证或越权；
@@ -486,9 +494,9 @@ exercises/chapter-13-minishop-api.md
 
 修正：POST 创建默认不幂等。要查第二次响应和数据库行数。
 
-### 错误 10：把教学 `/login`、`teach-token` 写成 MiniShop 正式 OpenAPI
+### 错误 10：对着 MiniShop 打 `POST /login`
 
-修正：本章是教学约定。正式字段未基线化前不得当项目契约引用。
+修正：v1.0 登录是 `POST /api/login`。无前缀的 `/login` 会 404，那不是「登录坏了」。
 
 ---
 
@@ -551,15 +559,15 @@ OpenAPI 里 `required: ["phone","password"]` 至少应设计哪些失败用例�
 
 ### 练习 5
 
-把数量 11 放在 Query、Header 或 Body，对教学“改库存数量”接口分别意味着什么？应把合法业务字段放哪？
+把数量 11 放在 Query、Header 或 Body，对 MiniShop `POST /api/cart/items` 分别意味着什么？应把合法业务字段放哪？
 
 ### 练习 6
 
-用户 A 创建订单得到 `id=ord-demo-01`。用户 B 带自己的 Token 访问该 id，应观察哪些结果才算权限测试完整？
+用户 A 创建订单得到一个 `id`。用户 B 带自己的 Token 访问 `GET /api/orders/{id}`，应观察哪些结果才算权限测试完整？
 
 ### 练习 7
 
-连续两次 `POST /orders` 且都返回不同 `id`。这更说明什么？若产品要求只生成一笔，缺陷应怎么写？
+连续两次 `POST /api/orders` 且都返回不同 `id`。这更说明什么？若产品要求只生成一笔，缺陷应怎么写？
 
 ### 练习 8
 
@@ -576,7 +584,7 @@ D. GET 登录比 POST 更安全，因为没有 Body
 
 ### 练习 10
 
-根据教学约定，列出登录接口检查的最少 5 项（含一项失败密码、一项后续带凭证）。不要写订单状态名。
+根据 MiniShop 登录接口，列出检查的最少 5 项（含一项失败密码、一项后续带 Bearer）。不要写订单状态名。
 
 ## 练习答案
 
@@ -585,11 +593,11 @@ D. GET 登录比 POST 更安全，因为没有 Body
 3. A。B、C 是重复合法输入（C 还是安全方法读取）。
 4. 缺 `phone`、缺 `password`、两者都缺；可再加空字符串与 `null`（若文档没等同处理）。
 5. Query/Header 不是该业务字段的约定位置，测到的是“放错位置是否被误接受”。合法数量应在文档指定的 Body 字段。密码尤其不能放 Query。
-6. 状态码（403 或 404 等）、Body 是否含 A 的数据、B 自己的列表是否被改。只看“页面打不开”不够。
+6. MiniShop 预期 **403**；Body 不含 A 的订单 id；B 自己的资源没被改。只看“页面打不开”不够。有的系统用 404 隐藏资源，以契约为准。
 7. 说明该创建接口两次调用产生两笔资源，符合 POST 默认不幂等。若需求是一次业务只一笔，应报缺陷：重复 POST 生成多个 id，并附两次响应和库中行数。
 8. 持久化/规则层：接口声称成功但数据违反库存规则。不要只写“前端显示不对”。
 9. C。A 违反质量标准中的 ROI 绝对化；B 把出示方式当成 REST 定义；D 是 GET/POST 安全神话。
-10. 示例：方法 POST、JSON Body、成功码、错误密码失败、成功后 Cookie 或 Bearer 能访问需登录资源。合理五项即可。
+10. 示例：方法 POST、路径 `/api/login`、JSON Body、200 且有 token 与 Set-Cookie、错误密码 401、后续 Bearer 能访问 `/api/cart`。合理五项即可。
 
 ---
 
@@ -604,7 +612,7 @@ D. GET 登录比 POST 更安全，因为没有 Body
 - [ ] 我会用重复 POST 观察创建是否幂等
 - [ ] 我会在授权库核对接口是否真写了数据
 - [ ] 我不会在 query 放密码，不会泄露 Token
-- [ ] 我不会把教学路径写成正式 MiniShop 契约
+- [ ] 我能对着 `run.py serve` 打通 `/api/login` 和购物车四态
 - [ ] 我能完成接口检查包
 
 ### 进入下一章的自测门槛
@@ -628,16 +636,16 @@ D. GET 登录比 POST 更安全，因为没有 Body
 
 ## 本章可运行性说明
 
-正文 JSON 对象已用 Python `json.loads` 解析。OpenAPI 教学片段已作为 JSON 解析，并检查 `openapi`、`paths./login.post` 存在。
+正文 JSON 已用 Python `json.loads` 解析。OpenAPI 摘录来自 `project/minishop/docs/openapi.json`（`paths./api/login.post`）。
 
-审查在本机启动教学 HTTP 服务并执行 curl：
+审查在本机执行 `python3 project/minishop/run.py serve` 并 curl：
 
-- `POST /login` 正确密码 → `200`，JSON 含 `result=ok`，响应带 `Set-Cookie`；
+- `POST /api/login` 正确密码 → `200`，JSON 含 `result=ok` 与 `token`，响应带 `Set-Cookie` `HttpOnly`；
 - 错误密码 → `401`；
-- `POST /cart/items` `qty=1` → `200`；`qty=11` → `400`；
-- `POST /orders` 无认证 → `401`；带教学 Token 两次 → 两个不同 `id`，状态码 `201`，Body **不含**订单状态字段。
+- `POST /api/cart/items` 带 Bearer：`qty=10` → `200`；`qty=11` → `400`；缺字段 / null / 空串 / 错误类型分开返回对应 error；
+- `POST /api/orders` 无认证 → `401`；带 token 两次 → 两个不同 `id`，`201`，Body **不含** `status`。
 
-该服务不是 MiniShop 正式后端，学习者不需要为完成本章而长期运行它。正式 OpenAPI、订单状态和错误码未冻结。
+实操 13-1 打的是同一台服务。空搜索 BUG-001 仍开放，不要写成已修复。
 
 ## 参考资料
 
@@ -645,7 +653,7 @@ D. GET 登录比 POST 更安全，因为没有 Body
 - [OpenAPI Specification](https://spec.openapis.org/oas/v3.0.3)
 - [MDN：HTTP 请求方法](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
 - 本仓库 [第 8 章：Web 功能测试](08-web-functional-testing.md)
-- 本仓库 [第 9 章：计算机网络与 HTTP](09-computer-network-and-http.md)
+- 本仓库 [第 9 章：计算机网络与 HTTP](09-computer-network-and-http.md)（safe/幂等见 09A）
 - 本仓库 [第 12 章：数据库与 SQL](12-database-and-sql.md)
 - 本仓库 [全局内容质量标准](../standards/QUALITY_STANDARD_v1.0.md)
 

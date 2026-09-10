@@ -34,6 +34,7 @@
 | 10-1 DevTools 面板 | **Incomplete**：有页面截图和步骤，没有 DevTools 面板本身的截图 |
 | 14-1 Postman Runner | **Incomplete**：集合可导入，作者未点 GUI Runner |
 | 18-1 JMeter | **Incomplete**：有 `jmeter/minishop-get-products.jmx`，未安装、未跑 GUI |
-| 17-1 Playwright 回归 | **Incomplete**：Playwright 只用于取证，不是 UI 回归套件 |
 
-其余书面实操（2-1、3-1、7-1、10-1、14-1、17-1、20-1、21-1、22-1）默认是 **Reader exercise**，入口仍在对应章的「MiniShop 工作实战」。
+17-1 是 **Reader exercise**（画分层地图），不是缺一套 Playwright 回归。Playwright 只用于 `run.py evidence` 取证。
+
+其余书面实操（2-1、3-1、7-1、17-1、20-1、21-1、22-1）默认是 **Reader exercise**，入口在对应章的「MiniShop 工作实战」（根 README 实操列已链过去）。`practice/run.py` 不认这些编号。

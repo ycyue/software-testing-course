@@ -20,19 +20,19 @@
 <div class="page">
   <p class="kicker">第 5 章示意图 · 边界值</p>
   <h1>范围判断最容易在「刚好够」和「差一个」上写错</h1>
-  <p class="lead">教学规则：密码长度 8～20 个字符。等价类会说「8 到 20 是有效」；边界值还要专门打尺子两端。</p>
+  <p class="lead">PRD R-PASS：密码长度 8～16 个字符，且须同时包含字母和数字。等价类会说「8 到 16 是有效」；边界值还要专门打尺子两端。</p>
   <div class="card">
     <div class="ruler">
       <div class="tick out"><div class="num">7</div><div class="lab">最小边界下<br><span class="tag tag-bad">应拒绝</span></div></div>
       <div class="tick edge"><div class="num">8</div><div class="lab">最小边界<br><span class="tag tag-ok">应接受</span></div></div>
       <div class="tick edge"><div class="num">9</div><div class="lab">最小边界上<br><span class="tag tag-ok">应接受</span></div></div>
       <div class="tick" style="flex:1.4;color:var(--muted);padding-top:36px;">…… 中间的有效长度<br>不必每个长度都测一遍</div>
-      <div class="tick edge"><div class="num">19</div><div class="lab">最大边界下<br><span class="tag tag-ok">应接受</span></div></div>
-      <div class="tick edge"><div class="num">20</div><div class="lab">最大边界<br><span class="tag tag-ok">应接受</span></div></div>
-      <div class="tick out"><div class="num">21</div><div class="lab">最大边界上<br><span class="tag tag-bad">应拒绝</span></div></div>
+      <div class="tick edge"><div class="num">15</div><div class="lab">最大边界下<br><span class="tag tag-ok">应接受</span></div></div>
+      <div class="tick edge"><div class="num">16</div><div class="lab">最大边界<br><span class="tag tag-ok">应接受</span></div></div>
+      <div class="tick out"><div class="num">17</div><div class="lab">最大边界上<br><span class="tag tag-bad">应拒绝</span></div></div>
     </div>
   </div>
-  <p class="caption">示意图：三值思路 = 边界下、边界、边界上。金额若精确到分，100.00 旁边可能是 99.99 和 100.01，不是 99 和 101。MiniShop v1.0 正式密码规则是 8～16 位且须含字母和数字，测项目时跟 PRD，不要把这张教学尺抄进简历当契约。</p>
+  <p class="caption">示意图：三值思路 = 边界下、边界、边界上。金额若精确到分，100.00 旁边可能是 99.99 和 100.01，不是 99 和 101。长度测完还要另测「有字母无数字」。这就是 MiniShop v1.0 的尺，不要再用 8～20。</p>
 </div>
 </body>
 </html>

@@ -211,7 +211,7 @@ SQL：`docs/sql-check.md`。种子库 JOIN 审查结果：
 - `qty=11` → 400 `qty exceeds stock`；
 - 空白 `keyword` → 200 且三件商品都在（BUG-001 证据）。
 
-Postman 集合：`postman/MiniShop.postman_collection.json`（Collection v2.1，9 个请求，含注册、qty=1 / qty=10 / qty=11，并带 `pm.test`）。环境文件里 **password 与 token 初始值为空**，只在本机当前值填写。审查未点击 Postman GUI。导入步骤见第 14 章 14.6.1。
+Postman 集合：`postman/MiniShop.postman_collection.json`（Collection v2.1，**15** 个请求：3 注册、2 搜索、3 登录、3 改数量、创建订单、无凭证、2 条越权，并带 `pm.test`）。环境文件里 **password 与 token 初始值为空**，只在本机当前值填写。审查未点击 Postman GUI。导入步骤见第 14 章 14.6.1。
 
 创建订单只断言 `id`，集合注释写明非正式生产契约。
 
@@ -236,7 +236,7 @@ HTML 报告：
 
 xfail：`test_empty_keyword_should_not_return_all`，原因 BUG-001，`strict=True`（若有人“修了却不改用例”，会变成失败，避免静默丢失）。
 
-覆盖：登录成败、商品列表、购物车 qty=1/10/11 与四态、未认证、下单 id、两次下单不同 id、越权 403、管理员 200、数量纯函数。
+覆盖：登录成败、注册 11 条（201 / 400 / 409）、商品列表、购物车 qty=1/10/11 与四态、qty=11 不落库、未认证、下单 id、两次下单不同 id、越权 403、管理员 200、首页表单、数量纯函数。收集 38 = 37 passed + 1 xfailed。
 
 Token 来自 fixture。不要 autouse 到 401 用例上（第 16 章）。
 

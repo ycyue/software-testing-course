@@ -209,17 +209,17 @@ MiniShop 教学提醒：50 个线程全部用同一个 `13800138000` 登录，�
 | Listener | 看结果或写文件 |
 | Assertion | 功能是否仍正确（状态码、片段） |
 
-官方入门例子用 5 个线程、2 个 HTTP 请求、循环 2 次，总共 20 个样本。换到 MiniShop 教学环境时，只对**授权的教学服务或测试环境**发请求，不要去压 `jmeter.apache.org` 或任何未授权主机。
+官方入门例子用 5 个线程、2 个 HTTP 请求、循环 2 次，总共 20 个样本。只对**授权的 MiniShop 或测试环境**发请求，不要去压 `jmeter.apache.org` 或任何未授权主机。
 
 ```text
 Test Plan
 └── Thread Group    threads=5, ramp-up=5s, loops=2
-    ├── HTTP Request  POST /login     （授权环境）
-    ├── HTTP Request  POST /cart/items
+    ├── HTTP Request  POST /api/login
+    ├── HTTP Request  POST /api/cart/items
     └── Listener      Aggregate Report / 写 jtl 文件
 ```
 
-上面是**示例结构**。仓库另有一份可打开的教学骨架：
+上面是**示例结构**。仓库另有一份可打开的教学骨架（实际是 `GET /api/products`、1 用户 1 循环，不是负载）：
 
 `project/minishop/jmeter/minishop-get-products.jmx`
 
@@ -447,7 +447,7 @@ D. GET 比 POST 更适合登录压测，因为 GET 更安全
 7. 不可靠。更像单账号冲突。需要足够的独立测试用户。
 8. 强调磁盘空间/I/O 与应用写日志或数据的关系，不要只写“接口慢”。还要看加压窗口的 CPU、内存和数据库。
 9. C。A 把功能工具当负载模型；B 把示例当国际标准；D 是 GET/POST 安全神话，登录也不该用安全方法传密码。
-10. 示例：授权测试环境；`GET /products` 或教学搜索；约定虚拟用户与爬坡；P95 待需求确认；错误率待确认。合理五项即可。
+10. 示例：授权测试环境；`GET /api/products`（与仓库 `.jmx` 一致）；约定虚拟用户与爬坡；P95 待需求确认；错误率待确认。合理五项即可。
 
 ---
 

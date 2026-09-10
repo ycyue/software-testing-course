@@ -45,30 +45,30 @@ python3 run.py test       # 基线：37 passed, 1 xfailed（BUG-001 仍开放）
 | 章 | 主题 | 一句话核心 | 正文 | 实操 |
 | :--: | --- | --- | :--: | :--: |
 | 1 | 软件测试入门 | **测试 = 观察 + 判定 + 证据** | [读](chapters/01-software-testing-intro.md) | [1-1](practice/01-observation-oracle-evidence/) |
-| 2 | 研发流程与测试位置 | 测试位置由生命周期决定，不是等开发写完 | [读](chapters/02-software-development-process.md) | [2-1](practice/README.md) |
-| 3 | 测试分类 | 分类是坐标轴，不是互斥工种 | [读](chapters/03-software-testing-classification.md) | [3-1](practice/README.md) |
-| 7 | Web 基础 | 页面只是一条观察通道 | [读](chapters/07-web-basics.md) | [7-1](practice/README.md) |
+| 2 | 研发流程与测试位置 | 测试位置由生命周期决定，不是等开发写完 | [读](chapters/02-software-development-process.md) | [2-1](chapters/02-software-development-process.md#28-minishop-工作实战) |
+| 3 | 测试分类 | 分类是坐标轴，不是互斥工种 | [读](chapters/03-software-testing-classification.md) | [3-1](chapters/03-software-testing-classification.md#minishop-工作实战) |
+| 7 | Web 基础 | 页面只是一条观察通道 | [读](chapters/07-web-basics.md) | [7-1](chapters/07-web-basics.md#minishop-工作实战建立页面观察记录) |
 | 4 | 需求分析与静态测试 | 判定标准来自需求；需求不清后面全漂 | [读](chapters/04-requirements-analysis-and-static-testing.md) | [4-1](practice/04-requirement-review/) |
 | 5 | 测试用例设计 | 用例是把判定写成可执行步骤 | [读](chapters/05-test-case-design.md) | [5-1](practice/05-qty-boundary/) |
 | 6 | 缺陷与测试管理 | 缺陷单是证据；计划回答测什么、不测什么 | [读](chapters/06-bug-and-test-management.md) | [6-1](practice/06-bug-report/) |
 | 8 | Web 功能测试 | Cookie / Session / Token 不是三种可互换产品 | [读](chapters/08-web-functional-testing.md) | [8-1](practice/08-privilege/) |
 | 9 | 网络与 HTTP | HTTP 把观察拆成方法、路径、头、体 | [读](chapters/09-computer-network-and-http.md) | [9-1](practice/09-http-observe/) |
-| 10 | Chrome DevTools | 把已经发生的观察打开给你看 | [读](chapters/10-chrome-devtools.md) | [10-1](practice/README.md) |
+| 10 | Chrome DevTools | 把已经发生的观察打开给你看 | [读](chapters/10-chrome-devtools.md) | [10-1](chapters/10-chrome-devtools.md#minishop-工作实战devtools-取证包) |
 | 11 | Linux | 日志和进程是页面上看不到的通道 | [读](chapters/11-linux.md) | [11-1](practice/11-log-grep/) |
 | 12 | 数据库与 SQL | UI 对了库不对，仍是缺陷 | [读](chapters/12-database-and-sql.md) | [12-1](practice/12-sql-cross-check/) |
 | 13 | 接口测试 | 绕过 UI，直接对契约观察 | [读](chapters/13-api-testing.md) | [13-1](practice/13-api-shapes/) |
-| 14 | Postman | 把接口观察做成可重复集合 | [读](chapters/14-postman.md) | [14-1](practice/README.md) |
+| 14 | Postman | 把接口观察做成可重复集合 | [读](chapters/14-postman.md) | [14-1](chapters/14-postman.md#minishop-工作实战postman-集合包) |
 | 15 | Python 基础 | Python 是为了处理观察结果 | [读](chapters/15-python-basics.md) | [15-1](practice/15-json-check/) |
 | 16 | pytest | 把明确的判定交给脚本回归 | [读](chapters/16-pytest.md) | [16-1](practice/16-pytest-regression/) |
-| 17 | 自动化分层 | 越靠近 UI 的观察越贵 | [读](chapters/17-automation-overview.md) | [17-1](practice/README.md) |
-| 18 | 性能测试基础 | 功能绿了不等于扛得住 | [读](chapters/18-performance-testing.md) | [18-1](practice/README.md) |
+| 17 | 自动化分层 | 越靠近 UI 的观察越贵 | [读](chapters/17-automation-overview.md) | [17-1](chapters/17-automation-overview.md#minishop-工作实战自动化分层地图) |
+| 18 | 性能测试基础 | 功能绿了不等于扛得住 | [读](chapters/18-performance-testing.md) | [18-1](chapters/18-performance-testing.md#minishop-工作实战性能问题清单) |
 | 19 | MiniShop 项目 | 把三要素收成能指给人看的仓库 | [读](chapters/19-minishop-project.md) | [19-1](practice/19-project-pack/) |
-| 20 | 面试 | 用项目证据讲，不要背名词 | [读](chapters/20-interview.md) | [20-1](practice/README.md) |
-| 21 | 求职 | 只写仓库里能指出来的东西 | [读](chapters/21-job-hunting.md) | [21-1](practice/README.md) |
-| 22 | 学习路线 | 先保住能测完 MiniShop 主路径 | [读](chapters/22-learning-path.md) | [22-1](practice/README.md) |
+| 20 | 面试 | 用项目证据讲，不要背名词 | [读](chapters/20-interview.md) | [20-1](chapters/20-interview.md#minishop-工作实战面试口述稿) |
+| 21 | 求职 | 只写仓库里能指出来的东西 | [读](chapters/21-job-hunting.md) | [21-1](chapters/21-job-hunting.md#minishop-工作实战一页简历草稿) |
+| 22 | 学习路线 | 先保住能测完 MiniShop 主路径 | [读](chapters/22-learning-path.md) | [22-1](chapters/22-learning-path.md#minishop-工作实战结课自检) |
 
 > 实操类型：✅ 可运行 / 📖 书面实操（写评审、点 GUI）/ 🚧 骨架在、作者未跑完。说明见 [practice/README.md](practice/README.md)。  
-> 过长章拆成上/下（04、06、08、12、15、16），索引页只负责分流。
+> 过长章拆成上/下（04、06、08、09、12、15、16）。索引页会链到作业；不要对书面编号跑 `practice/run.py 2-1`（脚本只认可运行编号和 4-1/6-1）。
 
 ## MiniShop 是什么、不是什么
 

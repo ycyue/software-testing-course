@@ -39,14 +39,14 @@ Linux 与第 12 章的 SQL 是并列基础，互不作为硬前置。
 - 知道 Copy as cURL 必须删除 Cookie、Token 和密码；
 - 不要求系统编程。需要一台可练习的终端：Linux、macOS，或 Windows 上的 WSL / 远程 SSH。
 
-## 场景导入：页面 500，下一步去哪？
+## 场景导入：页面只有一句失败，下一步去哪？
 
-MiniShop 测试环境提交购物车数量 11 后，页面显示服务器错误。Network 里 `POST` 返回 `500`。
+MiniShop 测试环境提交购物车数量 11 后，页面提示 `qty exceeds stock`。Network 里 `POST /api/cart/items` 返回 **400**，不是 500。
 
-只停留在浏览器，缺陷只能写“接口 500”。登上授权测试机后，还可以查：
+只停留在浏览器，缺陷只能写“接口 400”。登上授权测试机后，还可以查：
 
 - 应用进程是否还在；
-- `/var/log` 或应用日志目录是否有对应时间的 `ERROR`；
+- 应用日志里是否有对应时间的 `inventory reject`（仓库样本是 **INFO**，不要默认 `grep ERROR`）；
 - 磁盘是否已满导致无法写日志或上传；
 - 用同一条脱敏 curl 是否稳定复现。
 
@@ -205,11 +205,11 @@ less app.log
 | `tail -f` | 持续跟踪新追加的行，复现时开着它；`Ctrl+C` 停止 |
 | `less` | 分页阅读。空格翻页，`/` 搜索，`q` 退出 |
 
-教学日志示例（写入练习文件，不是 MiniShop 正式日志格式）：
+教学日志示例。仓库 `evidence/logs/app-sample.log` 里超库存是 **INFO** `inventory reject`，不是 ERROR。练习 `grep` 时先看实际级别。
 
 ```text
-2026-09-08 13:01:02 INFO  login ok user=13800138000
-2026-09-08 13:01:05 ERROR inventory reject sku=SKU-DEMO-001 stock=10 qty=11
+2026-09-09 10:17:00 INFO login ok user=13800138000
+2026-09-09 10:17:05 INFO inventory reject sku=SKU-DEMO-001 stock=10 qty=11
 ```
 
 若日志里出现密码或 Token，记录缺陷时脱敏，并应作为安全问题提出：日志不该保存明文凭证。
@@ -724,7 +724,7 @@ macOS 上输入 `free -h` 失败。这能说明 MiniShop 内存泄漏吗？
 - [grep 手册](https://www.gnu.org/software/grep/manual/)
 - [curl 手册](https://curl.se/docs/manpage.html)
 - [OpenSSH](https://www.openssh.com/)
-- 本仓库 [第 9 章：计算机网络与 HTTP](09-computer-network-and-http.md)
+- 本仓库 [第 9 章：计算机网络与 HTTP](09-computer-network-and-http.md)（报文结构见 09B）
 - 本仓库 [第 10 章：Chrome DevTools](10-chrome-devtools.md)
 - 本仓库 [全局内容质量标准](../standards/QUALITY_STANDARD_v1.0.md)
 

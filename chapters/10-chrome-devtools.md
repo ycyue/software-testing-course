@@ -681,7 +681,7 @@ CORS 错误出现在 Console，Network 里该请求状态是 200。应如何描�
 - [Chrome for Developers：Throttle individual network requests](https://developer.chrome.com/blog/throttle-individual-network-requests)（Chrome 145 起的增强能力，了解即可）
 - 本仓库 [第 7 章：Web 基础](07-web-basics.md)
 - 本仓库 [第 8 章：Web 功能测试](08-web-functional-testing.md)
-- 本仓库 [第 9 章：计算机网络与 HTTP](09-computer-network-and-http.md)
+- 本仓库 [第 9 章：计算机网络与 HTTP](09-computer-network-and-http.md)（先 09A 语义，报文在 09B）
 - 本仓库 [全局内容质量标准](../standards/QUALITY_STANDARD_v1.0.md)
 
 ## 下一章预告
