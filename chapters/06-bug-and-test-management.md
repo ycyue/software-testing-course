@@ -7,7 +7,7 @@
 1. [06A 缺陷管理](06a-bug-management.md)（生命周期、等级、报告、无法复现/争议/偶现）
 2. [06B 测试计划与测试管理](06b-test-management.md)（范围、策略、入口/出口、风险、环境）
 
-作业：06A [缺陷报告](06a-bug-management.md#minishop-工作实战缺陷报告) · [实操 6-1](../practice/06-bug-report/)；06B [一页计划](06b-test-management.md#minishop-工作实战一页测试计划)（不再交第二份完整缺陷单，引用 6-1）
+作业：06A [缺陷报告](06a-bug-management.md#minishop-工作实战缺陷报告) · [实操 6-1](../practice/06-bug-report/)（同一套验收：空搜索 BUG-001，产出 `exercises/chapter-06-bug-001.md`）；06B [一页计划](06b-test-management.md#minishop-工作实战一页测试计划)（不再交第二份完整缺陷单，登记表引用 6-1 一行即可）
 
 阶段测验：[阶段测验 2](quizzes/stage-2-analysis.md)
 
