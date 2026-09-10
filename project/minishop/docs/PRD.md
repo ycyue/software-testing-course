@@ -23,7 +23,7 @@
 | R-CART | 已登录用户修改购物车数量时，数量须为正整数，且不得超过该 SKU **当前**可售库存 |
 | R-CART-10 | `SKU-DEMO-001` 教学库存为 10 时，`qty=10` 允许，`qty=11` 拒绝 |
 | R-AUTH | 登录成功同时返回 JSON `token` 与 `Set-Cookie`（HttpOnly）。后续接口以 `Authorization: Bearer` 为准，Cookie 可并存，不是三选一登录产品 |
-| R-ORDER | `POST /api/orders` 成功返回 201 与 `id`，Body **不含** `status`。默认不幂等：两次成功 POST 得到两个 id |
+| R-ORDER | `POST /api/orders` 成功返回 201 与 `id`，Body **不含** `status`。默认不幂等：两次成功 POST 得到两个 id。v1.0 下单直接 POST sku+qty，不读取、不修改购物车 |
 | R-PERM | 用户不得读写他人订单。`GET /api/orders/{id}` 仅订单所属者可看明细；管理员也不走这条接口看他人订单。非管理员不得访问 `/api/admin/*`；`/api/admin/orders` 只返回订单 `id` |
 | R-SEARCH | 关键字为空或仅空白时，**不应**把全量商品当成搜索结果（当前实现不符合，见 BUG-001） |
 

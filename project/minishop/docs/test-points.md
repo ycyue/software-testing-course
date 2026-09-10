@@ -17,6 +17,7 @@
 | TP-ORDER-2 | 两次 POST 两个 id | 接口 | P1 |
 | TP-AUTH-401 | 无凭证改购物车/下单 | 接口 | P0 |
 | TP-PERM-403 | 用户 B 读用户 A 订单 | 接口 | P1 |
+| TP-PERM-OWNER | 所属者 GET 自己的订单 200，无 status | 接口 | P1 |
 | TP-ADMIN | 普通用户 403，管理员 200 | 接口/Web | P1 |
 | TP-SEARCH-EMPTY | 空关键字 | 接口/Web | P1 |
 | TP-SQL-JOIN | Tester A 购物车与库存 | SQL | P1 |

@@ -41,7 +41,7 @@ Windows 可用 `run.bat`。macOS / Linux 可用 `./run.sh`。
 python3 run.py test
 ```
 
-本机 2026-09-09：`37 passed, 1 xfailed`（BUG-001）。原始输出：`evidence/pytest-output.txt`。
+本机 2026-09-10：`38 passed, 1 xfailed`（BUG-001）。原始输出：`evidence/pytest-output.txt`。
 
 ## v1.0 明确不做
 

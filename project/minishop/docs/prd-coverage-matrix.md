@@ -10,15 +10,18 @@
 | R-AUTH | 登录 JSON token + HttpOnly Cookie；后续 Bearer | TP-LOGIN-OK | TC-LOGIN-001 | 接口/Web | P0 | 通过 | `evidence/http/01-login-ok.txt`、`evidence/screenshots/03-shop.png` |
 | R-AUTH | 错误密码 401 | TP-LOGIN-BAD | TC-LOGIN-002 | 接口/Web | P0 | 通过 | `evidence/http/02-login-bad.txt`、`02-login-fail.png` |
 | R-CART / R-CART-10 | qty=1、qty=10 允许 | TP-CART-1 / TP-CART-10 | TC-CART-001 / TC-CART-002 | 接口 | P0 | 通过 | `evidence/http/04-cart-qty-10.txt` |
-| R-CART / R-CART-10 | qty=11 拒绝且不落库 | TP-CART-11 | TC-CART-003 | 接口/SQL | P0 | 通过 | `05-cart-qty-11.txt`、`sql/seed-join.txt`、`05-cart-qty-11.png` |
+| R-CART / R-CART-10 | qty=11 拒绝（PRD）；不落库为实现观察，非 PRD 原文 | TP-CART-11 | TC-CART-003 | 接口/SQL | P0 | 通过 | `05-cart-qty-11.txt`、`sql/seed-join.txt`、`05-cart-qty-11.png` |
 | R-CART | 缺 qty / null / "" / "1" / 0 | TP-CART-NULL | TC-CART-004 | 接口 | P1 | 通过 | pytest parametrize |
-| R-ORDER | 201 + id，无 status | TP-ORDER-ID | TC-ORDER-001 | 接口 | P0 | 通过 | `evidence/http/06-order-create.txt` |
+| R-ORDER | 201 + id，无 status；直接 POST sku+qty，不读购物车 | TP-ORDER-ID | TC-ORDER-001 | 接口 | P0 | 通过 | `evidence/http/06-order-create.txt` |
 | R-ORDER | 两次 POST 两个 id | TP-ORDER-2 | TC-ORDER-002 | 接口 | P1 | 通过 | pytest |
 | R-PERM | 无凭证 401 | TP-AUTH-401 | TC-AUTH-001 | 接口 | P0 | 通过 | pytest |
 | R-PERM | B 读 A 订单 403 | TP-PERM-403 | TC-PERM-001 | 接口 | P1 | 通过 | pytest |
+| R-PERM | 所属者 GET `/api/orders/{id}` 200，有 id/items，无 status | TP-PERM-OWNER | TC-PERM-002 | 接口 | P1 | 通过 | pytest |
 | R-PERM | 普通用户 `/api/admin/*` 403；管理员 200；管理员 `GET /api/orders/{他人}` 亦 403 | TP-ADMIN | TC-ADMIN-001 / TC-ADMIN-002 | 接口/Web | P1 | 通过 | pytest、`07-admin.png` |
-| R-SEARCH | 空/空白关键字不应全量 | TP-SEARCH-EMPTY | TC-SEARCH-001 | 接口/Web | P1 | **失败** BUG-001 | `03-products-empty-keyword.txt`、`04-search-empty-bug001.png` |
+| R-SEARCH | 空/空白关键字不应全量 | TP-SEARCH-EMPTY | TC-SEARCH-001 | 接口 | P1 | **失败** BUG-001 | `03-products-empty-keyword.txt`（主证据；`04-search-empty-bug001.png` 不能单独证明提交了空关键字） |
 | （页面） | 首页含登录/注册表单 | TP-WEB-HOME | TC-WEB-001 | Web | P2 | 通过 | `01-login.png`、`06-register.png` |
+
+第 4 章作业「已确认规则」只许抄 `PRD.md`。本表「不落库」是接口拒绝后库中不是 11 的实现观察，不是 `R-CART-10` 原文。
 
 未覆盖（明确留下，不假装通过）：
 

@@ -12,7 +12,7 @@
 
 本章的 MiniShop v1.0 放在仓库 `project/minishop/`：有前端、后端、SQLite、PRD、OpenAPI、Postman、pytest、日志、缺陷和报告。你要能启动它、按出口标准做完一轮测试，并写得出诚实的项目总结。
 
-它只能作为**个人软件测试实践项目**。不得写成某公司电商系统、不得声称已测通支付和全部订单状态。v1.0 **第一次**把购物车库存规则与 `/api/` 路径写成项目基线。第 13～18 章教学服务仍用 `/login`、`/cart/items`、`/orders`，且教学购物车往往只让 `qty=1` 成功；那些是教学约定。第 4、5 章用验证码、优惠券、支付练设计技术，**不要**把它们写进本项目用例或简历。
+它只能作为**个人软件测试实践项目**。不得写成某公司电商系统、不得声称已测通支付和全部订单状态。第 13～16 章可运行示例已经打本仓库 MiniShop：路径带 `/api/`，`qty=10` 允许、`qty=11` 拒绝。第 4、5 章若出现验证码、优惠券、支付，那是通用练习系统，**不要**写进本项目用例或简历。
 
 ## 学习目标
 
@@ -41,7 +41,7 @@
 
 1. PRD 写了什么、故意没写什么；
 2. 怎么启动；
-3. pytest 37 passed、1 xfailed 是什么意思；
+3. pytest 38 passed、1 xfailed 是什么意思；
 4. BUG-001 为什么还开着；
 5. 为什么简历里不能写订单状态和公司名称。
 
@@ -105,11 +105,21 @@ MINISHOP_BASE_URL=http://127.0.0.1:8765
 
 浏览器打开该 URL。`MINISHOP_RESET=1`（默认）每次启动重建教学库，避免脏数据冒充回归失败。
 
+边看仓库边做（完成标准仍见文末工作实战，不要读完全章才打开浏览器）：
+
+1. 本机 `python3 run.py serve`，浏览器打开打印出的 `MINISHOP_BASE_URL`；
+2. 另开终端 `python3 run.py test`，记录 passed / xfailed（已做 16-1 则抄你上次数字并复跑一次核对）；
+3. 搜索框提交空格，对照 `bugs/BUG-001.md`，确认仍开放；
+4. 用 `docs/sql-check.md` 的两行种子结果，或自己跑 JOIN；
+5. 把过程写入 `exercises/chapter-19-minishop-run.md`。
+
+`python3 practice/run.py 19-1` 只检查仓库没被改坏、基线仍是 38/1。能指给人看，靠上面 5 步和执行记录。
+
 ---
 
 ## 19.2 PRD v1.0：本章基线 ⭐⭐⭐
 
-完整文本：`docs/PRD.md`。测试必须跟这份走，而不是跟第 13 章教学服务的“只让 qty=1 成功”。
+完整文本：`docs/PRD.md`。测试必须跟这份走。第 13～16 章可运行示例已经打同一套 `/api/` 与 `qty=10/11`。
 
 ![v1.0 库存尺子：10 允许，11 拒绝](assets/diagrams/ch19-qty-rule.png)
 
@@ -120,7 +130,7 @@ MINISHOP_BASE_URL=http://127.0.0.1:8765
 - 密码 8～16 位，字母+数字；
 - 购物车数量为正整数，且 ≤ 当前库存；**等于库存允许**（鼠标 10 件时 qty=10 通过、11 拒绝）；
 - 登录返回 JSON `token` 与 HttpOnly Cookie；后续 API 用 Bearer；二者可同时存在；
-- 创建订单 201 + `id`，**没有** `status` 字段；两次 POST 两个 id；
+- 创建订单 201 + `id`，**没有** `status` 字段；两次 POST 两个 id；v1.0 下单直接 POST sku+qty，**不读取购物车**；
 - 非管理员不能访问 `/api/admin/*`；不能读他人订单；
 - 空搜索不应展示全量商品（实现未满足 → BUG-001）。
 
@@ -145,7 +155,7 @@ MINISHOP_BASE_URL=http://127.0.0.1:8765
 - 用例：`docs/test-cases.md`（含注册 P0 与步骤；商品列表由 pytest 覆盖，用例表不单列）
 - 覆盖矩阵：`docs/prd-coverage-matrix.md`
 
-出口标准包括：P0 无未关闭缺陷；自动化与 `evidence/pytest-output.txt` 一致（审查为 37 passed + 1 xfailed）；覆盖矩阵已填；不编造订单状态。
+出口标准包括：P0 无未关闭缺陷；自动化与 `evidence/pytest-output.txt` 一致（审查为 38 passed + 1 xfailed）；覆盖矩阵已填；不编造订单状态。
 
 P0/P1/P2/P3 仍是课程约定。缺陷的严重程度不要和用例优先级混用（第 6 章）。
 
@@ -166,7 +176,9 @@ P0/P1/P2/P3 仍是课程约定。缺陷的严重程度不要和用例优先级�
 
 ![商品区](assets/03-shop.png)
 
-![空搜索 BUG-001](assets/04-search-empty-bug001.png)
+![空搜索截图看起来像商品目录，不能当 BUG-001 页面证据](assets/04-search-empty-bug001.png)
+
+`04-search-empty-bug001.png` 与默认商品目录几乎一样：关键字框里的空格看不见，「共 3 件」也证明不了「已经提交空白关键字」。登录后默认 `refreshProducts()` 不带 keyword 同样列出三件，那不是 BUG-001。页面证据请看 HTTP：`project/minishop/evidence/http/03-products-empty-keyword.txt`（`GET /api/products?keyword=%20%20%20` → 200，三件商品）。不要伪造 DevTools 面板图来顶替。
 
 ![qty=11 被拒绝](assets/05-cart-qty-11.png)
 
@@ -179,6 +191,8 @@ P0/P1/P2/P3 仍是课程约定。缺陷的严重程度不要和用例优先级�
 ---
 
 ## 19.6 DevTools、Linux、SQL ⭐⭐⭐
+
+![同一条库存规则要在四通道对上](assets/diagrams/ch19-cross-check.png)
 
 DevTools：登录时看 `POST /api/login` 的状态码、`Set-Cookie`、JSON `token`。Copy as cURL 后删掉 Cookie、token、密码再保存。
 
@@ -222,22 +236,24 @@ Postman 集合：`postman/MiniShop.postman_collection.json`（Collection v2.1，
 
 ```bash
 cd project/minishop
-python3 -m pytest -q
+python3 run.py test       # 使用 .venv 里的 pytest；不要先敲系统 python3 -m pytest
 ```
 
 审查（pytest 9.1.1 / requests 2.34.2）：
 
 ```text
-37 passed, 1 xfailed
+38 passed, 1 xfailed
 ```
 
-HTML 报告：
+HTML 报告（截图数字以本机 pytest 为准）：
 
-![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
+![pytest-html：passed + 1 expected failure（以本机 pytest 为准）](assets/09-pytest-report.png)
+
+图上是汇总条（38 Passed / 1 Expected failures）。完整 Environment 与用例列表见同目录 `evidence/pytest-report.html`。
 
 xfail：`test_empty_keyword_should_not_return_all`，原因 BUG-001，`strict=True`（若有人“修了却不改用例”，会变成失败，避免静默丢失）。
 
-覆盖：登录成败、注册 11 条（201 / 400 / 409）、商品列表、购物车 qty=1/10/11 与四态、qty=11 不落库、未认证、下单 id、两次下单不同 id、越权 403、管理员 200、首页表单、数量纯函数。收集 38 = 37 passed + 1 xfailed。
+覆盖：登录成败、注册 11 条（201 / 400 / 409）、商品列表、购物车 qty=1/10/11 与四态、qty=11 不落库、未认证、下单 id、两次下单不同 id、所属者 GET 200 且无 status、越权 403、管理员 200、首页表单、数量纯函数。收集 39 = 38 passed + 1 xfailed。
 
 Token 来自 fixture。不要 autouse 到 401 用例上（第 16 章）。
 
@@ -247,7 +263,7 @@ pytest 绿不等于页面按钮可用，也不等于性能达标。
 
 ## 19.9 缺陷、回归、报告 ⭐⭐⭐
 
-`bugs/BUG-001.md`：空或空白关键字仍返回全量三件商品，与 R-SEARCH 不符。证据来自 curl 与 xfail，不是编造。
+`bugs/BUG-001.md`：空或空白关键字仍返回全量三件商品，与 R-SEARCH 不符。主证据是 HTTP `evidence/http/03-products-empty-keyword.txt` 与 xfail，不是编造。`04-search-empty-bug001.png` 不能当「已提交空关键字」的页面证据。
 
 回归：修复库存规则后应重测 qty=10/11，并回归登录、下单、权限。当前无需为 BUG-001 假装关闭。
 
@@ -312,15 +328,15 @@ exercises/chapter-19-minishop-run.md
 
 修正：全程标注个人实践。
 
-### 错误 2：用第 13 章教学服务的 qty=1 唯一成功来测 v1.0
+### 错误 2：拿已经删除的 qty=1 教学桩当 v1.0 期望
 
-修正：v1.0 允许 qty=10。期望跟当前 PRD。
+修正：仓库曾经有过 `/login` + 只让 qty=1 成功的桩，**现行教材已删除**。你读到的第 13～16 章就是 `/api/` 与 qty=10/11，不要另找第二台服务器。测 v1.0 跟当前 `docs/PRD.md`。
 
 ### 错误 3：在订单用例里填写待支付/已发货
 
 修正：v1.0 没有这些字段。
 
-### 错误 4：把 37 passed 说成没有缺陷
+### 错误 4：把 38 passed 说成没有缺陷
 
 修正：还有 xfail/BUG-001。通过 ≠ 无缺陷。
 
@@ -373,7 +389,7 @@ exercises/chapter-19-minishop-run.md
 ### 购物车规则测了哪些输入？
 
 结论：1、10、11、缺字段、null、空串、字符串、0。  
-边界：等于库存在 v1.0 为合法，与早期教学服务不同。
+边界：等于库存在 v1.0 为合法。仓库曾经有过只让 qty=1 成功的桩，现行 13～16 章已删除，不要再当差异。
 
 ### 怎样证明越权测过？
 
@@ -390,11 +406,11 @@ exercises/chapter-19-minishop-run.md
 
 ### 练习 2
 
-v1.0 中 `qty=10` 与第 16 章教学服务可能不一致。测试应以哪份文件为准？
+v1.0 允许 `qty=10`。仓库曾经有过只让 qty=1 成功的 `/login` 教学桩，现行第 13～16 章已经删掉。测试应以哪份文件为准？要不要再去找第二台服务器？
 
 ### 练习 3
 
-pytest 显示 37 passed, 1 xfailed。能否对面试官说“没有缺陷”？
+pytest 显示 38 passed, 1 xfailed。能否对面试官说“没有缺陷”？
 
 ### 练习 4
 
@@ -432,7 +448,7 @@ D. 本项目订单成功响应含 id、不含 status
 ## 练习答案
 
 1. 因为材料来自课程仓库和个人练习，冒充企业经历是诚信问题，也经不起深挖。
-2. `project/minishop/docs/PRD.md`。教学服务不是 v1.0 契约。
+2. `project/minishop/docs/PRD.md`。仓库曾经有过 `/login`+qty=1 桩，现行 13～16 章已是 `/api/` 与 qty=10/11；不要另找服务器，也不要把已删除的桩当现行差异。
 3. 不能。xfail 跟踪着 BUG-001，且未覆盖的功能仍可能有缺陷。
 4. 与 v1.0 契约不符：多了未基线字段。应开缺陷或先改 PRD，不能默认为合法状态机。
 5. R-SEARCH；BUG-001。
@@ -459,7 +475,7 @@ D. 本项目订单成功响应含 id、不含 status
 ### 进入下一章的自测门槛
 
 1. 练习 1～10 至少完成 9 题，且第 2、3、9、10 题能用自己的话回答；
-2. 本机启动成功，pytest 为 37 passed / 1 xfailed（或记录你改动后的真实数字）；
+2. 本机启动成功，pytest 为 38 passed / 1 xfailed（或记录你改动后的真实数字）；
 3. 能当面指着 `bugs/BUG-001.md` 讲步骤；
 4. 完成执行记录。
 
@@ -468,16 +484,16 @@ D. 本项目订单成功响应含 id、不含 status
 本章需要真正掌握七件事：
 
 1. 完整项目 = 可运行系统 + 文档 + 证据，不是一堆截图；
-2. PRD v1.0 是本章基线，教学服务不再冒充契约；
+2. PRD v1.0 是本章基线；曾经的 `/login`+qty=1 桩已删除，不要再当契约；
 3. 范围裁剪（无状态机、无支付）必须反映到用例和简历；
 4. 功能、接口、SQL、日志要能对上同一条库存规则；
-5. pytest 37 passed 仍带着 BUG-001；
+5. pytest 38 passed 仍带着 BUG-001；
 6. 开放缺陷要保留证据，不要改口说已修；
 7. 个人项目可以展示能力，不可以冒充企业经历。
 
 ## 本章可运行性说明
 
-审查在 Python 3.14.3 执行 `python3 run.py evidence`：`GET /` 含登录与注册表单；`/admin.html` 为 200；登录 200 且 `Set-Cookie HttpOnly`；注册合法 201、占用 409；`qty=11` 为 400 且不落库；空白搜索返回三件商品。种子库 JOIN 见 `evidence/sql/seed-join.txt`。pytest：37 passed，1 xfailed。页面截图与 HTTP 摘录在 `evidence/`。OpenAPI 3.0.3 与 Postman Collection v2.1 JSON 可解析。未点击 Postman GUI，未加压。Playwright 仅用于取证截图，不是课程 UI 自动化套件。
+审查在 Python 3.14.3 执行 `python3 run.py evidence`：`GET /` 含登录与注册表单；`/admin.html` 为 200；登录 200 且 `Set-Cookie HttpOnly`；注册合法 201、占用 409；`qty=11` 为 400 且不落库；空白搜索返回三件商品。种子库 JOIN 见 `evidence/sql/seed-join.txt`。pytest：38 passed，1 xfailed。页面截图与 HTTP 摘录在 `evidence/`。空搜索 BUG-001 以 HTTP `03-products-empty-keyword.txt` 为准，不要把 `04-search-empty-bug001.png` 当已提交空关键字的页面证据。OpenAPI 3.0.3 与 Postman Collection v2.1 JSON 可解析。未点击 Postman GUI，未加压。Playwright 仅用于取证截图，不是课程 UI 自动化套件。
 
 教学密码仅用于本机。日志样本不含完整 token。
 

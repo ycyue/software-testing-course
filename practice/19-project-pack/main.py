@@ -26,8 +26,8 @@ def _python() -> str:
 
 
 def main() -> int:
-    print("实操 19-1  MiniShop 项目包：文件在不在、pytest 是不是 37/1")
-    print("判定：能指着 PRD、BUG-001、OpenAPI，并且自动化基线仍是 37 passed / 1 xfailed。\n")
+    print("实操 19-1  MiniShop 项目包：文件在不在、pytest 是不是 38/1")
+    print("判定：能指着 PRD、BUG-001、OpenAPI，并且自动化基线仍是 38 passed / 1 xfailed。\n")
 
     checks = {
         "prd": (MINISHOP / "docs" / "PRD.md").is_file(),
@@ -53,17 +53,17 @@ def main() -> int:
     pytest_missing = "No module named pytest" in text
     if pytest_missing:
         print("还没有 pytest。先执行：cd project/minishop && python3 run.py setup")
-        checks["passed_37"] = False
+        checks["passed_38"] = False
         checks["xfailed_1"] = False
         verdict = "还没有 pytest。先执行：cd project/minishop && python3 run.py setup"
         code = 2
     else:
-        checks["passed_37"] = "37 passed" in text
+        checks["passed_38"] = "38 passed" in text
         checks["xfailed_1"] = "1 xfailed" in text or "1 xfail" in text
         all_ok = all(checks.values())
         if all_ok:
             verdict = (
-                "项目包齐全，pytest 仍是 37 passed / 1 xfailed。"
+                "项目包齐全，pytest 仍是 38 passed / 1 xfailed。"
                 "xfail 是 BUG-001 仍开放。不要把本项目写成公司电商，也不要写已测通支付。"
             )
             code = 0

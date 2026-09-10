@@ -19,7 +19,7 @@ class Practice191Tests(unittest.TestCase):
             self.skipTest("pytest not installed; run project/minishop/run.py setup")
         self.assertEqual(code, 0)
         self.assertTrue(saved["checks"]["bug_still_open"])
-        self.assertTrue(saved["checks"]["passed_37"])
+        self.assertTrue(saved["checks"]["passed_38"])
 
 
 if __name__ == "__main__":

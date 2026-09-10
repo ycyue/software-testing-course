@@ -185,6 +185,28 @@ def test_order_forbidden_other_user(base_url, token_a, token_b, token_admin):
     assert admin.status_code == 403
 
 
+def test_owner_can_read_own_order(base_url, token_a):
+    created = requests.post(
+        f"{base_url}/api/orders",
+        json={"sku": "SKU-DEMO-003", "qty": 1},
+        headers={"Authorization": f"Bearer {token_a}"},
+        timeout=TIMEOUT,
+    )
+    assert created.status_code == 201
+    order_id = created.json()["id"]
+    mine = requests.get(
+        f"{base_url}/api/orders/{order_id}",
+        headers={"Authorization": f"Bearer {token_a}"},
+        timeout=TIMEOUT,
+    )
+    assert mine.status_code == 200
+    body = mine.json()
+    assert body["id"] == order_id
+    assert type(body["items"]) is list
+    assert body["items"] == [{"sku": "SKU-DEMO-003", "qty": 1}]
+    assert "status" not in body
+
+
 def test_admin_products_forbidden_to_user(base_url, token_a):
     products = requests.get(
         f"{base_url}/api/admin/products",

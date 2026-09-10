@@ -21,9 +21,10 @@ P0～P3 为课程约定。完整自动化名称见 `tests/`。执行记录见 `e
 | TC-ORDER-002 | 连续两次创建 | P1 | 两个不同 id | 通过 | pytest |
 | TC-AUTH-001 | 无凭证下单 | P0 | 401 | 通过 | pytest |
 | TC-PERM-001 | B 访问 A 的订单 | P1 | 403，Body 不含该 id | 通过 | pytest |
+| TC-PERM-002 | 所属者读自己的订单 | P1 | 200，body 有 id 与 items，无 status | 通过 | pytest |
 | TC-ADMIN-001 | 普通用户访问后台库存接口 | P1 | 403 | 通过 | pytest |
 | TC-ADMIN-002 | 管理员打开后台页 | P1 | 200，列出库存，订单只有 id | 通过 | `evidence/screenshots/07-admin.png` |
-| TC-SEARCH-001 | keyword 为空白 | P1 | 按 PRD 不应全量 | **失败** BUG-001 | `evidence/http/03-products-empty-keyword.txt`、`04-search-empty-bug001.png` |
+| TC-SEARCH-001 | keyword 为空白 | P1 | 按 PRD 不应全量 | **失败** BUG-001 | `evidence/http/03-products-empty-keyword.txt`（主证据；页面截图不能单独证明提交了空关键字） |
 
 ## 详细步骤（P0 抽样，可手工复现）
 

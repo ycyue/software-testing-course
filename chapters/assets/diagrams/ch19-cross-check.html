@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>同一条库存规则要在四通道对上</title></head>
+<body><div class="page">
+<p class="kicker">第 19 章示意图 · 交叉核对</p>
+<h1>qty=11 拒绝：页面、接口、SQL、日志要对上</h1>
+<p class="lead">对不上就还不能结案。只查本机教学库。pytest 绿不能代替亲手看页面。</p>
+<div class="row">
+  <div class="col card"><span class="tag tag-info">页面</span><h2>购物车填 11</h2><p style="font-size:16px;line-height:1.55">提示拒绝，行上的数量不得变成 11</p></div>
+  <div class="col card"><span class="tag tag-ok">接口</span><h2>POST /api/cart/items</h2><p style="font-size:16px;line-height:1.55">400 qty exceeds stock</p></div>
+  <div class="col card"><span class="tag tag-warn">SQL</span><h2>该 SKU 的数量</h2><p style="font-size:16px;line-height:1.55">库里不得写成 11</p></div>
+  <div class="col card"><span class="tag tag-bad">日志</span><h2>app.log</h2><p style="font-size:16px;line-height:1.55">INFO inventory reject … qty=11</p></div>
+</div>
+<p class="caption">示意图：同一条判定，四条观察通道。缺一条就只是「我点过」。</p>
+</div></body></html>
