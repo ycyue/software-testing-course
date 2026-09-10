@@ -81,21 +81,27 @@ Collection 不是测试报告，也不是 OpenAPI 本身。它可以对照文档
 
 ## 14.2 发出 GET 与 POST ⭐⭐⭐
 
-新建 Request，选择方法，URL 使用变量。路径与仓库集合一致：
+先按 14.6.1 导入仓库集合和环境，再打开集合里已有的请求看面板。不要新建一套 `/api/login`。
+
+打开「搜索商品」：方法 GET，URL 是：
 
 ```text
 {{baseUrl}}/api/products?keyword=鼠标
 ```
 
+Params 里的 `keyword` 就是 Query。仓库这条断言命中 `SKU-DEMO-001`。商品名是「无线鼠标」，搜 `mouse` 得到空数组 `{"items":[]}`——这不是搜索成功，也不要和 BUG-001（空白关键字返回全量）混为一谈。只断言「items 为数组」会把空数组标绿。
+
+打开「登录-正确」：方法 POST，URL 是：
+
 ```text
 {{baseUrl}}/api/login
 ```
 
-商品名是「无线鼠标」，搜 `mouse` 会得到空数组，断言「items 为数组」也会绿——那不证明搜到了。
+Body 为 raw + JSON。
 
 第 9 章的语义在这里不变：GET 用于读取商品列表；登录、改数量、下单用 POST，因为会改变会话或数据。不要说“POST 更安全所以登录必须 POST”——登录用 POST 是因为会改状态，且密码不应出现在 query。
 
-Params 面板编辑 Query 和 Path 变量，比把一长串 URL 写死更不容易漏。例如 Path `/api/orders/:orderId` 与 `{{orderId}}`。
+Params 面板编辑 Query。仓库越权请求的 URL 是 `{{baseUrl}}/api/orders/{{lastOrderId}}`：`{{lastOrderId}}` 是环境变量，由「创建订单」脚本写入。这和 Postman Path 变量（URL 里写 `:id`，再在 Params 赋值）不是同一层；本章以仓库写法为准。
 
 Headers 至少检查：
 
@@ -107,6 +113,8 @@ Body 选 raw + JSON，不要用错误的 form 去冒充 JSON。第 13 章的缺�
 发送后看 Response：状态码、耗时、Body、Headers。Preview 便于阅读 JSON，Raw 更接近原文。`200` 仍要断言 Body，不能只看绿色。
 
 Postman 也能存 Cookie。MiniShop 登录同时返回 `Set-Cookie` 与 JSON `token`。后续接口以 `Authorization: Bearer {{token}}` 为准；Cookie 可并存，不是三选一。
+
+无凭证不是「这条请求没有填写 Authorization」就够了。Postman 默认把登录的 `Set-Cookie` 存进 cookie jar，下一请求自动带上。MiniShop 没有 Bearer 时仍认 Cookie `minishop_session`（R-AUTH：Cookie 可并存）。测 401 必须同时不要 Authorization，并关掉这条请求的 cookie jar（Settings → Disable cookie jar）。仓库「无凭证创建」已设置 `protocolProfileBehavior.disableCookies`。
 
 ---
 
@@ -121,7 +129,7 @@ Postman 也能存 Cookie。MiniShop 登录同时返回 `Set-Cookie` 与 JSON `to
 | `baseUrl` | Environment | 仓库环境文件是 `http://127.0.0.1:8765` |
 | `phone` | Environment 或 Collection | 种子号 `13800138000` |
 | `token` | Environment 的**当前值** | 登录脚本写入，不要填进可分享的初始值 |
-| `orderId` | 运行中由脚本写入 | 创建订单后保存 |
+| `lastOrderId` | 运行中由脚本写入 | 创建订单后保存；越权请求的 Path 引用它 |
 
 在 URL、Header、Body 里用双花括号引用：
 
@@ -175,7 +183,7 @@ pm.test("登录成功且返回 token", function () {
 
 后续请求不要手抄 Token。断言失败时，先看登录是否真的 200，再看 Environment 里 `token` 是否被写入，最后看 Header 是否引用 `{{token}}` 而不是旧字符串。
 
-未登录用例应使用**单独 Request**（去掉 Authorization 或不设 token），不要指望“先跑失败登录再跑业务”的顺序污染变量。需要时在预请求脚本里 `pm.environment.unset("token")`，但更清晰的是两个独立请求。
+未登录用例应使用**单独 Request**：不要 Authorization，并且关掉 cookie jar（仓库「无凭证创建」已关闭）。不要指望“先跑失败登录再跑业务”的顺序污染变量，也不要让 cookie jar 把登录会话代发到 401 条上。`pm.environment.unset("token")` 挡不住 Cookie；更清晰的是两个独立请求。
 
 ---
 
@@ -186,14 +194,14 @@ Postman 沙箱提供 `pm` 对象。断言写在请求发送**之后**的脚本�
 - `pm.test("名称", function () { ... })`：登记一条有名字的检查，失败会在结果里显示该名称；
 - `pm.expect(实际值)`：Chai 风格断言，如 `.to.eql`、`.to.have.property`、`.to.be.a`。
 
-商品列表：
+商品列表（与仓库「搜索商品」对齐，URL 用 `keyword=鼠标`）。只断言 `items` 为数组不够：`keyword=mouse` 得到空数组也会绿，那不证明搜到了。
 
 ```javascript
-pm.test("列表接口返回 JSON 数组结构", function () {
+pm.test("列表命中无线鼠标", function () {
   pm.expect(pm.response.code).to.eql(200);
-  const body = pm.response.json();
-  pm.expect(body).to.have.property("items");
-  pm.expect(body.items).to.be.an("array");
+  const items = pm.response.json().items;
+  pm.expect(items).to.be.an("array");
+  pm.expect(items[0].sku).to.eql("SKU-DEMO-001");
 });
 ```
 
@@ -207,7 +215,7 @@ pm.test("超过库存应被拒绝", function () {
 });
 ```
 
-创建订单（Body 同样带 `sku` 与合法 `qty`）：
+创建订单（Body 同样带 `sku` 与合法 `qty`；变量名与仓库环境、越权 URL 一致，用 `lastOrderId`）：
 
 ```javascript
 pm.test("创建订单返回 id 且无状态字段", function () {
@@ -216,15 +224,11 @@ pm.test("创建订单返回 id 且无状态字段", function () {
   pm.expect(body).to.have.property("id");
   pm.expect(body.id).to.be.a("string");
   pm.expect(body).to.not.have.property("status");
-  const previous = pm.environment.get("orderId");
-  if (previous) {
-    pm.expect(body.id).to.not.eql(previous);
-  }
-  pm.environment.set("orderId", body.id);
+  pm.environment.set("lastOrderId", body.id);
 });
 ```
 
-第 6 步“再创建订单”复用上面脚本：第一次写入 `orderId`，第二次先比较再覆盖。不要只 `set` 而不比较，否则 Runner 无法证明不幂等。
+仓库集合只有一条「创建订单」，没有「再创建订单」。要证明 v1.0 默认不幂等：复制「创建订单」，在副本里先 `pm.expect(body.id).to.not.eql(pm.environment.get("lastOrderId"))`，再 `set` 覆盖。不要只 set 不比较。
 
 未认证：
 
@@ -233,6 +237,8 @@ pm.test("无凭证访问订单应失败", function () {
   pm.expect(pm.response.code).to.eql(401);
 });
 ```
+
+仓库「无凭证创建」没有 Authorization，并且已 Disable cookie jar。只去掉 Header 却让 cookie jar 代发会话，会变成 201。
 
 纪律：
 
@@ -254,7 +260,7 @@ pm.test("无凭证访问订单应失败", function () {
 
 1. 选对 Environment；
 2. 确认顺序：登录（写 token）必须在需要认证的请求之前；
-3. 未认证用例不要插在“登录成功写 token”和“带 token 的下单”中间，除非你有意 unset；
+3. 未认证用例不要插在“登录成功写 token”和“带 token 的下单”中间。无凭证 = 不要 Authorization 且关掉 cookie jar；仓库「无凭证创建」已禁用 Cookie。Runner 高级选项可勾选 Run collection without using stored cookies——默认不勾时，若某条 401 用例没关 cookie jar，会变成 201；
 4. 看官方选项里与变量持久化相关的开关（名称可能是 Keep variable values / Persist）。教学跑完后检查 `token` 是否留在本机环境；不需要就不要持久化到可分享值。
 
 迭代（Iterations）会把整段流程跑多遍。数据文件（CSV/JSON）可驱动不同 `phone`，属于进阶，本章不要求。多迭代时注意：创建订单可能产生多笔，测试库要能清理。
@@ -281,7 +287,7 @@ Runner 只证明**这一组请求在当前环境下的断言**。它不是性能
 4. 在 Environments 里选中 `MiniShop local`。`baseUrl` 应为 `http://127.0.0.1:8765`。把 `password` 填成当前值 `Test1234`，**不要**勾选成可分享的初始值，也不要提交回 Git。
 5. 另开终端：`cd project/minishop && python3 run.py serve`。
 6. 打开 Collection。顺序建议：注册-非法手机号 → 注册（若 `newPhone` 已用过会 409，改一个未占用号）→ 搜索 → 空搜索-BUG-001 → **登录-正确 / 用户B / 管理员**（分别写入 `token` / `tokenB` / `tokenAdmin`）→ 改数量 1 / 10 / 11 → 创建订单 → 无凭证创建 → 越权-他人订单 → 越权-管理员读明细。
-7. 点 **Collection Runner**，确认登录在需要认证的请求之前，跑一遍。记录通过/失败数（文字即可）。**空搜索按 R-SEARCH 会失败**，对应仍开放的 BUG-001；不要把这一条红当成集合坏了。
+7. 点 **Collection Runner**，确认登录在需要认证的请求之前，跑一遍。记录通过/失败数（文字即可）。**空搜索按 R-SEARCH 会失败**，对应仍开放的 BUG-001；不要把这一条红当成集合坏了。高级选项勾选 **Run collection without using stored cookies**（仓库「无凭证创建」已单独 Disable cookie jar；若你关掉该设置又没勾 Runner 选项，无凭证条会因 cookie jar 变成 201，那不是集合坏了）。
 8. 导出前清空环境里的 password 与 token 当前值。
 
 集合里已带 `pm.test` / `pm.expect`。共 **15** 个请求：3 条注册、2 条搜索、3 条登录、3 条改数量（1 / 10 / 11）、创建订单、无凭证、两条越权。qty=10 断言 200，qty=11 断言 400；创建订单断言 201、有 `id`、无 `status`；非法注册 400；用户 B 与管理员读他人订单 403。空搜索按 R-SEARCH 断言，当前会失败（BUG-001）。
@@ -290,7 +296,7 @@ Runner 只证明**这一组请求在当前环境下的断言**。它不是性能
 
 ![本机请求记录](assets/08-network-log.png)
 
-![pytest 37 passed / 1 expected failure](assets/09-pytest-report.png)
+![pytest 基线：passed 与 1 expected failure（以本机输出为准）](assets/09-pytest-report.png)
 
 ---
 
@@ -306,8 +312,8 @@ Runner 只证明**这一组请求在当前环境下的断言**。它不是性能
 | 登录-正确 / 用户B / 管理员 | `POST /api/login` | 200，写入 `token` / `tokenB` / `tokenAdmin` |
 | 改数量-合法 / 等于库存 / 超库存 | `POST /api/cart/items` | qty=1 与 **qty=10** → 200；qty=11 → 400 |
 | 创建订单 | `POST /api/orders` | 201，有 `id`，无 `status` |
-| 无凭证创建 | 无 Authorization | 401 |
-| 越权-他人订单 / 管理员读明细 | `GET /api/orders/{id}` | **403** |
+| 无凭证创建 | 无 Authorization，且已 Disable cookie jar | 401 |
+| 越权-他人订单 / 管理员读明细 | `GET /api/orders/{{lastOrderId}}` | **403** |
 
 集合目前只下一单，**没有**「再创建订单」。不幂等仍要会测：复制「创建订单」再跑一次，比较两个 `id`。v1.0 两次成功得到两个 id。
 
@@ -358,7 +364,7 @@ exercises/chapter-14-minishop-postman.md
 - 导出不含密码和 token：是
 ```
 
-完成标准：导入并跑通仓库集合（空搜索允许红）；Token 不手抄；能解释 qty=10 与 qty=11；有 Runner 文字结果；无订单状态臆造。
+完成标准：导入并跑通仓库集合（空搜索允许红）；无凭证 = 不要 Authorization 且关掉 cookie jar，预期 401；Token 不手抄；能解释 qty=10 与 qty=11；有 Runner 文字结果；无订单状态臆造。
 
 ---
 
@@ -380,9 +386,9 @@ exercises/chapter-14-minishop-postman.md
 
 修正：响应断言放在发送后的脚本。
 
-### 错误 5：未认证请求放在登录成功之后，且共用已写入的 token
+### 错误 5：未认证请求放在登录成功之后，且共用已写入的 token 或 cookie jar
 
-修正：单独请求，去掉 Authorization，或明确 unset。
+修正：单独请求，去掉 Authorization，并 Disable cookie jar。unset token 挡不住 `minishop_session`。
 
 ### 错误 6：公开 Workspace 分享含生产 token 的 Environment
 
@@ -502,9 +508,9 @@ D. Runner 全绿可以替代测试计划的出口标准
 3. 登录是否 200 且脚本执行；Environment 是否选中且含 `token`；后续请求 Header 是否为 `Bearer {{token}}` 而非空或旧值。
 4. 未先断言状态码和 `token` 是否存在就 set；`pm.test` 恒真没有验证响应。失败登录可能把 `undefined` 写入环境。
 5. 不能。还要断言 400 或业务错误 Body，并在授权库 `SELECT` qty 与 stock。
-6. 若无凭证请求复用已写入的 token，可能变成已认证而测不到 401；若它 unset token，后面的创建订单会误失败。
+6. 若无凭证请求仍带 `Bearer {{token}}`、或 cookie jar 代发 `minishop_session`，可能变成已认证而测不到 401（仓库这条已关 cookie jar，不要给它补 Authorization）。若它 unset 了后续还要用的 token，后面的创建订单会误失败。
 7. C。
-8. 保存第一次 `orderId`，第二次 `pm.expect(body.id).to.not.eql(pm.environment.get("orderId"))`。若需求幂等：第二次应同一 `id` 或明确拒绝重复创建，以正式文档为准。
+8. 保存第一次 `lastOrderId`，第二次（复制「创建订单」再跑）`pm.expect(body.id).to.not.eql(pm.environment.get("lastOrderId"))`。若需求幂等：第二次应同一 `id` 或明确拒绝重复创建，以正式文档为准。
 9. 密码、token、Cookie、内部生产 URL。集合与 cURL 一样会复制凭证。
 10. `POST {{baseUrl}}/api/login`；Body `phone` 与密码变量；断言 200、`result=ok`、存在字符串 `token` 并 set 环境。合理等价即可。
 
@@ -519,7 +525,7 @@ D. Runner 全绿可以替代测试计划的出口标准
 - [ ] 我会写 `pm.test` + `pm.expect`
 - [ ] 我知道脚本绿不等于数据库对
 - [ ] 我会用 Runner 按顺序执行并解读失败
-- [ ] 我不会把未认证请求和已写入 token 的流程搅在一起
+- [ ] 我不会把未认证请求和已写入 token / cookie jar 的流程搅在一起
 - [ ] 我导出前会脱敏
 - [ ] 我能讲清仓库 15 个请求各自打哪条 `/api/` 路径
 - [ ] 我能完成 Postman 集合包
@@ -527,7 +533,7 @@ D. Runner 全绿可以替代测试计划的出口标准
 ### 进入下一章的自测门槛
 
 1. 练习 1～10 至少完成 9 题，且第 3、4、7、8 题能用自己的话回答；
-2. 亲手跑通：登录写 token → 带 token 的请求 → 无凭证 401；
+2. 亲手跑通：登录写 token → 带 token 的请求 → 无凭证 401（无 Authorization 且 cookie jar 已关）；
 3. 至少一条超库存或等价业务失败断言；
 4. 完成 MiniShop Postman 集合包。
 
@@ -547,8 +553,8 @@ D. Runner 全绿可以替代测试计划的出口标准
 
 Postman 界面无法在教材仓库里自动点击。审查做了两件事：
 
-1. 将本章 `pm.test` / `pm.expect` / `pm.environment.set` 示例放进带有模拟 `pm` 对象的脚本执行：登录 200 写入 token；`qty=11` 断言 400；创建订单断言 201、有 `id`、无 `status`；无凭证断言 401。
-2. 校验 `project/minishop/postman/MiniShop.postman_collection.json` 能解析，Collection v2.1，**15** 个请求，路径均为 `/api/`。
+1. 将本章 `pm.test` / `pm.expect` / `pm.environment.set` 示例放进带有模拟 `pm` 对象的脚本执行：登录 200 写入 token；`qty=11` 断言 400；创建订单断言 201、有 `id`、无 `status`、写入 `lastOrderId`；列表命中 `SKU-DEMO-001`；无凭证断言 401。
+2. 校验 `project/minishop/postman/MiniShop.postman_collection.json` 能解析，Collection v2.1，**15** 个请求，路径均为 `/api/`。「无凭证创建」含 `protocolProfileBehavior.disableCookies`。
 
 未启动 Postman GUI。学习者须在本机导入仓库集合、启动 `run.py serve` 完成门槛 2。密码与 token 不得提交进 Git。
 

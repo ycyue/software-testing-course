@@ -197,6 +197,7 @@
     },
     {
       "name": "无凭证创建",
+      "protocolProfileBehavior": {"disableCookies": true},
       "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
         "pm.test('401 unauthorized', function () { pm.response.to.have.status(401); });"
       ]}}],
