@@ -1,0 +1,458 @@
+# Extracted unit inventory (coordinator, not an audit)
+
+## Code fence langs in chapters/*.md
+- text: 82
+- python: 47
+- bash: 44
+- mermaid: 23
+- markdown: 19
+- sql: 19
+- javascript: 8
+- json: 5
+- html: 2
+- css: 1
+- ini: 1
+- yaml: 1
+
+Total fences: 252
+
+## Fences (file:line)
+- chapters/01-software-testing-intro.md:76 lang=bash lines=1 | python3 practice/run.py 1-1
+- chapters/01-software-testing-intro.md:279 lang=mermaid lines=8 | flowchart LR
+- chapters/02-software-development-process.md:51 lang=mermaid lines=8 | flowchart TD
+- chapters/02-software-development-process.md:175 lang=mermaid lines=10 | flowchart TD
+- chapters/02-software-development-process.md:307 lang=bash lines=9 | mkdir -p exercises
+- chapters/03-software-testing-classification.md:74 lang=mermaid lines=8 | flowchart TD
+- chapters/04a-requirements-static-testing.md:370 lang=text lines=6 | 需求标识/位置：
+- chapters/04b-minishop-requirement-review.md:89 lang=text lines=7 | R-CART-01 用户可以修改购物车商品数量。
+- chapters/04b-minishop-requirement-review.md:168 lang=text lines=1 | exercises/chapter-04-minishop-requirement-review.md
+- chapters/04b-minishop-requirement-review.md:174 lang=markdown lines=24 | # MiniShop 需求评审记录
+- chapters/05-test-case-design.md:63 lang=bash lines=1 | python3 practice/run.py 5-1
+- chapters/05-test-case-design.md:181 lang=text lines=1 | 已被测试覆盖的等价分区数 ÷ 已识别的等价分区总数 × 100%
+- chapters/05-test-case-design.md:252 lang=bash lines=1 | python3 practice/run.py 5-1
+- chapters/05-test-case-design.md:330 lang=mermaid lines=5 | flowchart LR
+- chapters/05-test-case-design.md:382 lang=mermaid lines=6 | stateDiagram-v2
+- chapters/05-test-case-design.md:513 lang=bash lines=1 | python3 practice/run.py 5-1
+- chapters/05-test-case-design.md:519 lang=text lines=1 | exercises/chapter-05-minishop-test-cases.md
+- chapters/06a-bug-management.md:98 lang=mermaid lines=13 | flowchart TD
+- chapters/06a-bug-management.md:255 lang=markdown lines=34 | # BUG-CART-001 购物车：库存为 10 时可将数量修改为 11
+- chapters/06b-test-management.md:217 lang=text lines=1 | exercises/chapter-06-minishop-test-plan.md
+- chapters/06b-test-management.md:223 lang=markdown lines=27 | # MiniShop 测试计划练习
+- chapters/07-web-basics.md:41 lang=text lines=1 | https://shop.example.test:8443/products?keyword=mouse&page=2#reviews
+- chapters/07-web-basics.md:51 lang=mermaid lines=6 | flowchart TD
+- chapters/07-web-basics.md:130 lang=text lines=1 | https://shop.example.test:8443/products?keyword=mouse&page=2#reviews
+- chapters/07-web-basics.md:169 lang=text lines=1 | example.test
+- chapters/07-web-basics.md:203 lang=text lines=1 | https://shop.example.test
+- chapters/07-web-basics.md:241 lang=mermaid lines=5 | sequenceDiagram
+- chapters/07-web-basics.md:312 lang=html lines=5 | <article class="product-card">
+- chapters/07-web-basics.md:326 lang=css lines=4 | .product-card {
+- chapters/07-web-basics.md:337 lang=javascript lines=5 | const button = document.querySelector(".product-card button");
+- chapters/07-web-basics.md:355 lang=mermaid lines=6 | flowchart TD
+- chapters/07-web-basics.md:380 lang=bash lines=2 | cd project/minishop
+- chapters/07-web-basics.md:391 lang=text lines=7 | 完整 URL：
+- chapters/07-web-basics.md:430 lang=markdown lines=28 | # MiniShop Web 页面观察报告
+- chapters/07-web-basics.md:527 lang=text lines=1 | https://admin.example.test:9443/orders/1001?tab=payment#history
+- chapters/08a-web-page-testing.md:86 lang=html lines=32 | <!DOCTYPE html>
+- chapters/08a-web-page-testing.md:198 lang=text lines=1 | https://shop.example.test:8443/products?keyword=mouse&page=2
+- chapters/08b-web-auth-permission.md:37 lang=mermaid lines=10 | flowchart TD
+- chapters/08b-web-auth-permission.md:128 lang=text lines=1 | Authorization: Bearer <token>
+- chapters/08b-web-auth-permission.md:284 lang=text lines=1 | exercises/chapter-08-minishop-web-functional.md
+- chapters/08b-web-auth-permission.md:288 lang=markdown lines=27 | # MiniShop Web 功能测试包
+- chapters/09a-network-http-semantics.md:52 lang=mermaid lines=7 | flowchart TD
+- chapters/09a-network-http-semantics.md:141 lang=mermaid lines=7 | sequenceDiagram
+- chapters/09a-network-http-semantics.md:168 lang=text lines=2 | 请求：我要对这个资源做什么，并带上必要的说明和数据
+- chapters/09a-network-http-semantics.md:175 lang=text lines=4 | <方法> <请求目标> HTTP/1.1
+- chapters/09a-network-http-semantics.md:184 lang=text lines=4 | HTTP/1.1 <状态码> <原因短语>
+- chapters/09a-network-http-semantics.md:199 lang=text lines=2 | GET /products?keyword=mouse&page=2 HTTP/1.1
+- chapters/09b-http-message-observe.md:34 lang=mermaid lines=5 | sequenceDiagram
+- chapters/09b-http-message-observe.md:190 lang=text lines=5 | POST /api/login HTTP/1.1
+- chapters/09b-http-message-observe.md:198 lang=text lines=5 | HTTP/1.1 200 OK
+- chapters/09b-http-message-observe.md:210 lang=text lines=3 | GET /api/cart HTTP/1.1
+- chapters/09b-http-message-observe.md:252 lang=text lines=1 | exercises/chapter-09-minishop-http-observation.md
+- chapters/09b-http-message-observe.md:256 lang=markdown lines=29 | # MiniShop HTTP 观察记录
+- chapters/10-chrome-devtools.md:52 lang=mermaid lines=6 | flowchart TD
+- chapters/10-chrome-devtools.md:436 lang=text lines=1 | exercises/chapter-10-minishop-devtools.md
+- chapters/10-chrome-devtools.md:440 lang=markdown lines=38 | # MiniShop DevTools 取证记录
+- chapters/11-linux.md:80 lang=bash lines=1 | ls -l /tmp
+- chapters/11-linux.md:90 lang=bash lines=2 | ls --help
+- chapters/11-linux.md:130 lang=bash lines=9 | pwd
+- chapters/11-linux.md:164 lang=bash lines=4 | mkdir -p ~/minishop-linux-lab/logs
+- chapters/11-linux.md:181 lang=bash lines=2 | ls ~/minishop-linux-lab/logs/app.log.old
+- chapters/11-linux.md:200 lang=bash lines=4 | head -n 20 app.log
+- chapters/11-linux.md:217 lang=text lines=2 | 2026-09-09 10:17:00 INFO login ok user=13800138000
+- chapters/11-linux.md:235 lang=bash lines=1 | grep -n "inventory reject" evidence/logs/app-sample.log
+- chapters/11-linux.md:243 lang=bash lines=4 | grep -n ERROR app.log
+- chapters/11-linux.md:259 lang=bash lines=1 | grep ERROR app.log | tail -n 20
+- chapters/11-linux.md:276 lang=bash lines=2 | tail -n 200 app.log | grep inventory
+- chapters/11-linux.md:283 lang=bash lines=3 | echo "hello MiniShop lab" > /tmp/minishop-linux-hello.txt
+- chapters/11-linux.md:306 lang=bash lines=2 | ps aux
+- chapters/11-linux.md:317 lang=bash lines=1 | kill 12345
+- chapters/11-linux.md:323 lang=bash lines=1 | kill -9 12345
+- chapters/11-linux.md:345 lang=bash lines=1 | chmod 644 app.log
+- chapters/11-linux.md:378 lang=bash lines=3 | ssh tester@192.0.2.10
+- chapters/11-linux.md:432 lang=bash lines=1 | curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:8765/api/products?ke
+- chapters/11-linux.md:452 lang=bash lines=4 | curl -sS -D - \
+- chapters/11-linux.md:489 lang=text lines=1 | exercises/chapter-11-minishop-linux.md
+- chapters/11-linux.md:495 lang=bash lines=5 | cd project/minishop
+- chapters/11-linux.md:505 lang=text lines=2 | login ok user=13800138000
+- chapters/11-linux.md:514 lang=markdown lines=28 | # MiniShop Linux 排障记录
+- chapters/12a-sql-query.md:69 lang=text lines=2 | users.id  <----- cart_items.user_id
+- chapters/12a-sql-query.md:84 lang=sql lines=38 | PRAGMA foreign_keys = ON;
+- chapters/12a-sql-query.md:168 lang=sql lines=2 | SELECT id, phone, display_name
+- chapters/12a-sql-query.md:177 lang=sql lines=3 | SELECT id, phone, display_name
+- chapters/12a-sql-query.md:191 lang=sql lines=19 | SELECT sku, name, stock
+- chapters/12a-sql-query.md:232 lang=sql lines=4 | SELECT sku, stock
+- chapters/12a-sql-query.md:241 lang=sql lines=2 | SELECT DISTINCT user_id
+- chapters/12a-sql-query.md:258 lang=sql lines=5 | SELECT COUNT(*) AS user_count FROM users;
+- chapters/12a-sql-query.md:270 lang=sql lines=3 | SELECT product_id, COUNT(*) AS line_count, SUM(qty) AS qty_sum
+- chapters/12a-sql-query.md:280 lang=sql lines=4 | SELECT product_id, COUNT(*) AS line_count
+- chapters/12a-sql-query.md:302 lang=sql lines=5 | SELECT u.phone, p.sku, c.qty, p.stock
+- chapters/12a-sql-query.md:319 lang=sql lines=4 | SELECT p.sku, c.qty
+- chapters/12a-sql-query.md:341 lang=sql lines=1 | SELECT id, phone FROM users WHERE display_name = NULL;
+- chapters/12a-sql-query.md:349 lang=sql lines=1 | SELECT id, phone FROM users WHERE display_name IS NULL;
+- chapters/12b-sql-write-and-minishop.md:32 lang=sql lines=6 | SELECT id, user_id, product_id, qty
+- chapters/12b-sql-write-and-minishop.md:68 lang=sql lines=16 | BEGIN;
+- chapters/12b-sql-write-and-minishop.md:93 lang=sql lines=14 | BEGIN;
+- chapters/12b-sql-write-and-minishop.md:131 lang=sql lines=5 | BEGIN;
+- chapters/12b-sql-write-and-minishop.md:153 lang=sql lines=5 | SELECT u.phone, p.sku, c.qty, p.stock
+- chapters/12b-sql-write-and-minishop.md:165 lang=sql lines=17 | BEGIN;
+- chapters/12b-sql-write-and-minishop.md:205 lang=text lines=1 | exercises/chapter-12-minishop-sql.md
+- chapters/12b-sql-write-and-minishop.md:211 lang=bash lines=1 | sqlite3 ~/minishop-sql-lab.sqlite
+- chapters/12b-sql-write-and-minishop.md:223 lang=markdown lines=19 | # MiniShop SQL 验证记录
+- chapters/13-api-testing.md:42 lang=json lines=1 | {"sku":"SKU-DEMO-001","qty":11}
+- chapters/13-api-testing.md:50 lang=mermaid lines=6 | flowchart LR
+- chapters/13-api-testing.md:112 lang=json lines=1 | {"sku":"SKU-DEMO-001","qty":1}
+- chapters/13-api-testing.md:180 lang=json lines=30 | {
+- chapters/13-api-testing.md:340 lang=bash lines=2 | cd project/minishop
+- chapters/13-api-testing.md:349 lang=text lines=5 | POST /api/login HTTP/1.1
+- chapters/13-api-testing.md:359 lang=text lines=5 | HTTP/1.1 200 OK
+- chapters/13-api-testing.md:374 lang=bash lines=4 | curl -sS -D - \
+- chapters/13-api-testing.md:391 lang=bash lines=9 | TOKEN=$(curl -sS -H "Content-Type: application/json" \
+- chapters/13-api-testing.md:421 lang=text lines=1 | exercises/chapter-13-minishop-api.md
+- chapters/13-api-testing.md:435 lang=markdown lines=22 | # MiniShop 接口检查记录
+- chapters/14-postman.md:49 lang=mermaid lines=9 | flowchart TD
+- chapters/14-postman.md:86 lang=text lines=1 | {{baseUrl}}/api/products?keyword=鼠标
+- chapters/14-postman.md:90 lang=text lines=1 | {{baseUrl}}/api/login
+- chapters/14-postman.md:128 lang=text lines=1 | {{baseUrl}}/api/orders
+- chapters/14-postman.md:132 lang=json lines=1 | {"phone":"{{phone}}","password":"{{password}}"}
+- chapters/14-postman.md:140 lang=javascript lines=2 | pm.environment.set("token", tokenValue);
+- chapters/14-postman.md:164 lang=javascript lines=9 | pm.test("登录成功且返回 token", function () {
+- chapters/14-postman.md:191 lang=javascript lines=6 | pm.test("列表接口返回 JSON 数组结构", function () {
+- chapters/14-postman.md:202 lang=javascript lines=5 | pm.test("超过库存应被拒绝", function () {
+- chapters/14-postman.md:212 lang=javascript lines=12 | pm.test("创建订单返回 id 且无状态字段", function () {
+- chapters/14-postman.md:231 lang=javascript lines=3 | pm.test("无凭证访问订单应失败", function () {
+- chapters/14-postman.md:322 lang=text lines=1 | exercises/chapter-14-minishop-postman.md
+- chapters/14-postman.md:335 lang=markdown lines=23 | # MiniShop Postman 集合记录
+- chapters/14-postman.md:461 lang=javascript lines=5 | const body = pm.response.json();
+- chapters/15a-python-syntax.md:63 lang=text lines=1 | Python 3.14.3
+- chapters/15a-python-syntax.md:69 lang=text lines=3 | >>> 1 + 1
+- chapters/15a-python-syntax.md:77 lang=python lines=1 | print("hello, minishop")
+- chapters/15a-python-syntax.md:83 lang=bash lines=1 | python3 hello_minishop.py
+- chapters/15a-python-syntax.md:103 lang=python lines=2 | stock = 10
+- chapters/15a-python-syntax.md:120 lang=python lines=6 | phone = "13800138000"
+- chapters/15a-python-syntax.md:131 lang=text lines=1 | str int False None
+- chapters/15a-python-syntax.md:144 lang=python lines=4 | qty = 11
+- chapters/15a-python-syntax.md:153 lang=text lines=3 | True
+- chapters/15a-python-syntax.md:170 lang=python lines=5 | qty = 0
+- chapters/15a-python-syntax.md:180 lang=text lines=1 | 被当成没有数量
+- chapters/15a-python-syntax.md:194 lang=python lines=5 | phone = "13800138000"
+- chapters/15a-python-syntax.md:204 lang=text lines=3 | 11 138 8000 True
+- chapters/15a-python-syntax.md:235 lang=python lines=1 | skus = ["SKU-DEMO-001"]
+- chapters/15a-python-syntax.md:241 lang=python lines=7 | items = [
+- chapters/15a-python-syntax.md:253 lang=text lines=2 | 2 SKU-DEMO-001 11
+- chapters/15a-python-syntax.md:264 lang=python lines=6 | pair = ("SKU-DEMO-001", 10)
+- chapters/15a-python-syntax.md:275 lang=text lines=2 | SKU-DEMO-001 10
+- chapters/15a-python-syntax.md:286 lang=python lines=3 | skus = ["SKU-DEMO-001", "SKU-DEMO-001", "SKU-DEMO-002"]
+- chapters/15a-python-syntax.md:294 lang=text lines=1 | 3 2 True
+- chapters/15a-python-syntax.md:300 lang=python lines=6 | import json
+- chapters/15a-python-syntax.md:311 lang=text lines=1 | set_not_json
+- chapters/15a-python-syntax.md:328 lang=python lines=1 | item = {"sku": "SKU-DEMO-001", "qty": 1}
+- chapters/15a-python-syntax.md:334 lang=python lines=6 | item = {"sku": "SKU-DEMO-001", "qty": 1}
+- chapters/15a-python-syntax.md:345 lang=text lines=5 | SKU-DEMO-001
+- chapters/15a-python-syntax.md:362 lang=python lines=7 | missing = {}
+- chapters/15a-python-syntax.md:374 lang=text lines=3 | False None
+- chapters/15a-python-syntax.md:384 lang=python lines=3 | body = {"token": "teach-token"}
+- chapters/15a-python-syntax.md:392 lang=text lines=2 | True
+- chapters/15a-python-syntax.md:399 lang=python lines=5 | payload = {"sku": "SKU-DEMO-001", "qty": 1}
+- chapters/15a-python-syntax.md:409 lang=text lines=1 | 11 1
+- chapters/15a-python-syntax.md:421 lang=python lines=8 | qty = 11
+- chapters/15a-python-syntax.md:434 lang=text lines=1 | exceeds_stock
+- chapters/15a-python-syntax.md:444 lang=python lines=7 | items = [
+- chapters/15a-python-syntax.md:456 lang=text lines=1 | SKU-DEMO-002
+- chapters/15a-python-syntax.md:468 lang=python lines=6 | items = [
+- chapters/15a-python-syntax.md:479 lang=text lines=1 | ['SKU-DEMO-001', 'SKU-DEMO-002']
+- chapters/15a-python-syntax.md:491 lang=python lines=5 | def add(a, b):
+- chapters/15a-python-syntax.md:501 lang=text lines=1 | 3
+- chapters/15a-python-syntax.md:507 lang=python lines=12 | def qty_allowed(qty, stock):
+- chapters/15a-python-syntax.md:524 lang=text lines=4 | True
+- chapters/15a-python-syntax.md:533 lang=python lines=7 | def add_item(item, bucket=[]):
+- chapters/15a-python-syntax.md:545 lang=text lines=2 | ['a']
+- chapters/15a-python-syntax.md:552 lang=python lines=9 | def add_item(item, bucket=None):
+- chapters/15a-python-syntax.md:566 lang=text lines=2 | ['a']
+- chapters/15a-python-syntax.md:575 lang=python lines=10 | def qty_allowed(qty, stock):
+- chapters/15a-python-syntax.md:667 lang=python lines=3 | def add_item(item, bucket=[]):
+- chapters/15b-python-files-json.md:35 lang=python lines=4 | import json
+- chapters/15b-python-files-json.md:44 lang=text lines=1 | teach-token
+- chapters/15b-python-files-json.md:63 lang=bash lines=1 | python3 -m venv .venv
+- chapters/15b-python-files-json.md:69 lang=bash lines=1 | source .venv/bin/activate
+- chapters/15b-python-files-json.md:77 lang=bash lines=1 | python3 -m pip list
+- chapters/15b-python-files-json.md:95 lang=python lines=5 | import json
+- chapters/15b-python-files-json.md:105 lang=text lines=1 | list 8 合法数量
+- chapters/15b-python-files-json.md:116 lang=python lines=5 | import json
+- chapters/15b-python-files-json.md:146 lang=python lines=4 | try:
+- chapters/15b-python-files-json.md:155 lang=text lines=1 | not an int
+- chapters/15b-python-files-json.md:161 lang=python lines=14 | import json
+- chapters/15b-python-files-json.md:180 lang=text lines=2 | 1
+- chapters/15b-python-files-json.md:187 lang=python lines=5 | item = {"sku": "SKU-DEMO-001"}
+- chapters/15b-python-files-json.md:197 lang=text lines=1 | missing qty
+- chapters/15b-python-files-json.md:229 lang=python lines=8 | import json
+- chapters/15b-python-files-json.md:242 lang=text lines=4 | dict
+- chapters/15b-python-files-json.md:258 lang=python lines=13 | import json
+- chapters/15b-python-files-json.md:276 lang=text lines=3 | invalid
+- chapters/15b-python-files-json.md:286 lang=python lines=4 | import json
+- chapters/15b-python-files-json.md:295 lang=text lines=2 | int
+- chapters/15b-python-files-json.md:313 lang=text lines=1 | exercises/chapter-15-minishop-python.md
+- chapters/15b-python-files-json.md:321 lang=json lines=10 | [
+- chapters/15b-python-files-json.md:338 lang=python lines=97 | import json
+- chapters/15b-python-files-json.md:440 lang=bash lines=1 | python3 check_minishop_data.py
+- chapters/15b-python-files-json.md:446 lang=text lines=3 | token_ok
+- chapters/15b-python-files-json.md:462 lang=markdown lines=18 | # MiniShop Python 数据检查记录
+- chapters/16a-pytest-basics.md:63 lang=bash lines=4 | python3 -m venv .venv
+- chapters/16a-pytest-basics.md:72 lang=text lines=1 | pytest 9.1.1
+- chapters/16a-pytest-basics.md:101 lang=python lines=10 | def qty_allowed(qty, stock):
+- chapters/16a-pytest-basics.md:116 lang=bash lines=1 | python3 -m pytest tests/test_qty_allowed.py -q
+- chapters/16a-pytest-basics.md:124 lang=python lines=10 | def qty_allowed(qty, stock):
+- chapters/16a-pytest-basics.md:139 lang=python lines=4 | def test_fail_demo():
+- chapters/16a-pytest-basics.md:148 lang=text lines=1 | assert 11 <= 10
+- chapters/16a-pytest-basics.md:162 lang=bash lines=2 | cd project/minishop
+- chapters/16a-pytest-basics.md:171 lang=python lines=8 | import requests
+- chapters/16a-pytest-basics.md:222 lang=python lines=26 | import requests
+- chapters/16a-pytest-basics.md:260 lang=bash lines=3 | cd project/minishop
+- chapters/16b-pytest-fixtures.md:35 lang=python lines=12 | import os
+- chapters/16b-pytest-fixtures.md:85 lang=python lines=17 | import pytest
+- chapters/16b-pytest-fixtures.md:107 lang=python lines=11 | def test_create_order_returns_id(base_url, token_a):
+- chapters/16b-pytest-fixtures.md:129 lang=python lines=28 | import pytest
+- chapters/16b-pytest-fixtures.md:172 lang=text lines=7 | project/minishop/
+- chapters/16b-pytest-fixtures.md:184 lang=ini lines=3 | [pytest]
+- chapters/16b-pytest-fixtures.md:196 lang=bash lines=5 | python3 -m pytest
+- chapters/16b-pytest-fixtures.md:217 lang=text lines=1 | exercises/chapter-16-minishop-pytest.md
+- chapters/16b-pytest-fixtures.md:223 lang=bash lines=3 | cd project/minishop
+- chapters/16b-pytest-fixtures.md:247 lang=markdown lines=16 | # MiniShop pytest 记录
+- chapters/17-automation-overview.md:44 lang=mermaid lines=5 | flowchart BT
+- chapters/17-automation-overview.md:143 lang=python lines=4 | # 示例结构。把 PORT 换成授权的 MiniShop 教学前端；不要对公网随意扫描。
+- chapters/17-automation-overview.md:150 lang=python lines=11 | # 示例结构。Selenium 4 常见写法，驱动与浏览器版本需匹配。
+- chapters/17-automation-overview.md:211 lang=bash lines=2 | python3 -m pip install pytest-html
+- chapters/17-automation-overview.md:232 lang=yaml lines=18 | # 示例结构，不要当作本仓库已配置的 GitHub Actions
+- chapters/17-automation-overview.md:287 lang=text lines=1 | exercises/chapter-17-minishop-automation-map.md
+- chapters/17-automation-overview.md:301 lang=markdown lines=23 | # MiniShop 自动化分层地图
+- chapters/18-performance-testing.md:53 lang=mermaid lines=9 | flowchart TD
+- chapters/18-performance-testing.md:95 lang=python lines=4 | samples_ms = [100, 110, 120, 200, 800]
+- chapters/18-performance-testing.md:104 lang=text lines=3 | 266.0
+- chapters/18-performance-testing.md:216 lang=text lines=4 | Test Plan
+- chapters/18-performance-testing.md:269 lang=text lines=1 | exercises/chapter-18-minishop-performance.md
+- chapters/18-performance-testing.md:281 lang=markdown lines=22 | # MiniShop 性能问题清单
+- chapters/19-minishop-project.md:48 lang=mermaid lines=7 | flowchart TD
+- chapters/19-minishop-project.md:87 lang=bash lines=3 | cd project/minishop
+- chapters/19-minishop-project.md:95 lang=bash lines=2 | python3 run.py test       # pytest
+- chapters/19-minishop-project.md:102 lang=text lines=1 | MINISHOP_BASE_URL=http://127.0.0.1:8765
+- chapters/19-minishop-project.md:199 lang=text lines=2 | login ok user=13800138000
+- chapters/19-minishop-project.md:235 lang=bash lines=2 | cd project/minishop
+- chapters/19-minishop-project.md:242 lang=text lines=1 | 37 passed, 1 xfailed
+- chapters/19-minishop-project.md:286 lang=text lines=1 | exercises/chapter-19-minishop-run.md
+- chapters/19-minishop-project.md:298 lang=markdown lines=16 | # MiniShop v1.0 执行记录
+- chapters/20-interview.md:52 lang=mermaid lines=6 | flowchart TD
+- chapters/20-interview.md:345 lang=text lines=1 | exercises/chapter-20-interview-script.md
+- chapters/20-interview.md:357 lang=markdown lines=17 | # 面试口述稿
+- chapters/21-job-hunting.md:42 lang=mermaid lines=9 | flowchart TD
+- chapters/21-job-hunting.md:208 lang=text lines=1 | exercises/chapter-21-resume.md
+- chapters/21-job-hunting.md:220 lang=markdown lines=19 | # 简历草稿
+- chapters/22-learning-path.md:38 lang=mermaid lines=8 | flowchart LR
+- chapters/22-learning-path.md:200 lang=text lines=1 | exercises/chapter-22-self-check.md
+- chapters/22-learning-path.md:212 lang=markdown lines=14 | # 结课自检
+
+## External http(s) links in chapters
+- chapters/01-software-testing-intro.md [ISTQB Certified Tester Foundation Level（CTFL）官方页面](https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/)
+- chapters/01-software-testing-intro.md [ISO/IEC 25010:2023 官方页面](https://www.iso.org/standard/78176.html)
+- chapters/02-software-development-process.md [ISTQB Certified Tester Foundation Level 官方页面](https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/)
+- chapters/02-software-development-process.md [The Scrum Guide 2020 官方页面](https://scrumguides.org/)
+- chapters/02-software-development-process.md [Git 官方文档：git-add](https://git-scm.com/docs/git-add)
+- chapters/02-software-development-process.md [Git 官方文档：git-commit](https://git-scm.com/docs/git-commit)
+- chapters/02-software-development-process.md [Git 官方文档：git-diff](https://git-scm.com/docs/git-diff)
+- chapters/03-software-testing-classification.md [ISTQB Certified Tester Foundation Level（CTFL）v4.0 官方页面](https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/)
+- chapters/04a-requirements-static-testing.md [ISTQB CTFL v4.0.1](https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf)
+- chapters/05-test-case-design.md [ISTQB Certified Tester Foundation Level（CTFL）v4.0 官方页面](https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/)
+- chapters/05-test-case-design.md [ISTQB CTFL Syllabus v4.0.1](https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf)
+- chapters/07-web-basics.md [WHATWG URL Standard](https://url.spec.whatwg.org/)
+- chapters/07-web-basics.md [WHATWG HTML Living Standard](https://html.spec.whatwg.org/)
+- chapters/07-web-basics.md [MDN：How the web works](https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works)
+- chapters/07-web-basics.md [MDN：Populating the page—how browsers work](https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/How_browsers_work)
+- chapters/09a-network-http-semantics.md [RFC 9110：HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
+- chapters/09a-network-http-semantics.md [RFC 9111：HTTP Caching](https://www.rfc-editor.org/rfc/rfc9111)
+- chapters/09a-network-http-semantics.md [MDN：HTTP request methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
+- chapters/09a-network-http-semantics.md [MDN：HTTPS](https://developer.mozilla.org/en-US/docs/Glossary/HTTPS)
+- chapters/09b-http-message-observe.md [RFC 9110：HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
+- chapters/09b-http-message-observe.md [MDN：HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
+- chapters/10-chrome-devtools.md [Chrome DevTools：Network features reference](https://developer.chrome.com/docs/devtools/network/reference)
+- chapters/10-chrome-devtools.md [Chrome DevTools：Inspect and edit pages and styles](https://developer.chrome.com/docs/devtools/css)
+- chapters/10-chrome-devtools.md [Chrome DevTools：Console overview](https://developer.chrome.com/docs/devtools/console)
+- chapters/10-chrome-devtools.md [Chrome for Developers：Throttle individual network requests](https://developer.chrome.com/blog/throttle-individual-network-requests)
+- chapters/11-linux.md [GNU Coreutils 手册](https://www.gnu.org/software/coreutils/manual/coreutils.html)
+- chapters/11-linux.md [grep 手册](https://www.gnu.org/software/grep/manual/)
+- chapters/11-linux.md [curl 手册](https://curl.se/docs/manpage.html)
+- chapters/11-linux.md [OpenSSH](https://www.openssh.com/)
+- chapters/13-api-testing.md [RFC 8259：JSON](https://www.rfc-editor.org/rfc/rfc8259)
+- chapters/13-api-testing.md [OpenAPI Specification](https://spec.openapis.org/oas/v3.0.3)
+- chapters/13-api-testing.md [MDN：HTTP 请求方法](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
+- chapters/14-postman.md [Postman：pm.test and pm.expect](https://learning.postman.com/docs/tests-and-scripts/write-scripts/postman-sandbox-reference/pm-test-expect)
+- chapters/14-postman.md [Postman：Variables](https://learning.postman.com/docs/sending-requests/variables/variables)
+- chapters/14-postman.md [Postman：Environments](https://learning.postman.com/docs/sending-requests/variables/managing-environments)
+- chapters/14-postman.md [Postman：Collection Runner](https://learning.postman.com/docs/tests-and-scripts/running-collections/intro-to-collection-runs)
+- chapters/14-postman.md [Postman Collection Format v2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- chapters/15a-python-syntax.md [python.org](https://www.python.org/)
+- chapters/15a-python-syntax.md [Python 3 教程](https://docs.python.org/3/tutorial/)
+- chapters/15b-python-files-json.md [json 文档](https://docs.python.org/3/library/json.html)
+- chapters/16a-pytest-basics.md [pytest 文档](https://docs.pytest.org/)
+- chapters/17-automation-overview.md [Playwright for Python](https://playwright.dev/python/)
+- chapters/17-automation-overview.md [Playwright auto-waiting](https://playwright.dev/python/docs/actionability)
+- chapters/17-automation-overview.md [Selenium](https://www.selenium.dev/)
+- chapters/17-automation-overview.md [pytest-html](https://pytest-html.readthedocs.io/)
+- chapters/17-automation-overview.md [Allure Report](https://allurereport.org/docs/)
+- chapters/17-automation-overview.md [GitHub Actions 文档](https://docs.github.com/en/actions)
+- chapters/18-performance-testing.md [Apache JMeter](https://jmeter.apache.org/)
+- chapters/18-performance-testing.md [Building a Web Test Plan](https://jmeter.apache.org/usermanual/build-web-test-plan.html)
+- chapters/18-performance-testing.md [Apache JMeter 官网](https://jmeter.apache.org/)
+
+## Image markdown refs in chapters
+- chapters/01-software-testing-intro.md ![测试由观察、判定、证据三块组成](assets/diagrams/ch01-formula.png)
+- chapters/01-software-testing-intro.md ![静态测试在读需求，动态测试在点登录](assets/diagrams/ch01-static-dynamic.png)
+- chapters/01-software-testing-intro.md ![QA、QC、Testing 是三种工作，不是三块工牌](assets/diagrams/ch01-qa-qc-testing.png)
+- chapters/01-software-testing-intro.md ![能下单不等于质量好](assets/diagrams/ch01-quality.png)
+- chapters/01-software-testing-intro.md ![渔网捞上来的，不能证明海里没有鱼](assets/diagrams/ch01-net-holes.png)
+- chapters/01-software-testing-intro.md ![测试和开发问的不是同一句话](assets/diagrams/ch01-tester-dev.png)
+- chapters/02-software-development-process.md ![测试可以出现在需求和设计，不必等到编码结束](assets/diagrams/ch02-where-test-sits.png)
+- chapters/02-software-development-process.md ![V 模型是工作产品与测试成对，不是字母形状](assets/diagrams/ch02-vmodel.png)
+- chapters/02-software-development-process.md ![冒烟、确认、回归问的不是同一件事](assets/diagrams/ch02-smoke-confirm.png)
+- chapters/03-software-testing-classification.md ![同一次错误密码登录可以同时属于六条分类轴：是否执行、级别、质量目标、技术依据、执行方式、目的](assets/diagrams/ch03-six-axes.png)
+- chapters/03-software-testing-classification.md ![功能问做对了，非功能问做得好](assets/diagrams/ch03-func-nonfunc.png)
+- chapters/03-software-testing-classification.md ![黑盒看规格，白盒看结构，灰盒两边都用一点](assets/diagrams/ch03-black-white.png)
+- chapters/03-software-testing-classification.md ![单元、集成、系统、验收：对象越来越大](assets/diagrams/ch03-levels.png)
+- chapters/03-software-testing-classification.md ![探索性测试带着目标和时间盒，不是随便点](assets/diagrams/ch03-exploratory.png)
+- chapters/04a-requirements-static-testing.md ![依据、需求、条件、用例一层比一层可执行](assets/diagrams/ch04-four-terms.png)
+- chapters/04a-requirements-static-testing.md ![「可以修改」还不能测，要写成可观察的规则](assets/diagrams/ch04-testable.png)
+- chapters/04a-requirements-static-testing.md ![歧义、遗漏、矛盾是需求问题的三种样子](assets/diagrams/ch04-three-problems.png)
+- chapters/04a-requirements-static-testing.md ![一个购物车至少要打开七个抽屉](assets/diagrams/ch04-seven-scenes.png)
+- chapters/04a-requirements-static-testing.md ![从规则追到用例和证据](assets/diagrams/ch04-trace.png)
+- chapters/04b-minishop-requirement-review.md ![v1.0 规则要能追到用例和证据](assets/diagrams/ch04-trace.png)
+- chapters/05-test-case-design.md ![测试点、测试用例、测试数据不是同一个东西](assets/diagrams/ch05-point-case-data.png)
+- chapters/05-test-case-design.md ![测试用例是一张可执行的任务卡，不是一句「测一下」](assets/diagrams/ch05-testcase-card.png)
+- chapters/05-test-case-design.md ![P0～P3 是课程执行顺序约定](assets/diagrams/ch05-priority.png)
+- chapters/05-test-case-design.md ![把手机号丢进会同样处理的箱子，每箱挑一个代表](assets/diagrams/ch05-equivalence.png)
+- chapters/05-test-case-design.md ![密码长度尺：7 拒绝，8 和 16 接受，17 拒绝](assets/diagrams/ch05-boundary.png)
+- chapters/05-test-case-design.md ![判定表把条件和动作摊成列](assets/diagrams/ch05-decision-table.png)
+- chapters/05-test-case-design.md ![基本、备选、异常三条路](assets/diagrams/ch05-scenario.png)
+- chapters/05-test-case-design.md ![同一张密码，门开着和锁着结果不同](assets/diagrams/ch05-state-door.png)
+- chapters/06a-bug-management.md ![人的错误、产品里的缺陷、运行时的失效](assets/diagrams/ch06-error-defect-failure.png)
+- chapters/06a-bug-management.md ![伤多重和今天先修谁是两把尺子](assets/diagrams/ch06-severity-priority.png)
+- chapters/06a-bug-management.md ![聊天里的「购物车有问题」对不上可复现的缺陷卡](assets/diagrams/ch06-bug-report.png)
+- chapters/06b-test-management.md ![通过率 100% 盖不住范围遗漏](assets/diagrams/ch06-pass-rate.png)
+- chapters/06b-test-management.md ![入口是能不能开始，出口是这轮能不能结束](assets/diagrams/ch06-entry-exit.png)
+- chapters/07-web-basics.md ![把地址栏拆成 scheme、host、port、path、query、fragment](assets/diagrams/ch07-url.png)
+- chapters/07-web-basics.md ![DNS 是通讯录，不保证店开着](assets/diagrams/ch07-dns.png)
+- chapters/07-web-basics.md ![浏览器是柜台前的顾客，服务在后厨](assets/diagrams/ch07-client-server.png)
+- chapters/07-web-basics.md ![前端摆盘，后端炒菜](assets/diagrams/ch07-frontend-backend.png)
+- chapters/07-web-basics.md ![HTML 是结构，CSS 是装修，JavaScript 是电路](assets/diagrams/ch07-html-css-js.png)
+- chapters/08a-web-page-testing.md ![浏览器拦住你，不等于服务器也拦了](assets/diagrams/ch08-browser-vs-server.png)
+- chapters/08a-web-page-testing.md ![空搜索列出全量是缺陷](assets/diagrams/ch08-search.png)
+- chapters/08b-web-auth-permission.md ![Cookie、Session、Token 是不同层的零件](assets/diagrams/ch08-auth-layers.png)
+- chapters/08b-web-auth-permission.md ![没认出你、同级偷看、员工进经理室，是三道门](assets/diagrams/ch08-privilege.png)
+- chapters/08b-web-auth-permission.md ![兼容性换环境，响应式换宽度](assets/diagrams/ch08-compat-responsive.png)
+- chapters/09a-network-http-semantics.md ![IP 是楼，端口是门；MiniShop v1.0 开在 8765](assets/diagrams/ch09-ip-port.png)
+- chapters/09a-network-http-semantics.md ![三次握手是敲门进屋，不是登录三步](assets/diagrams/ch09-tcp-knock.png)
+- chapters/09a-network-http-semantics.md ![加密靠 TLS 这把锁，不靠把 GET 改成 POST](assets/diagrams/ch09-https-wrap.png)
+- chapters/09a-network-http-semantics.md ![GET 像看货架，POST 像交表格；加密看 TLS](assets/diagrams/ch09-get-post.png)
+- chapters/09b-http-message-observe.md ![一次登录拆成方法、路径、头、体；回信邮戳是状态码](assets/diagrams/ch09-http-letter.png)
+- chapters/09b-http-message-observe.md ![状态码是回信上的邮戳](assets/diagrams/ch09-status.png)
+- chapters/10-chrome-devtools.md ![Elements、Console、Network 三个抽屉](assets/diagrams/ch10-three-panels.png)
+- chapters/10-chrome-devtools.md ![Preserve log 和 Disable cache 不是同一个开关](assets/diagrams/ch10-two-switches.png)
+- chapters/10-chrome-devtools.md ![慢要拆成 TTFB 和下载两段](assets/diagrams/ch10-ttfb.png)
+- chapters/10-chrome-devtools.md ![MiniShop 登录与注册页](assets/01-login.png)
+- chapters/10-chrome-devtools.md ![错误密码登录失败](assets/02-login-fail.png)
+- chapters/10-chrome-devtools.md ![登录成功后的商品与购物车](assets/03-shop.png)
+- chapters/10-chrome-devtools.md ![空白搜索仍返回三件商品](assets/04-search-empty-bug001.png)
+- chapters/10-chrome-devtools.md ![超库存被拒绝](assets/05-cart-qty-11.png)
+- chapters/10-chrome-devtools.md ![本机请求记录表](assets/08-network-log.png)
+- chapters/11-linux.md ![终端里的当前目录就是你的位置](assets/diagrams/ch11-path.png)
+- chapters/11-linux.md ![grep 找字，find 找文件名](assets/diagrams/ch11-grep-find.png)
+- chapters/11-linux.md ![管道把左边的出口接到右边的入口](assets/diagrams/ch11-pipe.png)
+- chapters/12a-sql-query.md ![主键认出一行，外键指向别人](assets/diagrams/ch12-pk-fk.png)
+- chapters/12a-sql-query.md ![购物车是用户表、商品表、数量表拼出来的](assets/diagrams/ch12-tables.png)
+- chapters/12a-sql-query.md ![JOIN 把三张表拼回页面那一行](assets/diagrams/ch12-join.png)
+- chapters/12a-sql-query.md ![NULL、空字符串、缺字段不是一回事](assets/diagrams/ch12-null.png)
+- chapters/12b-sql-write-and-minishop.md ![先 SELECT 再改数](assets/diagrams/ch12-select-first.png)
+- chapters/13-api-testing.md ![页面走店门，接口走后厨窗口](assets/diagrams/ch13-ui-vs-api.png)
+- chapters/13-api-testing.md ![四个放数据的格子](assets/diagrams/ch13-four-slots.png)
+- chapters/13-api-testing.md ![缺、null、空串、"1" 是四条用例](assets/diagrams/ch13-four-shapes.png)
+- chapters/13-api-testing.md ![401 没认出你，403 认出你但不许](assets/diagrams/ch13-401-403.png)
+- chapters/14-postman.md ![Workspace、集合、环境各管一层](assets/diagrams/ch14-workspace.png)
+- chapters/14-postman.md ![登录写入 token，后续请求再带上](assets/diagrams/ch14-token-relay.png)
+- chapters/14-postman.md ![本机请求记录](assets/08-network-log.png)
+- chapters/14-postman.md ![pytest 37 passed / 1 expected failure](assets/09-pytest-report.png)
+- chapters/15a-python-syntax.md ![库存为 0 时 if qty 会走错](assets/diagrams/ch15-truthy.png)
+- chapters/15a-python-syntax.md ![购物车是列表，每一行是字典](assets/diagrams/ch15-list-dict.png)
+- chapters/15b-python-files-json.md ![venv 是项目的包装箱，不是安全沙箱](assets/diagrams/ch15-venv.png)
+- chapters/15b-python-files-json.md ![缺字段、null、空串、错误类型要分开](assets/diagrams/ch15-four-json.png)
+- chapters/16a-pytest-basics.md ![什么该先自动化](assets/diagrams/ch16-roi.png)
+- chapters/16a-pytest-basics.md ![pytest 按文件名和函数名收集测试](assets/diagrams/ch16-collect.png)
+- chapters/16a-pytest-basics.md ![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
+- chapters/16b-pytest-fixtures.md ![fixture 准备环境，parametrize 展开数据](assets/diagrams/ch16-fixture.png)
+- chapters/16b-pytest-fixtures.md ![401 用例不要先自动登录](assets/diagrams/ch16-no-autouse.png)
+- chapters/17-automation-overview.md ![金字塔：下面多、上面少](assets/diagrams/ch17-pyramid.png)
+- chapters/17-automation-overview.md ![店门一改装修，UI 脚本就要跟着改](assets/diagrams/ch17-ui-cost.png)
+- chapters/18-performance-testing.md ![五个样本里平均值藏不住 800 ms](assets/diagrams/ch18-p95.png)
+- chapters/18-performance-testing.md ![并发人数不等于 TPS](assets/diagrams/ch18-tps-concurrency.png)
+- chapters/18-performance-testing.md ![负载、压力、耐久问的句子不同](assets/diagrams/ch18-load-stress.png)
+- chapters/18-performance-testing.md ![JMeter 最小零件](assets/diagrams/ch18-jmeter-parts.png)
+- chapters/19-minishop-project.md ![完整项目是可运行系统加契约加证据](assets/diagrams/ch19-workbench.png)
+- chapters/19-minishop-project.md ![v1.0 库存尺子：10 允许，11 拒绝](assets/diagrams/ch19-qty-rule.png)
+- chapters/19-minishop-project.md ![登录与注册](assets/01-login.png)
+- chapters/19-minishop-project.md ![登录失败](assets/02-login-fail.png)
+- chapters/19-minishop-project.md ![商品区](assets/03-shop.png)
+- chapters/19-minishop-project.md ![空搜索 BUG-001](assets/04-search-empty-bug001.png)
+- chapters/19-minishop-project.md ![qty=11 被拒绝](assets/05-cart-qty-11.png)
+- chapters/19-minishop-project.md ![管理员后台只列出订单 id](assets/07-admin.png)
+- chapters/19-minishop-project.md ![同一条库存规则要在四通道对上](assets/diagrams/ch19-cross-check.png)
+- chapters/19-minishop-project.md ![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
+- chapters/20-interview.md ![面试五段：结论、原理、场景、示例、边界](assets/diagrams/ch20-five-beats.png)
+- chapters/21-job-hunting.md ![个人项目可以写，公司经历不能编](assets/diagrams/ch21-resume.png)
+- chapters/22-learning-path.md ![三梯队：求职主线、能加分、了解即可](assets/diagrams/ch22-tiers.png)
+
+## Python files (practice + minishop)
+- practice/run.py
+- practice/_http.py
+- practice/_minishop.py
+- practice/09-http-observe/main.py
+- practice/15-json-check/main.py
+- practice/13-api-shapes/main.py
+- practice/19-project-pack/main.py
+- practice/11-log-grep/main.py
+- practice/01-observation-oracle-evidence/main.py
+- practice/08-privilege/main.py
+- practice/12-sql-cross-check/main.py
+- practice/16-pytest-regression/main.py
+- practice/05-qty-boundary/main.py
+- practice/05-qty-boundary/tests/test_lab.py
+- practice/16-pytest-regression/tests/test_lab.py
+- practice/12-sql-cross-check/tests/test_lab.py
+- practice/08-privilege/tests/test_lab.py
+- practice/01-observation-oracle-evidence/tests/test_lab.py
+- practice/11-log-grep/tests/test_lab.py
+- practice/19-project-pack/tests/test_lab.py
+- practice/13-api-shapes/tests/test_lab.py
+- practice/15-json-check/tests/test_lab.py
+- practice/09-http-observe/tests/test_lab.py
+- project/minishop/run.py
+- project/minishop/server.py
+- project/minishop/tests/conftest.py
+- project/minishop/tests/test_register.py
+- project/minishop/tests/test_qty_rule.py
+- project/minishop/tests/test_api.py
