@@ -3,17 +3,17 @@
 <body><div class="page">
 <p class="kicker">第 5 章示意图 · 判定表</p>
 <h1>多个条件一起决定结果时，用表格摊开，别在脑子里乘</h1>
-<p class="lead">教学：已登录、数量为正整数、不超过库存，三条件都真才改成功。任一为假则失败且保持原值。</p>
+<p class="lead">MiniShop v1.0 注册：手机号合法、密码合法、号码未占用，三条件决定 201 / 400 / 409。失败后「保持原值」PRD 未写，不要画进动作。</p>
 
     <div class="card">
     <table style="width:100%;border-collapse:collapse;font-size:16px">
       <tr style="background:#e2e8f0"><th style="padding:8px">规则</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
-      <tr><td style="padding:8px">已登录？</td><td>是</td><td>是</td><td>是</td><td>否</td></tr>
-      <tr><td style="padding:8px">正整数？</td><td>是</td><td>是</td><td>否</td><td>—</td></tr>
-      <tr><td style="padding:8px">≤ 库存？</td><td>是</td><td>否</td><td>—</td><td>—</td></tr>
-      <tr style="background:#dcfce7"><td style="padding:8px">动作</td><td>保存新数量</td><td>拒绝，保持原值</td><td>拒绝</td><td>401 / 去登录</td></tr>
+      <tr><td style="padding:8px">手机号合法？</td><td>是</td><td>否</td><td>是</td><td>是</td></tr>
+      <tr><td style="padding:8px">密码合法？</td><td>是</td><td>—</td><td>否</td><td>是</td></tr>
+      <tr><td style="padding:8px">号码未占用？</td><td>是</td><td>—</td><td>—</td><td>否</td></tr>
+      <tr style="background:#dcfce7"><td style="padding:8px">动作</td><td>201 有 phone、无 token</td><td>400</td><td>400</td><td>409</td></tr>
     </table>
     </div>
     
-<p class="caption">示意图：每列是一条用例的骨架。不要把「否」和「超库存」叠在同一条里，否则失败分不清原因。</p>
+<p class="caption">示意图：每列一条规则。占用失败是 409，格式或密码失败是 400，不要叠在同一格。</p>
 </div></body></html>
