@@ -1,4 +1,4 @@
-# 实操 16-1 ★★：37 绿、1 条 xfail 是什么意思？
+# 实操 16-1 ★★：38 绿、1 条 xfail 是什么意思？
 
 > 配套第 16 章。自动化不是「让条变绿」，而是把已经明确的判定变成可回归的证据。
 
@@ -8,7 +8,7 @@
 
 - **Run first:** `python3 practice/run.py 16-1`（需先 `python3 project/minishop/run.py setup`）
 - **Core behavior:** 在 `project/minishop` 跑 pytest
-- **Verifier:** 输出含 `37 passed` 与 `1 xfailed`
+- **Verifier:** 输出含 `38 passed` 与 `1 xfailed`
 - **Skip on first pass:** fixture 怎么起临时端口
 
 ## 这次实操要练什么
@@ -34,6 +34,6 @@ python3 run.py test
 
 ## 验收条件
 
-- 输出含 `37 passed` 和 `1 xfailed`
+- 输出含 `38 passed` 和 `1 xfailed`
 - 你能指着 `bugs/BUG-001.md` 说出那 1 条 xfail 是什么
 - 写出 `validation/latest.json`

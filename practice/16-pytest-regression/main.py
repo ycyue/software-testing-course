@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Practice 16-1: pytest is automated evidence. 37 passed / 1 xfailed is BUG-001 still open."""
+"""Practice 16-1: pytest is automated evidence. 38 passed / 1 xfailed is BUG-001 still open."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def _python() -> str:
 
 def main() -> int:
     print("实操 16-1  pytest 绿条是证据，xfail 不是失败也不是已修复")
-    print("判定：仓库自动化应保持 37 passed, 1 xfailed（BUG-001）。\n")
+    print("判定：仓库自动化应保持 38 passed, 1 xfailed（BUG-001）。\n")
 
     py = _python()
     cmd = [py, "-m", "pytest", "-q"]
@@ -46,17 +46,17 @@ def main() -> int:
         xfailed = False
         code = 2
     else:
-        passed = "37 passed" in text
+        passed = "38 passed" in text
         xfailed = "1 xfailed" in text or "1 xfail" in text
         if passed and xfailed:
             verdict = (
-                "37 passed, 1 xfailed。"
+                "38 passed, 1 xfailed。"
                 "xfail 对应 BUG-001：空搜索仍返回全量，PRD 要求不应如此。"
                 "不要把 xfail 说成「测试挂了」，也不要说成「已经修了」。"
             )
             code = 0
         else:
-            verdict = "输出与基线 37 passed / 1 xfailed 不一致。对照 evidence/pytest-output.txt。"
+            verdict = "输出与基线 38 passed / 1 xfailed 不一致。对照 evidence/pytest-output.txt。"
             code = 2
 
     print(f"结论：{verdict}")
@@ -65,7 +65,7 @@ def main() -> int:
         "ran_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "returncode": proc.returncode,
         "pytest_missing": pytest_missing,
-        "passed_37": passed,
+        "passed_38": passed,
         "xfailed_1": xfailed,
         "verdict": verdict,
     }

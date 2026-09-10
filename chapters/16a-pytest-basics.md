@@ -157,7 +157,16 @@ assert 11 <= 10
 
 ## 16.4 requests 发 HTTP ⭐⭐⭐
 
-requests 把第 9、13 章的 HTTP 变成函数调用。下面是**片段**：MiniShop 默认 `http://127.0.0.1:8765`。
+requests 把第 9、13 章的 HTTP 变成函数调用。先另开一个终端，在仓库里启动 MiniShop（保持开着）：
+
+```bash
+cd project/minishop
+python3 run.py serve
+```
+
+第一帧应打印 `MINISHOP_BASE_URL=http://127.0.0.1:8765`。没启动时下面这段会 `ConnectionError`，那不是断言失败。
+
+下面是**片段**：MiniShop 默认 `http://127.0.0.1:8765`。
 
 ```python
 import requests
@@ -196,7 +205,7 @@ print(response.status_code)
 | `GET /api/products?keyword=鼠标` | `200`，命中无线鼠标 |
 | `POST /api/cart/items` `qty=1` 或 `qty=10`（需 Bearer） | `200` |
 | `POST /api/cart/items` `qty=11`（需 Bearer） | `400` |
-| `POST /api/orders` 无 Bearer | `401` |
+| `POST /api/orders` 无 Bearer **且** 无 Cookie | `401`（仅缺 Authorization、仍带登录 Cookie 时可能 201） |
 | `POST /api/orders` 带 token | `201`，有 `id`，无 `status` |
 | 连续两次成功下单 | 两个不同 `id` |
 
@@ -206,17 +215,20 @@ print(response.status_code)
 
 ## 16.5 登录 API 测试 ⭐⭐⭐
 
-下面函数依赖 16.6 的 `base_url` fixture，完整可运行文件见 [16B](16b-pytest-fixtures.md) 与仓库 `tests/test_api.py`。
+上半章先对着已启动的 MiniShop 硬编码地址跑通。不要在这里写 `base_url` 参数——那是 16B 的 fixture，现在抄下来会报 `fixture 'base_url' not found`。完整仓库文件是 `project/minishop/tests/test_api.py`（由 `cd project/minishop && python3 run.py test` 收集，自己起临时端口）。
+
+先保证 `python3 project/minishop/run.py serve` 仍开着。
 
 ```python
 import requests
 
 TIMEOUT = 5
+BASE = "http://127.0.0.1:8765"
 
 
-def test_login_ok(base_url):
+def test_login_ok():
     response = requests.post(
-        f"{base_url}/api/login",
+        f"{BASE}/api/login",
         json={"phone": "13800138000", "password": "Test1234"},
         timeout=TIMEOUT,
     )
@@ -227,18 +239,18 @@ def test_login_ok(base_url):
     assert "Set-Cookie" in response.headers
 
 
-def test_login_wrong_password(base_url):
+def test_login_wrong_password():
     response = requests.post(
-        f"{base_url}/api/login",
+        f"{BASE}/api/login",
         json={"phone": "13800138000", "password": "wrong-password"},
         timeout=TIMEOUT,
     )
     assert response.status_code == 401
 ```
 
-`base_url` 来自下一节的 fixture（仓库 `conftest.py` 会起临时端口）。成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续接口以 `Authorization: Bearer` 为准。密码 `Test1234` 只许本机。
+成功响应里同时有 JSON `token` 和 `Set-Cookie`：二者可以同时存在，后续接口以 `Authorization: Bearer` 为准。密码 `Test1234` 只许本机。
 
-不要在 query 里传密码。不要把这次拿到的 token 粘到别的测试文件里当常量——下一节用 fixture。
+不要在 query 里传密码。不要把这次拿到的 token 粘到别的测试文件里当常量——下一节用 fixture。作业命令始终是 `cd project/minishop && python3 run.py test`，不要用系统 `python3 -m pytest` 去打一份没 venv 的空环境。
 
 ---
 
@@ -251,11 +263,13 @@ python3 run.py setup
 python3 run.py test
 ```
 
-自己练习目录仍可 `pip install pytest requests`。审查本机：pytest 9.1.1，`37 passed, 1 xfailed`。HTML 报告截图：
+自己练习目录仍可 `pip install pytest requests`。审查本机：pytest 9.1.1，`38 passed, 1 xfailed`。HTML 报告截图：
 
-![pytest-html 37 passed / 1 expected failure](assets/09-pytest-report.png)
+![pytest-html：passed + 1 expected failure（以本机 pytest 为准）](assets/09-pytest-report.png)
 
-fixture、parametrize 见 [16B](16b-pytest-fixtures.md)。仓库套件用 `python3 run.py test`；实操 16-1 解释 37 / 1。
+汇总条应能看见 **38 Passed** 和 **1 Expected failures**。Environment 明细和每条用例名在 `project/minishop/evidence/pytest-report.html`，不要只靠这一张图填简历。
+
+fixture、parametrize 见 [16B](16b-pytest-fixtures.md)。仓库套件用 `cd project/minishop && python3 run.py test`；实操 16-1 解释 38 / 1。
 
 ## 常见错误
 
@@ -290,13 +304,13 @@ fixture、parametrize 见 [16B](16b-pytest-fixtures.md)。仓库套件用 `pytho
 ### 为什么用 `python3 -m pytest`？
 
 结论：跟着当前解释器走，避免装错环境。  
-示例：先 `python3 run.py setup` 再 `python3 run.py test`。  
+示例：`cd project/minishop && python3 run.py setup && python3 run.py test`。  
 边界：系统里可能还有另一个 `pytest`，直接敲命令会跑到它。
 
 ### xfail 是失败还是已修复？
 
 结论：都不是。它表示已知缺陷按预期失败并被标记。  
-示例：仓库 37 passed、1 xfailed，对应 BUG-001 仍开放。  
+示例：仓库 38 passed、1 xfailed，对应 BUG-001 仍开放。  
 边界：不要把 xfail 说成“测试挂了”，也不要写进报告当已修复。
 
 ## 小练习
@@ -344,7 +358,7 @@ pytest 把已经明确的判定交给脚本重复执行。先会跑、会断言�
 
 ## 本章可运行性说明
 
-仓库套件：pytest 9.1.1，`37 passed, 1 xfailed`。对端是 `project/minishop` 的 `/api/`。
+仓库套件：pytest 9.1.1，`38 passed, 1 xfailed`。对端是 `project/minishop` 的 `/api/`。
 
 ## 参考资料
 

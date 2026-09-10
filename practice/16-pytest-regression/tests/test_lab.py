@@ -18,7 +18,7 @@ class Practice161Tests(unittest.TestCase):
         if saved.get("pytest_missing"):
             self.skipTest("pytest not installed; run project/minishop/run.py setup")
         self.assertEqual(code, 0)
-        self.assertTrue(saved["passed_37"])
+        self.assertTrue(saved["passed_38"])
         self.assertTrue(saved["xfailed_1"])
 
 

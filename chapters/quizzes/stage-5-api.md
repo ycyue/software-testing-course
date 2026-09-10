@@ -23,5 +23,5 @@
 6. `-m` 用的是当前解释器（通常是 venv）里的 pytest。
 7. fixture 准备环境；parametrize 展开数据。多种 Body 用 parametrize。
 8. 不是。全新、天天改文案的页面不适合先自动。
-9. `project/minishop/requirements.txt`。`python3 run.py setup` 然后 `python3 run.py test`。
+9. `project/minishop/requirements.txt`。`cd project/minishop && python3 run.py setup && python3 run.py test`。不要在仓库根执行。
 10. B。

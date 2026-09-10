@@ -55,9 +55,9 @@ def base_url():
 | `class` | 一个测试类 | 本章不用 class |
 | `module` | 该文件 | 文件内共享只读配置 |
 | `package` | 包 | ⭐ 了解 |
-| `session` | 整次 pytest | 登录贵、启动服务 |
+| `session` | 整次 pytest | 启动服务、只读配置；不要给会随清库失效的 token |
 
-`token_a` 用默认 `function` 最稳：每个需要它的测试自己登录一次。登录很慢时再改为 `scope="session"`。不要把 `token_a` 设成 `autouse=True`：无凭证用例也会先多打一次登录；若再共用 `requests.Session` 或自动带上 Cookie，401 就会测脏。仓库里 `token_a` 只 `return` 字符串，不会自动粘到没有声明该参数的请求上，但不要依赖这种巧合。
+`token_a` 必须保持默认 `function`：每个需要它的测试在 `reset_seed_db` 之后自己登录一次。只要 autouse 的 `reset_seed_db` 还在每测清库，就不要改成 `scope="session"`——仓库会把 `sessions` 表打回种子，旧 token 立刻失效（本课程已复现为 401）。登录成本用 session 去摊，只适用于**不**每测清库的项目。不要把 `token_a` 设成 `autouse=True`：无凭证用例也会先多打一次登录；若再共用 `requests.Session` 或自动带上 Cookie，401 就会测脏。仓库里 `token_a` 只 `return` 字符串，不会自动粘到没有声明该参数的请求上，但不要依赖这种巧合。
 
 需要收尾时用 `yield`：`yield` 之前是准备，之后是清理。`token_a` 直接 `return` 字符串即可。
 
@@ -124,7 +124,7 @@ def test_create_order_returns_id(base_url, token_a):
 
 ## 16.9 parametrize：数据驱动 ⭐⭐⭐
 
-同一检查逻辑、多组输入，用 `@pytest.mark.parametrize`，不要复制六个几乎一样的函数。须与 `base_url` fixture 一起由 pytest 收集。
+同一检查逻辑、多组输入，用 `@pytest.mark.parametrize`，不要复制八个几乎一样的函数。须与 `base_url` fixture 一起由 pytest 收集。
 
 ```python
 import pytest
@@ -208,7 +208,7 @@ python3 -m pytest tests/test_api.py
 ---
 
 
-配套可运行实操：[实操 16-1 pytest 基线](../practice/16-pytest-regression/README.md)（先 `python3 project/minishop/run.py setup`，再 `python3 practice/run.py 16-1`）。37 passed / 1 xfailed 对应 BUG-001 仍开放。
+配套可运行实操：[实操 16-1 pytest 基线](../practice/16-pytest-regression/README.md)（先 `python3 project/minishop/run.py setup`，再 `python3 practice/run.py 16-1`）。38 passed / 1 xfailed 对应 BUG-001 仍开放。
 
 ## MiniShop 工作实战：读仓库 pytest 包 ⭐⭐⭐
 
@@ -226,7 +226,7 @@ python3 run.py setup
 python3 run.py test
 ```
 
-预期摘要：`37 passed, 1 xfailed`。然后打开三个文件，用自己的话写下来：
+预期摘要：`38 passed, 1 xfailed`。然后打开三个文件，用自己的话写下来：
 
 1. `tests/conftest.py`：`base_url` 怎样起临时端口；`token_a` 为什么不是 autouse；`reset_seed_db` 是干什么的。
 2. `tests/test_api.py`：`test_cart_qty_cases` 为什么 `qty=10` 是 200、购物车为什么带 Bearer。
@@ -236,10 +236,10 @@ python3 run.py test
 
 完成标准：
 
-1. 本机 `run.py test` 数字能指出来（37 / 1，或以你最新输出为准）；
+1. 本机 `run.py test` 数字能指出来（38 / 1，或以你最新输出为准）；
 2. 能解释 xfail 对应 BUG-001，不是「全绿」；
 3. 能指出购物车八组 parametrize 里 `eq_stock` 和 `over_stock`；
-4. 能说明无 Bearer 下单是 401、他人订单是 403；
+4. 能说明无凭证（无 Bearer **且** 无 Cookie）下单是 401、他人订单是 403；
 5. 不另造 `/login` 教学服务。
 
 记录模板：
@@ -249,7 +249,7 @@ python3 run.py test
 
 ## 环境
 - Python / pytest / requests 版本：
-- 命令：`python3 run.py test`
+- 命令：`cd project/minishop && python3 run.py test`
 - 日期：
 
 ## 结果
@@ -266,7 +266,7 @@ python3 run.py test
 ---
 
 
-仓库正式结果（2026-09-09）：`37 passed, 1 xfailed`。输出：`project/minishop/evidence/pytest-output.txt`。HTML 报告：`evidence/pytest-report.html`。
+仓库正式结果（2026-09-10）：`38 passed, 1 xfailed`。输出：`project/minishop/evidence/pytest-output.txt`。HTML 报告：`evidence/pytest-report.html`。
 
 ## 常见错误
 
@@ -276,7 +276,7 @@ python3 run.py test
 
 ### 错误 2：把 xfail 说成全绿
 
-修正：仓库套件是 37 passed / 1 xfailed。xfail 对应仍开放的 BUG-001，不是「没有缺陷」。
+修正：仓库套件是 38 passed / 1 xfailed。xfail 对应仍开放的 BUG-001，不是「没有缺陷」。
 
 ### 错误 3：fixture 里写判定，parametrize 里准备环境
 
@@ -294,10 +294,10 @@ python3 run.py test
 示例：`base_url` / `token_a` 用 fixture；购物车 `qty=10/11` 与缺字段、null、空串、错误类型用 parametrize（须带 Bearer）。  
 边界：不要用 autouse token 去测 401。
 
-### 仓库 37/1 能说成没有缺陷吗？
+### 仓库 38/1 能说成没有缺陷吗？
 
 结论：不能。1 条 xfail 跟踪仍开放的 BUG-001。  
-示例：`python3 run.py test` → 37 passed, 1 xfailed。  
+示例：`cd project/minishop && python3 run.py test` → 38 passed, 1 xfailed。  
 边界：简历里只写仓库里能指出来的数字，并以本机最新输出为准。
 
 ### 连续两次创建订单，自动化应断言什么？
@@ -341,7 +341,7 @@ D. GET 比 POST 安全，所以登录必须用 GET
 
 ## 练习答案
 
-5. `function`。`autouse` 会让无凭证测试先多登录一次；若再共用 Session 或 Cookie，就测不到 401。需要 token 的测试显式写参数（仓库里是 `token_a`）。
+5. `function`。只要 `reset_seed_db` 还在每测清库，就不要改成 `scope="session"`，否则旧 token 会 401。`autouse` 会让无凭证测试先多登录一次；若再共用 Session 或 Cookie，就测不到 401。需要 token 的测试显式写参数（仓库里是 `token_a`）。
 
 6. 不会。放在项目或 `tests` 目录的 `conftest.py`。
 
@@ -360,12 +360,12 @@ D. GET 比 POST 安全，所以登录必须用 GET
 
 - [ ] 我会用 fixture 和 parametrize
 - [ ] 我知道 401 不要 autouse token
-- [ ] 我能解释 37 passed / 1 xfailed，不会说成全绿
-- [ ] 我能跑通 `python3 run.py test`
+- [ ] 我能解释 38 passed / 1 xfailed，不会说成全绿
+- [ ] 我能跑通 `cd project/minishop && python3 run.py test`
 
 ## 本章总结
 
-fixture 准备前置，parametrize 展开数据。401 不要 autouse token。仓库基线是 37 passed / 1 xfailed。
+fixture 准备前置，parametrize 展开数据。401 不要 autouse token。仓库基线是 38 passed / 1 xfailed。
 
 ## 阶段测验
 
@@ -373,7 +373,7 @@ fixture 准备前置，parametrize 展开数据。401 不要 autouse token。仓
 
 ## 本章可运行性说明
 
-`python3 run.py test` 本机 2026-09-09：37 passed, 1 xfailed。对端是 `project/minishop`，没有第二套 `/login` 教学服务。
+`cd project/minishop && python3 run.py test` 本机 2026-09-10：38 passed, 1 xfailed。对端是 `project/minishop`，没有第二套 `/login` 教学服务。
 
 ## 参考资料
 
