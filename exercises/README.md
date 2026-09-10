@@ -9,5 +9,6 @@
 - `chapter-16-minishop-pytest.md`
 - `chapter-19-minishop-run.md`
 - `chapter-21-resume.md`
+- `chapter-22-self-check.md`
 
 不要把真实密码、token 或生产地址写进这些文件。参考答案仍以对应 `chapters/` 正文为准。阶段测验在 `chapters/quizzes/`，通过线为 10 题中至少 8 题。

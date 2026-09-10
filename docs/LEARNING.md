@@ -75,7 +75,7 @@ Linux（11）与 SQL（12）并列，互不为硬前置。
 4. [实操 9-1](../practice/09-http-observe/README.md) 登录请求的方法、路径、头、体
 5. [实操 13-1](../practice/13-api-shapes/README.md) 缺字段 / null / 空串 / 错误类型
 
-可运行实操还有 11-1、12-1、15-1、16-1、19-1。书面：4-1 评审、6-1 缺陷单。
+可运行实操（✅）还有 11-1、12-1、15-1、16-1、19-1，用 `python3 practice/run.py 1-1` 这类命令。书面（📖）：2-1、3-1、7-1 等是章内作业，4-1 评审、6-1 缺陷单；**不要**对书面编号跑 `python3 practice/run.py 2-1`，没有脚本，命令只会告诉你去打开哪一章。
 
 完整清单见 [practice/README.md](../practice/README.md)。执行状态见 [practice/STATUS.md](../practice/STATUS.md)。**克隆仓库或安装依赖，都不等于实操已经完成。**
 

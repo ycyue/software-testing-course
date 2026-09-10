@@ -22,6 +22,8 @@ python3 practice/run.py 1-1
 python3 practice/run.py 1-1 --check
 ```
 
+只有 ✅ 编号能跑。`python3 practice/run.py 2-1`（以及 3-1、7-1、10-1 等 📖）**没有脚本**，命令只会说明这是书面实操、打开哪一章，不会启动 MiniShop。
+
 1-1、5-1、8-1、9-1、11-1、12-1、13-1、15-1 只依赖 Python 3 标准库，会自己拉起临时 MiniShop。  
 16-1、19-1 需要先 `python3 project/minishop/run.py setup`。
 
@@ -50,11 +52,11 @@ python3 practice/run.py 1-1 --check
 | 13-1 | [api-shapes](13-api-shapes/) | ✅ | 缺字段 / null / 空串 / 错误类型分开测 |
 | 15-1 | [json-check](15-json-check/) | ✅ | 把商品列表当成 JSON 读回来 |
 | 16-1 | [pytest-regression](16-pytest-regression/) | ✅ | 跑通 pytest，能解释 1 条 xfail |
-| 19-1 | [project-pack](19-project-pack/) | ✅ | PRD、BUG-001、OpenAPI 都在，基线仍是 37/1 |
+| 19-1 | [project-pack](19-project-pack/) | ✅ | PRD、BUG-001、OpenAPI 都在，基线仍是 38/1 |
 
 ## 各章实操
 
-按**正式学习顺序**。未单列脚本的章，实操就是该章「MiniShop 工作实战」：把产出存进 `exercises/`。
+按**正式学习顺序**。未单列脚本的章，实操就是该章「MiniShop 工作实战」：把产出存进 `exercises/`。📖 / 🚧 编号与 ✅ 的 1-1 不是同一类，不能靠 `practice/run.py` 跑出结果。
 
 | 编号 | 章 | 类型 | 做什么 | 入口 |
 | :--: | --- | :--: | --- | --- |
@@ -79,6 +81,6 @@ python3 practice/run.py 1-1 --check
 | 19-1 | 19 | ✅ | 项目包 + pytest 基线 | [19-…](19-project-pack/) |
 | 20-1 | 20 | 📖 | 用项目证据写一页面试口述 | [第 20 章](../chapters/20-interview.md) |
 | 21-1 | 21 | 📖 | 一页诚实简历草稿 | [第 21 章](../chapters/21-job-hunting.md) |
-| 22-1 | 22 | 📖 | 对照三梯队做结课自检 | [第 22 章](../chapters/22-learning-path.md) |
+| 22-1 | 22 | 📖 | 对照必须掌握表做结课自检（高频≠第二梯队；pytest 贴本机输出，不要抄 38 passed） | [第 22 章](../chapters/22-learning-path.md) |
 
 第 19 章之前正文里的 `/login`、验证码、优惠券若出现，是**教学约定**，可运行实操一律打 v1.0 的 `/api/` 与 PRD 规则。

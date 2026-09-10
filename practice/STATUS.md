@@ -24,7 +24,7 @@
 | 12-1 SQL 交叉验证 | **Complete**（临时库，退出即删） |
 | 13-1 接口形状 | **Complete**（missing / null / empty / wrong type） |
 | 15-1 JSON | **Complete**（读回 3 件商品，鼠标库存 10） |
-| 16-1 pytest 基线 | **Complete**（需 `run.py setup`；37 passed / 1 xfailed） |
+| 16-1 pytest 基线 | **Complete**（需 `run.py setup`；38 passed / 1 xfailed） |
 | 19-1 MiniShop 项目包 | **Complete**（文件检查 + pytest；无 Postman GUI、无性能结论） |
 
 ## 明确未完成
@@ -37,4 +37,4 @@
 
 17-1 是 **Reader exercise**（画分层地图），不是缺一套 Playwright 回归。Playwright 只用于 `run.py evidence` 取证。
 
-其余书面实操（2-1、3-1、7-1、17-1、20-1、21-1、22-1）默认是 **Reader exercise**，入口在对应章的「MiniShop 工作实战」（根 README 实操列已链过去）。`practice/run.py` 不认这些编号。
+其余书面实操（2-1、3-1、7-1、17-1、20-1、21-1、22-1）默认是 **Reader exercise**，入口在对应章的「MiniShop 工作实战」（根 README 实操列已标 📖 并链过去）。`python3 practice/run.py 2-1` 会说明这是书面实操、没有脚本，不会启动程序。
