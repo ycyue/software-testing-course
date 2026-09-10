@@ -7,11 +7,18 @@
 
 ## 这一章解决什么问题
 
-第 10 章能在浏览器里抓住登录请求。接口 500、页面空白或“偶现失败”时，证据往往在服务器上：进程在不在、磁盘满不满、日志里有没有 `ERROR`、同一条 curl 在服务端是什么结果。
+第 10 章能在浏览器里抓住登录请求。接口失败、页面空白或“偶现失败”时，证据往往在服务器上：进程在不在、磁盘满不满、日志里有没有对应那一次请求的一行、同一条 curl 在服务端是什么结果。不要默认去 `grep ERROR`——MiniShop 拒 `qty=11` 的样本是 HTTP **400**、日志 **INFO** `inventory reject`。
 
-初级测试工程师不需要成为 Linux 系统管理员，但要能在授权的测试机或跳板机上完成这些事：走进目录、读日志、查进程、看磁盘、用脱敏后的 curl 复现接口。
+初级测试工程师不需要成为 Linux 系统管理员，但要能走进目录、读日志、查进程、看磁盘、用脱敏后的 curl 复现接口。
 
-本章以 **Linux 服务器** 为目标环境。macOS 终端能练习大部分命令，但 `ls`、`grep`、`free` 等与 GNU/Linux 并不完全相同。正式排障应 SSH 到 Linux 测试机，不要假设本机 macOS 的输出可以原样写进缺陷。
+**今天先走这条线（能动手再翻其余）：**
+11.1～11.3 确认路径 → 11.5～11.7 读日志、`grep`、管道 → 立刻做
+[实操 11-1](../practice/11-log-grep/README.md) → 11.8 看进程是否还在、11.10 `df -h`、11.13 脱敏 curl。
+
+**可后读：** 11.4 文件管理、11.9 `chmod`（⭐⭐）、11.11 `ssh`/`scp`（没有授权测试机就跳，工作实战写「仅本机练习」）。
+`kill -9` 只是 11.8 的反例，不是本章主技能。
+
+本章以 **Linux 服务器** 为目标环境。macOS 终端能练习大部分命令，但 `ls`、`grep`、`free` 等与 GNU/Linux 并不完全相同。正式排障应 SSH 到 Linux 测试机，不要假设本机 macOS 的输出可以原样写进缺陷。多数读者用本机就能完成本章主线，不必先有跳板机。
 
 Linux 与第 12 章的 SQL 是并列基础，互不作为硬前置。
 
@@ -50,15 +57,15 @@ MiniShop 测试环境提交购物车数量 11 后，页面提示 `qty exceeds st
 - 磁盘是否已满导致无法写日志或上传；
 - 用同一条脱敏 curl 是否稳定复现。
 
-```mermaid
-flowchart TD
-    A[浏览器 Network 已记录状态码] --> B[SSH 到授权测试机]
-    B --> C[确认目录与服务进程]
-    C --> D[按时间读日志]
-    D --> E[磁盘、内存、权限]
-    E --> F[curl 复现接口]
-    F --> G[把命令输出写入缺陷]
-```
+本机练习（无跳板机）：Network 已记录 400
+→ `cd project/minishop` 并 `pwd`
+→ `grep "inventory reject" evidence/logs/app-sample.log`
+→ `df -h .` → 脱敏 curl → 写入排障记录。
+
+有授权测试机：Network 已记录状态码
+→ SSH 登录 → 确认目录与进程 → 按时间读日志 → 磁盘/内存 → curl 复现 → 写入缺陷。
+
+两条路验收同一句话：页面上看不到的那一行，你能指出来。
 
 只在自己拥有或明确获授权的主机上操作。不要扫描未授权网段、不要用 `rm -rf` 清理未知目录、不要把日志里的密码和 Token 贴到聊天工具。
 
@@ -223,12 +230,18 @@ less app.log
 
 `grep` 在**文件内容**里找文本。`find` 在**目录树**里找文件。
 
-下面 `grep ERROR` 是一般排障示例，不是 MiniShop 仓库样本。`qty=11` 的 `inventory reject` 在 `evidence/logs/app-sample.log` 里是 **INFO**；对着 MiniShop 请 grep `inventory reject`，不要默认 ERROR。
+对着 MiniShop 仓库样本，先搜业务关键字，不要默认 ERROR：
 
 ```bash
-grep ERROR app.log
+grep -n "inventory reject" evidence/logs/app-sample.log
+```
+
+命中行是 **INFO**，HTTP 是 **400**。`grep ERROR` 对这份样本是 0 行，不代表接口没拒。
+
+一般排障（任意应用、非本仓库样本）才常用：
+
+```bash
 grep -n ERROR app.log
-grep -i error app.log
 grep -E "ERROR|WARN" app.log
 find . -name "*.log"
 find . -name "*minishop*"
@@ -414,10 +427,10 @@ scp tester@192.0.2.10:/var/log/minishop/app.log ./
 
 `curl` 在终端发 HTTP 请求。它复现的是接口，不是浏览器渲染。第 10 章 Copy as cURL 的结果，脱敏后可以在这里跑。
 
-最小读取。MiniShop v1.0 是 `http://127.0.0.1:8765/api/products`，不要打无前缀的 `/products`。
+最小读取。MiniShop v1.0 是 `http://127.0.0.1:8765/api/products`，不要打无前缀的 `/products`。无 query 预期 HTTP 200、`items` 3 件（含 `SKU-DEMO-001` 无线鼠标）。过滤可用 `?keyword=SKU-DEMO-001`，或已编码的 `?keyword=%E9%BC%A0%E6%A0%87`（「鼠标」）。不要用 `keyword=mouse`：英文不在中文商品名或 SKU 里，会得到空列表 `{"items":[]}`。
 
 ```bash
-curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:8765/api/products?keyword=mouse"
+curl -sS -D - -o ./minishop-curl-body.txt "http://127.0.0.1:8765/api/products"
 ```
 
 | 选项 | 作用 |
@@ -698,7 +711,7 @@ macOS 上输入 `free -h` 失败。这能说明 MiniShop 内存泄漏吗？
 1. 练习 1～10 至少完成 9 题，且第 4、6、8、9 题能用自己的话回答；
 2. 在练习目录亲手执行：建目录、写短日志、`grep`、`df -h`；
 3. 完成一次不含明文密码的 curl；
-4. 能口述 `rm -rf`、`kill -9`、`chmod 777` 各自的主要风险。
+4. 能口述：qty=11 的仓库样本为什么是 HTTP 400 + INFO `inventory reject`（不是 500、不是 ERROR）；以及日志时间如何与 Network 对齐。
 
 ## 本章总结
 

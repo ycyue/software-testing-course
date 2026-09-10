@@ -3,7 +3,7 @@
 <body><div class="page">
 <p class="kicker">第 11 章示意图 · grep 和 find</p>
 <h1>一个找字，一个找文件名</h1>
-<p class="lead">页面 500 时，日志里搜 inventory reject 用 grep；不知道文件丢在哪用 find。</p>
+<p class="lead">页面 400 时，日志里搜 inventory reject 用 grep；不知道文件丢在哪用 find。仓库样本级别是 INFO，不要默认 grep ERROR。</p>
 <div class="row"><div class="col card"><span class="tag tag-ok">grep</span><h2>在文件内容里找字</h2><p style="font-size:16px;line-height:1.55">grep -E "login ok|inventory reject" logs/app.log</p></div><div class="col card"><span class="tag tag-info">find</span><h2>在目录树里找路径</h2><p style="font-size:16px;line-height:1.55">find . -name "app.log" ；它不负责读日志正文。</p></div></div>
-<p class="caption">示意图：管道把左边的输出变成右边的输入。cat 巨大日志不如 tail / grep。macOS 没有 Linux 那种 free -h。</p>
+<p class="caption">示意图：grep 搜内容，find 搜文件名。两者都能递归，目的不同。</p>
 </div></body></html>
