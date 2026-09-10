@@ -39,12 +39,16 @@ sequenceDiagram
     S-->>B: 响应：状态码 + 头 + 可选 Body
 ```
 
+![一次登录拆成方法、路径、头、体；回信邮戳是状态码](assets/diagrams/ch09-http-letter.png)
+
+先填这四格，再看页面文案。页面上的「登录失败」往往只是把回信翻译成人话。
+
 ### 请求里通常有什么
 
 | 部分 | 作用 | 登录场景例子 |
 | --- | --- | --- |
 | 方法 | 对资源的操作语义 | `POST` |
-| 请求目标 | 路径和可能的 query | 一般站点常见 `/login`；**MiniShop v1.0 是 `/api/login`**，无前缀会 404 |
+| 请求目标 | 路径和可能的 query | MiniShop v1.0 登录是 `/api/login`。写成 `/login` 会 404，那不是登录功能坏了。 |
 | Header | 补充说明 | `Host`、`Content-Type`、`Cookie` |
 | Body | 消息体 | 表单或 JSON 中的手机号、密码 |
 
@@ -56,14 +60,15 @@ sequenceDiagram
 | Header | 补充说明 | `Set-Cookie`、`Location`、`Content-Type` |
 | Body | 消息体 | HTML 页面或 `{"message":"密码错误"}` |
 
-测试时至少问四个问题：
+测试时先填四个格子，再看页面：
 
-1. 请求打到了哪个 Host、端口和路径？
-2. 方法是不是服务端支持的那种？
-3. 状态码和 Body 是否一致？
-4. 后续请求是否带上了 Cookie 或 `Authorization`？
+1. 方法：对资源做什么？（登录应是 POST，不是 GET）
+2. 路径：打到哪一个资源？（MiniShop 是 `/api/login`，不是 `/login`）
+3. 头：`Host`、`Content-Type`、后续有没有 `Cookie` / `Authorization`
+4. 体：密码在 Body 还是被放进了 query？
 
-页面文案不能代替这四问。服务端可能返回 `200` 和 `{"success": false}`，页面再显示失败。
+填完四格再问：状态码和 Body 是否一致；下一跳有没有带上登录态。
+页面文案不能代替这四格。服务端可能返回 `200` 和 `{"success": false}`，页面再显示失败。
 
 ---
 
@@ -97,12 +102,14 @@ sequenceDiagram
 | 401 | Unauthorized | 缺少有效认证。英文名字容易误导，它首先表示**未通过认证** |
 | 403 | Forbidden | 服务器拒绝执行。常见于已认证但无权限，也用于拒绝说明原因 |
 | 404 | Not Found | 路径、资源或故意隐藏 |
-| 405 | Method Not Allowed | 路径存在但不接受该方法，响应或含 `Allow` |
+| 405 | Method Not Allowed | 路径存在但不接受该方法。口试讲语义；MiniShop v1.0 OpenAPI/实现未必返回，不要写成项目必测码 |
 | 409 | Conflict | 状态冲突，如重复提交 |
-| 415 | Unsupported Media Type | `Content-Type` 不被接受 |
+| 415 | Unsupported Media Type | `Content-Type` 不被接受。口试讲语义；MiniShop v1.0 OpenAPI/实现未必返回，不要写成项目必测码 |
 | 429 | Too Many Requests | 验证码或登录限流 |
 | 500 | Internal Server Error | 服务端未处理的错误，缺陷里不要只写“500” |
 | 502 / 503 | 网关或服务不可用 | 更像环境和发布问题 |
+
+**405 和 415** 是通用 HTTP 语义，面试要能解释。MiniShop v1.0 的 OpenAPI 和实现没有这两码：错方法常见 404，不认的 `Content-Type` 仍按 JSON 解析或回 400。不要把它们写进本项目必测用例。
 
 **401 和 403** 是面试高频题：401 优先想“你是谁还没说清或凭证无效”；403 优先想“知道你是谁，但不允许这样做”。真实项目可能混用，测试应以需求为准，并在缺陷里同时记录状态码和 Body。
 
@@ -118,13 +125,17 @@ sequenceDiagram
 
 | 头字段 | 作用 | 测试时看什么 |
 | --- | --- | --- |
-| `Host` | HTTP/1.1 的目标主机 | 是否打到正确环境 |
+| `Host` | HTTP/1.1 目标 authority（主机 + 非默认端口） | 是否打到正确环境。客户端必须发；缺、多个或非法时源服务器必须 400。MiniShop 是 HTTP/1.0，缺 Host 的实测不能当 RFC 结论 |
 | `User-Agent` | 客户端标识 | 偶现问题是否只出现在某浏览器 |
 | `Accept` | 客户端能处理的表示 | 与返回类型是否匹配 |
 | `Content-Type` | Body 的媒体类型 | JSON 和表单不能混用预期 |
-| `Content-Length` | Body 长度 | 与实际 Body 不一致时可能被拒绝 |
+| `Content-Length` | Body 的八位组长度，用来成帧 | 非法值：HTTP/1.1 必须 400 并关连接。漏写与非法分开；curl 会自动加 |
 | `Cookie` | 浏览器自动带上的 Cookie | 第 8 章：自动携带，不等于 Session 本身 |
 | `Authorization` | 认证信息 | 常见 `Bearer <token>`，截图必须脱敏 |
+
+`Content-Length` 把漏写和非法分开。头本身非法（不是同一个非负整数，或两个不同值）时，HTTP/1.1 接收方必须当不可恢复错误：请求则 **400 并关闭连接**（RFC 9112）。长度合法但字节没收齐，必须当不完整消息并断开。POST 有体时应带这个头；**curl 会自动加**，按第 13 章纸面形状手敲 TCP 不会。MiniShop 读的是 `Content-Length`，写成 0 或省略就等于没有 JSON 体。
+
+Host 细则见 [09A §9.5](09a-network-http-semantics.md)：HTTP/1.1 客户端必须发 Host（含非默认端口）；缺/多/非法时源服务器必须 400。MiniShop v1.0 状态行是 HTTP/1.0，缺 Host 的实测不能当 RFC 结论。
 
 ### 响应头
 
@@ -168,56 +179,40 @@ Body 是请求或响应中头字段空行之后的内容。GET 商品列表的�
 
 ## 9.13 阅读 MiniShop 登录请求 ⭐⭐⭐
 
-示例 A 是一般站点的表单登录形态。示例 B 对齐 MiniShop v1.0：`POST /api/login`。密码用占位符；对着本机 MiniShop 复现时用教学账号 `Test1234`，不要把真实密码写进命令历史。
+本节唯一可对照、可抄的登录报文是 MiniShop v1.0 的 `POST /api/login`。密码用占位符；对着本机复现时用教学账号 `Test1234`，不要把真实密码写进命令历史。
 
-### 示例 A：一般站点的表单登录（`/login`，不是 MiniShop）
+### 反例：不要对着 MiniShop 抄 `/login`
 
-```text
-POST /login HTTP/1.1
-Host: shop.example.test
-Content-Type: application/x-www-form-urlencoded
-Origin: https://shop.example.test
-Cookie: session_demo=abc
+一般站点常见表单登录路径叫 `/login`。那是别的系统的形态，**不是**本仓库可运行路径。
+对着 MiniShop（默认 `http://127.0.0.1:8765`）发到 `/login` 会 404。
+404 只说明路径不对，不要写成「登录坏了」。也不要把完整的 `POST /login` 请求行抄进观察记录。
 
-phone=13800138000&password=<redacted>
-```
+3xx 的阅读要点收到 9.10：浏览器常把 POST 之后的 302 改成 GET 再去 `Location`；更贴「请用 GET 看另一个资源」的是 303；307/308 会保持原方法。测试要看实际后继请求，不要只看这一次空 Body。
 
-可能的响应：
+### 示例：MiniShop v1.0 的 JSON 登录（`/api/login`）
 
-```text
-HTTP/1.1 302 Found
-Location: /products
-Set-Cookie: session_demo=xyz; Path=/; HttpOnly; Secure; SameSite=Lax
-Content-Length: 0
-```
-
-阅读清单：
-
-1. 方法是 POST，符合“会改变会话状态”；
-2. 密码在 Body，不在 query；
-3. `Content-Type` 与 Body 形态一致；
-4. 响应用 `Set-Cookie` 下发会话标识，属性与第 8 章一致；
-5. 这份示例用 `302`，浏览器常把 POST 之后的 302 改成 GET 再去 `Location`。规范上更贴“请用 GET 看另一个资源”的是 303；307/308 会保持原方法。测试要看实际后继请求的方法和落地 URL，单看这一次响应 Body 可能为空。
-
-### 示例 B：MiniShop v1.0 的 JSON 登录（`/api/login`）
-
-MiniShop v1.0 登录就是 `POST /api/login`（默认 `http://127.0.0.1:8765`）。示例 A 的 `/login` 只是一般站点形态，对着 MiniShop 打会 404。项目收口在第 19 章，路径现在就可以用。
+MiniShop v1.0 登录就是 `POST /api/login`（默认 `http://127.0.0.1:8765`）。项目收口在第 19 章，路径现在就可以用。
 
 ```text
 POST /api/login HTTP/1.1
 Host: 127.0.0.1:8765
 Content-Type: application/json
+Content-Length: <Body 字节数>
 
 {"phone":"13800138000","password":"<redacted>"}
 ```
+
+`curl -d` 会自动加 `Content-Length`；裸 TCP 必须按实际 Body 字节数写（教学密码 `Test1234` 时为 45）。上面密码是占位符，长度与实发不同。不写该头则 MiniShop 读不到 Body。
 
 ```text
 HTTP/1.1 200 OK
 Content-Type: application/json
 Set-Cookie: minishop_session=<redacted>; Path=/; HttpOnly
 
-{"result":"ok","token":"<redacted>"}
+{"result":"ok","token":"<redacted>","role":"user"}
 ```
+
+纸面按 HTTP/1.1 语义。MiniShop 实装状态行是 `HTTP/1.0 200 OK`，`Content-Type` 可能带 `charset=utf-8`，Body 还有 `role`。对照时看方法、路径、token、Set-Cookie，不要把 `HTTP/1.0` 当成缺陷。
 
 与实操 9-1、PRD `R-AUTH` 一样：成功登录同时有 JSON `token` 和 `Set-Cookie`，不是只返回 Token。
 
@@ -238,8 +233,8 @@ Authorization: Bearer <redacted>
 | 没有任何请求 | 前端校验、按钮未绑定、脚本错误 |
 | 请求发到错误 Host/端口 | 环境配置 |
 | TLS 失败 | 证书与 HTTPS |
-| `405` | 方法不被该路径接受 |
-| `415` | `Content-Type` 不匹配 |
+| `405` | 方法不被该路径接受（通用语义；MiniShop v1.0 未见，常见 404） |
+| `415` | `Content-Type` 不匹配（通用语义；MiniShop v1.0 未见，常见 400） |
 | `401` / `403` | 认证或权限 |
 | `429` | 尝试次数过多 |
 | `200` 但 Body 表示失败 | 业务码，不能只断言状态码 |
@@ -400,7 +395,7 @@ exercises/chapter-09-minishop-http-observation.md
 
 1. 练习 6～10 至少完成 4 题，且第 6、8 题能用自己的话回答；
 2. 能说明 401 与 403、200 与业务成功的差别；
-3. 完成实操 9-1 或等价的 HTTP 观察记录。
+3. 完成实操 9-1，并能不看输出说出四格；书面观察记录可与 9-1 用同一次登录。
 
 ## 本章总结
 
@@ -413,13 +408,14 @@ exercises/chapter-09-minishop-http-observation.md
 
 ## 本章可运行性说明
 
-配套实操 9-1 为 ✅ 可运行（`python3 practice/run.py 9-1`），打的是 MiniShop `POST /api/login`，验收 token 与 `Set-Cookie`。示例 A 是一般站点形态。审查未假装拍过 DevTools 面板。
+配套实操 9-1 为 ✅ 可运行（`python3 practice/run.py 9-1`），打的是 MiniShop `POST /api/login`，验收 token 与 `Set-Cookie`。本节没有可抄的 `/login` 报文。审查未假装拍过 DevTools 面板。
 
 不要在 curl、缺陷或聊天里留下明文密码。安全测试只允许在授权环境进行。
 
 ## 参考资料
 
 - [RFC 9110：HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 9112：HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112)
 - [MDN：HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
 - [09A 网络地图与 HTTP 语义](09a-network-http-semantics.md)
 - 本仓库 [第 10 章：Chrome DevTools](10-chrome-devtools.md)

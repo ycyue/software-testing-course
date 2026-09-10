@@ -2,7 +2,7 @@
 
 > **一句话核心：** GET/POST 不按「安不安全」划分；safe 是只读取，加密看 TLS。
 
-> **阅读提示：** IP、TCP、TLS 第一次读只需建立地图。真正要记住的是方法语义。报文四格和实操 9-1 在 [09B](09b-http-message-observe.md)。
+> **阅读提示：** §9.1～9.4 是地图，标 ⭐⭐，第一次读能用「IP 找主机、端口找门、握手成功≠登录成功」讲出来即可。UDP 与 HTTP/3 标 ⭐，可跳。真正要记住的是 §9.7～9.8 方法语义。报文四格和实操 9-1 在 [09B](09b-http-message-observe.md)。
 
 > 重要级别：⭐⭐⭐ 必须掌握  
 > 下一节：[09B 报文观察](09b-http-message-observe.md)  
@@ -63,7 +63,7 @@ flowchart TD
 
 ---
 
-## 9.1 测试工程师要一张够用的网络地图 ⭐⭐⭐
+## 9.1 测试工程师要一张够用的网络地图 ⭐⭐
 
 面试有时会问 OSI 七层。那是教学分层模型，不是测试日常的操作清单。本课程优先使用这张够用的图：
 
@@ -82,7 +82,7 @@ HTTP 本身通常被设计为无状态：每个请求单独理解。登录态是
 
 ---
 
-## 9.2 IP 与端口 ⭐⭐⭐
+## 9.2 IP 与端口 ⭐⭐
 
 ### IP 地址
 
@@ -115,7 +115,7 @@ IP 地址用于在网络中定位主机（更准确说是网络接口）。浏�
 
 ---
 
-## 9.3 TCP 与 UDP ⭐⭐⭐
+## 9.3 TCP 与 UDP ⭐⭐
 
 传输层常见两种协议：
 
@@ -132,7 +132,7 @@ HTTP/3 使用 QUIC（在 UDP 上）。本章不要求配置 HTTP/3。你只需�
 
 ---
 
-## 9.4 TCP 三次握手 ⭐⭐⭐
+## 9.4 TCP 三次握手 ⭐⭐
 
 TCP 在发送 HTTP 数据前，通常先完成三次握手，双方确认可以通信：
 
@@ -159,11 +159,9 @@ sequenceDiagram
 
 ---
 
-## 9.5 HTTP 是什么 ⭐⭐⭐
+## 9.5 HTTP 是什么 ⭐⭐
 
 超文本传输协议（HTTP）是 Web 使用的应用层协议。客户端发出请求，服务器返回响应。RFC 9110 定义了 HTTP 的语义：方法、状态码、头字段和相关概念。
-
-![登录请求和 401 响应像来回的两封信](assets/diagrams/ch09-http-letter.png)
 
 一次交换的最小模型：
 
@@ -190,6 +188,10 @@ HTTP/1.1 <状态码> <原因短语>
 <可选的消息体>
 ```
 
+上面这四行只是 HTTP/1.1 的纸面形状，用来认识「有方法、有目标、有头、可能有体」。
+测试时怎么把一次登录填进这四个格子，到 [09B](09b-http-message-observe.md) 对着 MiniShop 做。
+不要在本节开始抄登录路径。
+
 HTTP/2 和 HTTP/3 在网上传输时不再是这种纯文本分行格式，但对测试工程师来说，方法、路径、状态码、Header、Body 这些语义仍然在。第 10 章的 Network 面板会把它们展示出来。
 
 教学请求目标沿用第 7 章 URL，不代表 MiniShop 正式路由已冻结：
@@ -199,7 +201,7 @@ GET /products?keyword=mouse&page=2 HTTP/1.1
 Host: shop.example.test
 ```
 
-`Host` 在 HTTP/1.1 中是必须的请求头，用来说明要访问哪一个主机。它和 URL 里的 host 对应，但出现在报文头里。
+`Host` 是 HTTP/1.1 的强制请求头。值等于目标 URI 的 authority：主机名，外加非默认端口。上面教学例子默认 80，可以只写 `shop.example.test`；MiniShop 本机是 `Host: 127.0.0.1:8765`，端口必须写上。RFC 9112 规定：HTTP/1.1 客户端必须发送 Host；源服务器对缺 Host、多个 Host、或值非法的请求必须回 400。HTTP/2、HTTP/3 里这个信息常在 `:authority`。MiniShop v1.0 跑在 HTTP/1.0 上，缺 Host 的实测不能写成「已符合 RFC」。
 
 ---
 
@@ -271,6 +273,8 @@ PATCH（RFC 5789）用于部分更新，**不是** RFC 9110 方法表中的成�
 > GET 用于获取当前表示，是安全且幂等的。POST 用于根据请求内容处理数据，既不是安全方法，规范也不保证幂等。二者的差别是语义，不是“谁加密、谁能传更长”。
 
 ![GET 像看货架，POST 像交表格；加密看 TLS](assets/diagrams/ch09-get-post.png)
+
+示意图路径是 MiniShop 的 `GET /api/products?keyword=鼠标`。09A 教学 URL `shop.example.test` 的 `keyword=mouse` 只是形状例子，对着仓库不要抄成 `/api/products?keyword=mouse`（种子商品名是中文，会得到空列表）。
 
 ### 不要使用的绝对化规则
 
@@ -442,6 +446,7 @@ D. 只要改用 POST，就可以不用 HTTPS
 
 - [RFC 9110：HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)（本章于 2026-09-08 核验）
 - [RFC 9111：HTTP Caching](https://www.rfc-editor.org/rfc/rfc9111)
+- [RFC 9112：HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112)
 - [MDN：HTTP request methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
 - [MDN：HTTPS](https://developer.mozilla.org/en-US/docs/Glossary/HTTPS)
 - [09B 报文观察](09b-http-message-observe.md)
