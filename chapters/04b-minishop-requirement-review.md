@@ -156,47 +156,7 @@ R-CART-05 修改失败时提示用户。
 
 ## MiniShop 工作实战：需求评审包
 
-选择注册、登录或购物车之一，提交以下四份内容：
-
-1. 功能流程和业务对象；
-2. 需求问题清单；
-3. 七类场景测试点；
-4. 需求—测试点追踪表。
-
-建议保存为：
-
-```text
-exercises/chapter-04-minishop-requirement-review.md
-```
-
-交付模板：
-
-```markdown
-# MiniShop 需求评审记录
-
-## 基本信息
-- 需求名称：
-- 需求版本：
-- 评审范围：
-- 参与角色：
-- 日期：
-
-## 已确认规则
-| 需求 ID | 规则 | 来源 |
-| --- | --- | --- |
-
-## 问题清单
-| ID | 位置 | 类型 | 级别 | 问题 | 影响 | 责任人 | 状态 | 关闭证据 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-
-## 测试点
-| ID | 场景类型 | 前置/触发 | 检查点 | 依据 | 状态 |
-| --- | --- | --- | --- | --- | --- |
-
-## 追踪关系
-| 需求 ID | 测试点 ID | 备注 |
-| --- | --- | --- |
-```
+提交一份记录：直接复制 [`practice/04-requirement-review/template.md`](../practice/04-requirement-review/template.md)，存为 `exercises/chapter-04-minishop-requirement-review.md`。不要另做第二套表。选注册、登录或购物车之一即可。
 
 完成标准与实操 4-1 相同（不要另立一套合格线）：
 
@@ -206,10 +166,14 @@ exercises/chapter-04-minishop-requirement-review.md
 4. 有需求 ID → 测试点 ID 的追踪表；
 5. **没有**把验证码、优惠券、订单状态机、8～20 位密码写进 v1.0 已确认规则。
 
-若评审的是 04B 教学草案，8 个问题 / 15 个测试点可作为加分，不是唯一合格线。没有阻塞项就写判断依据，不要虚构。
+评 v1.0 时，「已确认规则」只许抄 `project/minishop/docs/PRD.md` 已有句；评教学草案则该表可空。若评审的是 04B 教学草案，8 个问题 / 15 个测试点可作为加分，不是唯一合格线。没有阻塞项就写判断依据，不要虚构。
 
+对照仓库时分清两层：
 
-对照仓库正式评审：`project/minishop/docs/requirement-review.md` 与覆盖矩阵 `docs/prd-coverage-matrix.md`。
+- 已确认规则：只看 `project/minishop/docs/PRD.md`
+- 测试证据：`docs/requirement-review.md`、`docs/prd-coverage-matrix.md`
+
+覆盖矩阵把 qty=11 的「不落库」标成实现观察（接口拒绝后库中不是 11），不是 PRD 原文。`R-CART-10` 只写了「拒绝」。把「不落库」或 HTTP 400 写进作业「已确认规则」不合格。
 
 评审时仍用第 4 章（上）的三张示意图当尺子：句子能不能测（`ch04-testable.png`）、问题属于歧义/遗漏/矛盾（`ch04-three-problems.png`）、场景抽屉有没有漏（`ch04-seven-scenes.png`）。v1.0 正式规则以 PRD 为准，不要把教学验证码/优惠券写进本项目用例。
 
@@ -264,7 +228,7 @@ exercises/chapter-04-minishop-requirement-review.md
 
 ### 练习 9（实操）
 
-使用本章模板完成一份 MiniShop 注册、登录或购物车需求评审包，并检查是否达到量化完成标准。
+复制实操 4-1 的 `template.md`，完成一份 MiniShop 注册、登录或购物车需求评审记录，并按 4-1 五条验收自检。不要另做第二套表。
 
 ### 练习 10
 
@@ -289,7 +253,7 @@ exercises/chapter-04-minishop-requirement-review.md
 
 ### 答案 9
 
-开放实操题。合格证据跟实操 4-1：版本声明、至少 5 条分类问题、四类场景、追踪表，且不把验证码等写进 v1.0 已确认规则。
+开放实操题。合格证据跟实操 4-1：版本声明、至少 5 条分类问题、四类场景、追踪表，且不把验证码等写进 v1.0 已确认规则。覆盖矩阵里的「不落库」不是 PRD 原文，抄进去不合格。
 
 ### 答案 10
 
@@ -313,7 +277,7 @@ exercises/chapter-04-minishop-requirement-review.md
 ## 参考资料
 
 - [04A](04a-requirements-static-testing.md)
-- `project/minishop/docs/prd-coverage-matrix.md`
+- `project/minishop/docs/prd-coverage-matrix.md`（测试证据，不是 PRD；「不落库」勿抄进已确认规则）
 
 ## 下一章预告
 

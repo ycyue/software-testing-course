@@ -26,3 +26,5 @@ exercises/chapter-04-minishop-requirement-review.md
 3. 七类场景里至少覆盖功能、异常、边界、权限四类测试点
 4. 有需求 ID → 测试点 ID 的追踪表
 5. **没有**把验证码、优惠券、订单状态机、8～20 位密码写进 v1.0 已确认规则
+
+评 v1.0 时，模板「已确认规则」只许抄 `project/minishop/docs/PRD.md` 已有句。覆盖矩阵里的「不落库」、HTTP 400、失败保持原值都不是 PRD 原文，不要抄进该表。评教学草案则该表可空。
