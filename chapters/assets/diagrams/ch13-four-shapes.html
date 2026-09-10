@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="_theme.css"><title>缺、null、空串、"1" 是四条用例</title></head>
+<body><div class="page">
+<p class="kicker">第 13 章示意图 · JSON 四态</p>
+<h1>缺字段、null、空字符串、"1" 在 JSON 里合法，在业务里不是同一条用例</h1>
+<p class="lead">MiniShop 购物车 Body。一次只破坏 qty，四格都带 sku。本实现空串和错误类型可能同一句 wrong type qty，记录仍要分开。</p>
+<div class="row">
+  <div class="col card"><span class="tag tag-warn">缺字段</span><h2>键不存在</h2><p style="font-size:14px;line-height:1.5;overflow-wrap:anywhere">{"sku":"SKU-DEMO-001"}<br>400 missing qty</p></div>
+  <div class="col card"><span class="tag tag-info">null</span><h2>键在，值是 JSON null</h2><p style="font-size:14px;line-height:1.5;overflow-wrap:anywhere">{"sku":"SKU-DEMO-001","qty":null}<br>400 null qty</p></div>
+  <div class="col card"><span class="tag tag-bad">空串</span><h2>长度为 0 的字符串</h2><p style="font-size:14px;line-height:1.5;overflow-wrap:anywhere">{"sku":"SKU-DEMO-001","qty":""}<br>400 wrong type qty</p></div>
+  <div class="col card"><span class="tag tag-ok">错误类型</span><h2>看起来像 1，类型是字符串</h2><p style="font-size:14px;line-height:1.5;overflow-wrap:anywhere">{"sku":"SKU-DEMO-001","qty":"1"}<br>400 wrong type qty</p></div>
+</div>
+<p class="caption">示意图：一次只破坏 qty。缺 sku 会先变成 missing sku，不要画成 null qty。别的系统可能把空串当缺省。不要把这四条叠进同一用例。</p>
+</div></body></html>

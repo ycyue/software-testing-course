@@ -5,5 +5,5 @@
 <h1>测错格子，等于没测到</h1>
 <p class="lead">密码不要放 query。Content-Type 声明 JSON，Body 就要是 JSON。</p>
 <div class="row"><div class="col card"><span class="tag tag-info">Path</span><h2>哪一个资源</h2><p style="font-size:16px;line-height:1.55">/api/orders/ord-xxx 换成别人的 id → 权限测试</p></div><div class="col card"><span class="tag tag-ok">Query</span><h2>问号后面</h2><p style="font-size:16px;line-height:1.55">keyword=   空搜索；不要放密码</p></div><div class="col card"><span class="tag tag-warn">Header</span><h2>信封上的说明</h2><p style="font-size:16px;line-height:1.55">Authorization、Content-Type、有没有 Cookie</p></div><div class="col card"><span class="tag tag-bad">Body</span><h2>信纸</h2><p style="font-size:16px;line-height:1.55">qty 缺、null、""、"1"、0、11 各是一条</p></div></div>
-<p class="caption">示意图：教学服务 /login 不是 v1.0 契约。正式前缀是 /api/，以第 19 章 PRD 为准。</p>
+<p class="caption">示意图：密码进 Body 不进 Query。qty 进 Body 不进 Header。测错格子，等于这条用例没打到契约。</p>
 </div></body></html>

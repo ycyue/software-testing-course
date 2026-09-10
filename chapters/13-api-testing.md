@@ -79,7 +79,9 @@ flowchart LR
 
 ---
 
-## 13.2 REST：约定，不是宗教 ⭐⭐⭐
+## 13.2 REST：约定，不是宗教 ⭐⭐
+
+可跳：会填四格、能对着文档发请求，再回来读。REST 是常见填法，不是报缺陷的理由。
 
 REST 是一种架构风格：用资源、统一的 HTTP 方法和表示（常见 JSON）来交互。测试中见到的“REST API”往往表示：
 
@@ -245,6 +247,8 @@ Path 参数通常标识**哪一个**资源。把 `ord-demo-01` 改成另一个�
 
 以 MiniShop 改数量为例（PRD `R-CART` / `R-CART-10`：正整数且不得超过当前库存 10；请求必须带 Bearer）：
 
+![缺、null、空串、"1" 是四条用例](assets/diagrams/ch13-four-shapes.png)
+
 | 用例 | Body | 要观察 |
 | --- | --- | --- |
 | 正常 | `{"sku":"SKU-DEMO-001","qty":1}` | 200；库中 qty=1 |
@@ -256,7 +260,7 @@ Path 参数通常标识**哪一个**资源。把 `ord-demo-01` 改成另一个�
 | 错误类型 | `{"sku":"SKU-DEMO-001","qty":"1"}` | 400 `wrong type qty` |
 | 边界 | `qty` 为 `0` | 400 `qty not positive` |
 
-这四态的错误字符串与实操 13-1、`server.py` 一致。无 Bearer 时购物车是 401，不要先测形状。配套实操：`python3 practice/run.py 13-1`。
+这四态的错误字符串与实操 13-1、`server.py` 一致。无 Bearer **且** 无 Cookie 时购物车是 401，不要先测形状。配套实操：`python3 practice/run.py 13-1`。
 
 设计纪律：
 
@@ -346,11 +350,14 @@ python3 run.py serve
 POST /api/login HTTP/1.1
 Host: 127.0.0.1:8765
 Content-Type: application/json
+Content-Length: 45
 
 {"phone":"13800138000","password":"Test1234"}
 ```
 
-成功时（脱敏后的形状）：
+`curl -d` 会自动加 `Content-Length`；用 nc 或 socket 裸发 TCP 时必须自己写，长度等于 Body 的字节数。RFC 9112：请求体由 `Content-Length` 或 `Transfer-Encoding` 标明。MiniShop 按 `Content-Length` 读体，不写则读到空对象，返回 400 `missing field`。
+
+成功时（脱敏后的形状；纸面按 HTTP/1.1 语义）：
 
 ```text
 HTTP/1.1 200 OK
@@ -359,6 +366,8 @@ Set-Cookie: minishop_session=<token>; HttpOnly; Path=/
 
 {"result":"ok","token":"<token>","role":"user"}
 ```
+
+MiniShop 跑在 Python `BaseHTTPRequestHandler` 上，实装状态行是 `HTTP/1.0 200 OK`，`Content-Type` 常带 `charset=utf-8`，Body 还有 `role`。对照 curl `-D -` 时看方法、路径、token、Set-Cookie，不要把 `HTTP/1.0` 当成缺陷。
 
 检查清单：
 
@@ -422,10 +431,11 @@ exercises/chapter-13-minishop-api.md
 
 1. 对照 `docs/openapi.json` 列出登录接口的方法、必填、成功/失败码；
 2. 正常登录一次（脱敏记录）；
-3. 至少四种异常：缺失、`null`、错误类型、边界（如 qty=11）；
-4. 一次未认证或越权；
-5. 一次重复 POST 创建，记录是一个 id 还是两个；
-6. 若有测试库，对成功/失败各做一次 `SELECT` 核对；没有库则写明“仅核对 HTTP”。
+3. 购物车 Body 四态各一行（与实操 13-1 同一组）：缺 `qty`、`qty: null`、`qty: ""`、`qty: "1"`。不要把空串写成「也是缺字段」；
+4. 另做边界：`qty=10` 允许、`qty=11` 拒绝（这不是四态，是库存规则）；
+5. 一次未认证或越权；
+6. 一次重复 POST 创建，记录是一个 id 还是两个；
+7. 若有测试库，对成功/失败各做一次 `SELECT` 核对；没有库则写明“仅核对 HTTP”。
 
 ```markdown
 # MiniShop 接口检查记录
